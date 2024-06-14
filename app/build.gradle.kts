@@ -63,19 +63,16 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     //ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.2")
 
     //DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     //Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
 
     //Gson библиотека-конвертер в ретрофит. Подключает GSON от google автоматом
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    //SHA-256
-    implementation("commons-codec:commons-codec:1.15")
 
     //Jetpack compose
     // Основные библиотеки Compose для создания UI
