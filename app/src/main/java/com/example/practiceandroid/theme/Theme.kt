@@ -1,4 +1,4 @@
-package com.example.practiceandroid.ui.theme
+package com.example.practiceandroid.theme
 
 import android.app.Activity
 import android.os.Build
@@ -36,16 +36,9 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun PracticeAndroidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

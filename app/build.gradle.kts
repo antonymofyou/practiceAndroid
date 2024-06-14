@@ -74,6 +74,12 @@ dependencies {
     //Gson библиотека-конвертер в ретрофит. Подключает GSON от google автоматом
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    //SHA-256
+    implementation("commons-codec:commons-codec:1.15")
+
+    //Reflect (обращение к именам классов и т.п.) - рефлексия
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.20")
+
     //Jetpack compose
     // Основные библиотеки Compose для создания UI
     implementation("androidx.compose.ui:ui:1.6.8")
