@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.practiceandroid.theme.PracticeAndroidTheme
+import com.example.practiceandroid.utils.StyledText
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PracticeAndroidTheme {
-
+                StyledText(rawText = "Это <b>пример</b> текста <s><i>для</i></s> разбиения")
             }
         }
     }

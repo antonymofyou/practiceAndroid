@@ -1,4 +1,3 @@
-restartable skippable scheme("[0, [0]]") fun PracticeAndroidTheme(
-  stable darkTheme: Boolean = @dynamic isSystemInDarkTheme($composer, 0)
-  stable content: Function2<Composer, Int, Unit>
+restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun StyledText(
+  stable rawText: String
 )
