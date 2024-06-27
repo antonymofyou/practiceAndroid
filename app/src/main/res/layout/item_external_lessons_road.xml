@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/frameLayoutParalaxImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/parallaxBackgroundImage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0.8"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/lessons_road_bg_repeat"
+            android:contentDescription="@null" />
+
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRoot"
+        android:layout_width="365dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:nestedScrollingEnabled="false"
+        android:overScrollMode="never"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cvChapterTop" />
+
+    <ImageView
+        android:id="@+id/ivLineBottomLeft"
+        android:layout_width="90dp"
+        android:layout_height="105dp"
+        android:layout_marginStart="94dp"
+        android:layout_marginBottom="-6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/rvRoot" />
+
+    <ImageView
+        android:id="@+id/ivLineBottomRight"
+        android:layout_width="100dp"
+        android:layout_height="112dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginBottom="-4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/rvRoot"
+        app:layout_constraintTop_toBottomOf="@id/rvRoot" />
+
+    <ImageView
+        android:id="@+id/ivLineTopLeft"
+        android:layout_width="100dp"
+        android:layout_height="110dp"
+        android:layout_marginLeft="84dp"
+        android:layout_marginTop="-10dp"
+        app:layout_constraintBottom_toTopOf="@id/rvRoot"
+        app:layout_constraintStart_toStartOf="@id/rvRoot"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivLineTopRight"
+        android:layout_width="100dp"
+        android:layout_height="105dp"
+        android:layout_marginRight="90dp"
+        app:layout_constraintBottom_toTopOf="@id/rvRoot"
+        app:layout_constraintEnd_toEndOf="@id/rvRoot"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvChapterTop"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        app:cardBackgroundColor="@color/lesson_surface_color"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvChapterTop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="Человек и общество"
+            android:textColor="@color/lesson_text_color"
+            android:textSize="20sp" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvChapterBottom"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="@color/lesson_surface_color"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvRoot">
+
+        <TextView
+            android:id="@+id/tvChapterBottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="Человек и общество"
+            android:textColor="@color/lesson_text_color"
+            android:textSize="20sp" />
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

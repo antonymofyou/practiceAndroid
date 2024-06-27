@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PracticeAndroid" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.PracticeAndroid" parent="Theme.AppCompat.NoActionBar" />
+
+    <color name="lesson_text_color">#1D004D</color>
+    <color name="lesson_surface_color">@color/white</color>
+    <color name="politic_lesson_chapter_color">#EBDEFF</color>  <!--  Политика  -->
+    <color name="society_lesson_chapter_color">#DEF5FF</color> <!--  Социология  -->
+    <color name="economic_lesson_chapter_color">#FFDEDE</color>  <!--  Экономика  -->
+    <color name="humanity_lesson_chapter_color">#E1FFDE</color> <!--  Человек и общество  -->
+    <color name="human_rights_lesson_chapter_color">#FFF4DE</color>  <!--  Право  -->
+    <color name="default_chapter_color">#FFF9C4</color>  <!--  По умолчанию  -->
+
+    <color name="politic_line_color">#A020F0</color>
+    <color name="society_line_color">#0096FF</color>
+    <color name="economic_line_color">@android:color/holo_red_light</color>
+    <color name="humanity_line_color">#00FF00</color>
+    <color name="human_rights_line_color">#FFA500</color>
+    <color name="default_line_color">#FFD600</color>
+
+    <color name="politic_chapter_cardview_color">@color/white</color>  <!--  Политика  -->
+    <color name="society_lesson_chapter_cardview_color">@color/white</color> <!--  Социология  -->
+    <color name="economic_chapter_cardview_color">@color/white</color>  <!--  Экономика  -->
+    <color name="humanity_lesson_chapter_cardview_color">@color/white</color> <!--  Человек и общество  -->
+    <color name="human_rights_lesson_chapter_cardview_color">@color/white</color>  <!--  Право  -->
+    <color name="default_lesson_chapter_cardview_color">@color/white</color>  <!--  По умолчанию  -->
+    <color name="status_bar_color_less_6_android">@color/black</color><!--Цвет статус бара для андроида ниже 6-->
+
 </resources>

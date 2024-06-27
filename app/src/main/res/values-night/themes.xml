@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lesson_text_color">@color/white</color>
+    <color name="lesson_surface_color">#0FFFFFFF</color>
+    <color name="politic_lesson_chapter_color">#270021</color>
+    <color name="society_lesson_chapter_color">#002130</color>
+    <color name="economic_lesson_chapter_color">#270000</color>
+    <color name="humanity_lesson_chapter_color">#031700</color>
+    <color name="human_rights_lesson_chapter_color">#2E1600</color>
+    <color name="default_chapter_color">#392F00</color>
+
+    <color name="politic_chapter_cardview_color">#340F2E</color>  <!--  Политика  -->
+    <color name="society_lesson_chapter_cardview_color">#0F2E3C</color> <!--  Социология  -->
+    <color name="economic_chapter_cardview_color">#340F0F</color>  <!--  Экономика  -->
+    <color name="humanity_lesson_chapter_cardview_color">#12250F</color> <!--  Человек и общество  -->
+    <color name="human_rights_lesson_chapter_cardview_color">#3B240F</color>  <!--  Право  -->
+    <color name="default_lesson_chapter_cardview_color">#423600</color>  <!--  По умолчанию  -->
+</resources>

@@ -1,25 +1,35 @@
 package com.example.practiceandroid
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import com.example.practiceandroid.modules.lessonsRoad.views.LessonsFragment
+import com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadFragment
 import com.example.practiceandroid.theme.PracticeAndroidTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
         setContent {
             PracticeAndroidTheme {
+                AndroidView(factory= {context->
+                    val fragmentContainer = FragmentContainerView(context)
+                    fragmentContainer.id = ViewCompat.generateViewId()
+                    (context as AppCompatActivity).supportFragmentManager.commit {
+                        replace<LessonsFragment>(fragmentContainer.id)
+                        setReorderingAllowed(true)
+                    }
 
+                    fragmentContainer
+                })
             }
         }
     }
