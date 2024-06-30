@@ -19,7 +19,7 @@ class PdfViewerViewModel(application: Application) : AndroidViewModel(applicatio
 
     private lateinit var pdfRenderer: PdfRenderer
     private var currentPage: PdfRenderer.Page? = null
-    var currentPageIndex = 0
+    private var currentPageIndex = 0
     private var pageCount = 0
 
     fun loadPdf(pdfFileName: String) {
@@ -69,6 +69,6 @@ class PdfViewerViewModel(application: Application) : AndroidViewModel(applicatio
     override fun onCleared() {
         super.onCleared()
         currentPage?.close()
-        pdfRenderer?.close()
+        pdfRenderer.close()
     }
 }

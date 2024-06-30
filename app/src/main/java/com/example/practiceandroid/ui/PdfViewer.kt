@@ -27,7 +27,7 @@ fun PdfViewer(viewModel: PdfViewerViewModel = viewModel()) {
     var offset by remember { mutableStateOf(Offset.Zero) }
 
     LaunchedEffect(Unit) {
-        if(viewModel.currentPageIndex == 0) viewModel.loadPdf("sample.pdf")
+        if(viewModel.bitmap.value == null) viewModel.loadPdf("sample.pdf")
     }
 
     BoxWithConstraints {
