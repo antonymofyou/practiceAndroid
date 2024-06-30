@@ -27,7 +27,7 @@ fun PdfViewer(viewModel: PdfViewerViewModel = viewModel()) {
     var offset by remember { mutableStateOf(Offset.Zero) }
 
     LaunchedEffect(Unit) {
-        viewModel.loadPdf("sample.pdf")
+        if(viewModel.currentPageIndex == 0) viewModel.loadPdf("sample.pdf")
     }
 
     BoxWithConstraints {
@@ -61,7 +61,6 @@ fun PdfViewer(viewModel: PdfViewerViewModel = viewModel()) {
 
                     }
                     .transformable(state)
-
             )
         }
         Row(
