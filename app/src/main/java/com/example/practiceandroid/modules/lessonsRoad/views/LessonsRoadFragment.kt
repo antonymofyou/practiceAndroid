@@ -155,7 +155,7 @@ class LessonsRoadFragment : Fragment() {
                                 lessons[0]["lesson_chapter"] ?: "")
                             val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
                             itemExternalLesssonsRoadBinding.parallaxBackgroundImage.colorFilter = colorFilter
-
+                            //тут проблема пост делается когда view уже создано
                             if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                                 itemExternalLesssonsRoadBinding.clRoot.post {
                                     lessonsRoadViewModel.toScrollRvHeight =

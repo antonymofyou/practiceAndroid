@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Point
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData

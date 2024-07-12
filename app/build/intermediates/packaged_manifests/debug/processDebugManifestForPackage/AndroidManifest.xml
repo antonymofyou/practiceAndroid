@@ -47,10 +47,10 @@
             android:authorities="com.example.practiceandroid.androidx-startup"
             android:exported="false" >
             <meta-data
-                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
                 android:value="androidx.startup" />
             <meta-data
-                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
                 android:value="androidx.startup" />
             <meta-data
                 android:name="androidx.profileinstaller.ProfileInstallerInitializer"

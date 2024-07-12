@@ -102,10 +102,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
     // Навигация в Compose
     implementation("androidx.navigation:navigation-compose:2.7.7")
-
+    //ConstraintLayout
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     //Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
-
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
