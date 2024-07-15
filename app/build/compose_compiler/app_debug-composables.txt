@@ -2,8 +2,8 @@ restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun ItemExter
   stable modifier: Modifier
   unstable lessons: ArrayList<Map<String, String>>
   stable isScreenLarge: Boolean
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  unstable lessonsViewModel: LessonsViewModel
+  lessonsRoadViewModel: LessonsRoadViewModel
+  lessonsViewModel: LessonsViewModel
   stable previousItemViewType: Int
   unused stable ivLineBottomLeft: MutableState<Boolean>
   unused stable ivLineBottomRight: MutableState<Boolean>
@@ -41,98 +41,4 @@ restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun ItemExter
   stable cvChapterBottomConstrainTo: MutableState<Boolean>
   stable rvRootWidth: MutableState<Int>
   stable scrollYChanged: MutableState<Boolean>
-)
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun ItemExternalLessonsRoadScreenHeight(
-  stable modifier: Modifier
-  unstable lessons: ArrayList<Map<String, String>>
-  stable isScreenLarge: Boolean
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  unstable lessonsViewModel: LessonsViewModel
-  stable previousItemViewType: Int
-  stable isScrollAdapter: Boolean = @static false
-  stable onLessonClick: Function1<@[ParameterName(name = 'lesson')] Map<String, String>, Unit>
-  stable parallaxBackgroundImageFilter: MutableState<ColorFilter?>
-  stable getHeight: Function1<Int, Unit>
-)
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun LessonsRoadAdapterScreen(
-  stable modifier: Modifier
-  unstable lessons: ArrayList<Map<String, String>>
-  stable isScreenLarge: Boolean
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  unstable lessonsViewModel: LessonsViewModel
-  stable previousItemViewType: Int
-  stable isScrollAdapter: Boolean = @static false
-  stable onLessonClick: Function1<@[ParameterName(name = 'lesson')] Map<String, String>, Unit>
-)
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun RightLessonItem(
-  unstable paint: Paint
-  stable position: Int
-  stable previousItemViewType: Int
-  stable modifier: Modifier
-  unstable lesson: Map<String, String>
-  unstable lessons: ArrayList<Map<String, String>>
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  unstable lessonsViewModel: LessonsViewModel
-  stable isScreenLarge: Boolean
-  stable onLessonClick: Function1<@[ParameterName(name = 'lesson')] Map<String, String>, Unit>
-  stable isScrollAdapter: Boolean
-)
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun LeftLessonItem(
-  unstable paint: Paint
-  stable position: Int
-  stable previousItemViewType: Int
-  stable modifier: Modifier
-  unstable lesson: Map<String, String>
-  unstable lessons: ArrayList<Map<String, String>>
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  unstable lessonsViewModel: LessonsViewModel
-  stable isScreenLarge: Boolean
-  stable onLessonClick: Function1<@[ParameterName(name = 'lesson')] Map<String, String>, Unit>
-  stable isScrollAdapter: Boolean
-)
-restartable skippable fun SetupLinesWhenFirstElementInLeftSide(
-  stable position: Int
-  unstable lessons: ArrayList<Map<String, String>>
-  stable marginsForFL: SnapshotStateList<Int>
-  stable ivLineLeft: MutableState<Boolean>
-  stable ivLineWidth: MutableState<Int>
-  stable ivLineRes: MutableState<Bitmap?>
-  stable ivLineMargins: SnapshotStateList<Int>
-  stable ivLineRotationY: MutableState<Float>
-  stable lineToRight: MutableState<Bitmap?>
-  stable lineToLeft: MutableState<Bitmap?>
-  unstable lessonsViewModel: LessonsViewModel
-  stable isScreenLarge: Boolean
-  stable llHorizontalContainer: MutableState<Dp?>
-  unstable circlePath: Path
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  unstable paint: Paint
-  stable ivLineHeight: MutableState<Int>
-)
-restartable skippable fun SetupLinesWhenFirstElementInRightSide(
-  stable position: Int
-  unstable lessons: ArrayList<Map<String, String>>
-  stable marginsForFL: SnapshotStateList<Int>
-  stable ivLineRight: MutableState<Boolean>
-  stable ivLineWidth: MutableState<Int>
-  stable ivLineHeight: MutableState<Int>
-  unstable lessonsViewModel: LessonsViewModel
-  unstable lessonsRoadViewModel: LessonsRoadViewModel
-  stable ivLineRotationY: MutableState<Float>
-  stable isScreenLarge: Boolean
-  stable ivLineMargins: SnapshotStateList<Int>
-  stable lineToRight: MutableState<Bitmap?>
-  stable lineToLeft: MutableState<Bitmap?>
-  unstable circlePath: Path
-  unstable paint: Paint
-  stable llHorizontalContainer: MutableState<Dp?>
-  stable ivLineRes: MutableState<Bitmap?>
-)
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun LessonsRoadAdapterScreenPreview()
-restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun LessonsRoadScreen(
-  stable modifier: Modifier
-)
-restartable skippable scheme("[0, [0]]") fun PracticeAndroidTheme(
-  stable darkTheme: Boolean = @dynamic isSystemInDarkTheme($composer, 0)
-  stable content: Function2<Composer, Int, Unit>
 )

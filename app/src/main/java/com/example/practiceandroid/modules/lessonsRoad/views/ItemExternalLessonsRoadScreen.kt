@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -41,9 +42,10 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.fontResource
+import com.skydoves.landscapist.rememberDrawablePainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -55,6 +57,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewModel
@@ -174,7 +177,7 @@ fun ItemExternalLessonsRoadScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(start = clRootMargins[0].dp, top = clRootMargins[1].dp, end = clRootMargins[2].dp, bottom = clRootMargins[3].dp)
-                    .background(colorResource(clRootBackground.value!!))
+                    .background(Color(clRootBackground.value!!))
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                             lessonsRoadViewModel.toScrollRvHeight = coordinates.size.height
@@ -189,7 +192,7 @@ fun ItemExternalLessonsRoadScreen(
                 modifier
                     .fillMaxSize()
                     .padding(start = clRootMargins[0].dp, top = clRootMargins[1].dp, end = clRootMargins[2].dp, bottom = clRootMargins[3].dp)
-                    .background(colorResource(clRootBackground.value!!))
+                    .background(Color(clRootBackground.value!!))
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                             lessonsRoadViewModel.toScrollRvHeight = coordinates.size.height
@@ -243,8 +246,13 @@ fun ItemExternalLessonsRoadScreen(
                 .fillMaxWidth()
                 .layoutId("frameLayoutParalaxImage")
         ) {
+            val context = LocalContext.current
             Image(
-                painter = painterResource(R.drawable.lessons_road_bg_repeat),
+                painter = rememberDrawablePainter(
+                    ContextCompat.getDrawable(
+                    context,
+                    R.drawable.lessons_road_bg_repeat
+                )),
                 contentDescription = null,
                 modifier =
                     modifier
@@ -288,7 +296,8 @@ fun ItemExternalLessonsRoadScreen(
                     .height(ivLineBottomLeftHeight.value.dp)
                     .width(ivLineBottomLeftWidth.value.dp)
                     .layoutId("ivLineBottomLeft")
-                    .padding(start = ivLineBottomLeftMargins[0].dp, top = ivLineBottomLeftMargins[1].dp, end = ivLineBottomLeftMargins[2].dp, bottom = ivLineBottomLeftMargins[3].dp)
+                    .offset(x = ivLineBottomLeftMargins[0].dp, y = ivLineBottomLeftMargins[3].dp)
+                    //.padding(start = ivLineBottomLeftMargins[0].dp, top = ivLineBottomLeftMargins[1].dp, end = ivLineBottomLeftMargins[2].dp, bottom = ivLineBottomLeftMargins[3].dp)
                     ,
                 bitmap = ivLineBottomLeftRes.value!!.asImageBitmap(),
                 contentDescription = null
@@ -299,7 +308,8 @@ fun ItemExternalLessonsRoadScreen(
                     .height(ivLineBottomLeftHeight.value.dp)
                     .width(ivLineBottomLeftWidth.value.dp)
                     .layoutId("ivLineBottomLeft")
-                    .padding(start = ivLineBottomLeftMargins[0].dp, top = ivLineBottomLeftMargins[1].dp, end = ivLineBottomLeftMargins[2].dp, bottom = ivLineBottomLeftMargins[3].dp)
+                    .offset(x = ivLineBottomLeftMargins[0].dp, y = ivLineBottomLeftMargins[3].dp)
+                    //.padding(start = ivLineBottomLeftMargins[0].dp, top = ivLineBottomLeftMargins[1].dp, end = ivLineBottomLeftMargins[2].dp, bottom = ivLineBottomLeftMargins[3].dp)
                 ,
             )
         }
@@ -311,7 +321,8 @@ fun ItemExternalLessonsRoadScreen(
                     .width(ivLineBottomRightWidth.value.dp)
                     .height(ivLineBottomRightHeight.value.dp)
                     .layoutId("ivLineBottomRight")
-                    .padding(start = ivLineBottomRightMargins[0].dp, top = ivLineBottomRightMargins[1].dp, end = ivLineBottomRightMargins[2].dp, bottom = ivLineBottomRightMargins[3].dp)
+                    .offset(x = ivLineBottomRightMargins[0].dp, y = ivLineBottomRightMargins[3].dp)
+                    //.padding(start = ivLineBottomRightMargins[0].dp, top = ivLineBottomRightMargins[1].dp, end = ivLineBottomRightMargins[2].dp, bottom = ivLineBottomRightMargins[3].dp)
             )
         } else {
             Spacer(
@@ -319,18 +330,20 @@ fun ItemExternalLessonsRoadScreen(
                     .width(ivLineBottomRightWidth.value.dp)
                     .height(ivLineBottomRightHeight.value.dp)
                     .layoutId("ivLineBottomRight")
-                    .padding(start = ivLineBottomRightMargins[0].dp, top = ivLineBottomRightMargins[1].dp, end = ivLineBottomRightMargins[2].dp, bottom = ivLineBottomRightMargins[3].dp)
+                    .offset(x = ivLineBottomRightMargins[0].dp, y = ivLineBottomRightMargins[3].dp)
+                    //.padding(start = ivLineBottomRightMargins[0].dp, top = ivLineBottomRightMargins[1].dp, end = ivLineBottomRightMargins[2].dp, bottom = ivLineBottomRightMargins[3].dp)
                 ,
             )
         }
         if (ivLineTopLeftRes.value != null) {
-            Image (
+            Image(
                 modifier = modifier
                     .width(ivLineTopLeftWidth.value.dp)
                     .height(ivLineTopLeftHeight.value.dp)
                     .layoutId("ivLineTopLeft")
                     .graphicsLayer(rotationX = ivLineTopLeftRotationX.value)
-                    .padding(start = ivLineTopLeftMargins[0].dp, top = ivLineTopLeftMargins[1].dp, end = ivLineTopLeftMargins[2].dp, bottom = ivLineTopLeftMargins[3].dp),
+                    .offset(x = ivLineTopLeftMargins[0].dp, y = ivLineTopLeftMargins[3].dp),
+                    //.padding(start = ivLineTopLeftMargins[0].dp, top = ivLineTopLeftMargins[1].dp, end = ivLineTopLeftMargins[2].dp, bottom = ivLineTopLeftMargins[3].dp),
                 bitmap = ivLineTopLeftRes.value!!.asImageBitmap(),
                 contentDescription = null,
             )
@@ -341,7 +354,8 @@ fun ItemExternalLessonsRoadScreen(
                     .height(ivLineTopLeftHeight.value.dp)
                     .layoutId("ivLineTopLeft")
                     .graphicsLayer(rotationX = ivLineTopLeftRotationX.value)
-                    .padding(start = ivLineTopLeftMargins[0].dp, top = ivLineTopLeftMargins[1].dp, end = ivLineTopLeftMargins[2].dp, bottom = ivLineTopLeftMargins[3].dp),
+                    .offset(x = ivLineTopLeftMargins[0].dp, y = ivLineTopLeftMargins[3].dp)
+                //.padding(start = ivLineTopLeftMargins[0].dp, top = ivLineTopLeftMargins[1].dp, end = ivLineTopLeftMargins[2].dp, bottom = ivLineTopLeftMargins[3].dp),
             )
         }
         //надо сделать инвизы
@@ -352,7 +366,8 @@ fun ItemExternalLessonsRoadScreen(
                     .height(ivLineTopRightHeight.value.dp)
                     .layoutId("ivLineTopRight")
                     .graphicsLayer(rotationX = ivLineTopRightRotationX.value)
-                    .padding(start = ivLineTopRightMargins[0].dp, top = ivLineTopRightMargins[1].dp, end = ivLineTopRightMargins[2].dp, bottom = ivLineTopRightMargins[3].dp),
+                    .offset(x = ivLineTopRightMargins[0].dp, y = ivLineTopRightMargins[3].dp),
+                    //.padding(start = ivLineTopRightMargins[0].dp, top = ivLineTopRightMargins[1].dp, end = ivLineTopRightMargins[2].dp, bottom = ivLineTopRightMargins[3].dp),
                 bitmap = ivLineTopRightRes.value!!.asImageBitmap(),
                 contentDescription = null
             )
@@ -363,7 +378,8 @@ fun ItemExternalLessonsRoadScreen(
                     .height(ivLineTopRightHeight.value.dp)
                     .layoutId("ivLineTopRight")
                     .graphicsLayer(rotationX = ivLineTopRightRotationX.value)
-                    .padding(start = ivLineTopRightMargins[0].dp, top = ivLineTopRightMargins[1].dp, end = ivLineTopRightMargins[2].dp, bottom = ivLineTopRightMargins[3].dp),
+                    .offset(x = ivLineTopRightMargins[0].dp, y = ivLineTopRightMargins[3].dp),
+                //.padding(start = ivLineTopRightMargins[0].dp, top = ivLineTopRightMargins[1].dp, end = ivLineTopRightMargins[2].dp, bottom = ivLineTopRightMargins[3].dp),
             )
         }
         Card (
@@ -372,7 +388,7 @@ fun ItemExternalLessonsRoadScreen(
               modifier
                   .height(50.dp)
                   .layoutId("cvChapterTop")
-                  .background(colorResource(cvChapterTopBackground.value!!))
+                  .background(Color(cvChapterTopBackground.value!!))
                   .padding(top = 24.dp, start = 16.dp, end = 16.dp)
           } else {
               modifier
@@ -405,7 +421,7 @@ fun ItemExternalLessonsRoadScreen(
             modifier = if (cvChapterBottomBackground.value != null) {
                 modifier
                     .layoutId("cvChapterBottom")
-                    .background(colorResource(cvChapterBottomBackground.value!!))
+                    .background(Color(cvChapterBottomBackground.value!!))
                     .height(50.dp)
             } else {
                 modifier

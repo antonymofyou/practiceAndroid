@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Point
+import android.util.Log
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.remember
 import androidx.core.content.ContextCompat
@@ -235,6 +236,7 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
 
     // Функция для получения цвета по номеру статуса
     fun getLessonsStatusColorById(id: String): Int {
+        Log.d("KEK","id = $id")
         return Color.parseColor(
             when (id) {
                 "0" -> "#808080"

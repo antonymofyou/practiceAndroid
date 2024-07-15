@@ -92,6 +92,7 @@ class LessonsRoadAdapter(
     // Установка значений из массива во вью
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val lesson = lessons[position]
+        Log.d("LOL", "lessons.size = ${lessons.size}")
         try {
             // Очищаем картинку
             holder.ivLessonsImageProgress.visibility = View.VISIBLE
@@ -140,8 +141,10 @@ class LessonsRoadAdapter(
                 onLessonClick(lesson)
             }
             if (previousItemViewType == VIEW_TYPE_LEFT) {
+                Log.d("LOL", "previousItemViewType == VIEW_TYPE_LEFT")
                 setupLinesWhenFirstElementInRightSide(holder, position)
             } else {
+                Log.d("LOL", "previousItemViewType")
                 setupLinesWhenFirstElementInLeftSide(holder, position)
             }
             if (isScrollAdapter && lessonsRoadViewModel.firstUnfulfilledLesson!!["lesson_number"]!!.toInt() < lesson["lesson_number"]!!.toInt()) {
@@ -290,6 +293,8 @@ class LessonsRoadAdapter(
     // Установка линий, когда первый элемент находиться на правой стороне
     private fun setupLinesWhenFirstElementInRightSide(holder: ViewHolder, position: Int) {
         if (lessons.size == 1) {
+            Log.d("LOL", "lessons.size = 1")
+
             holder.rootLayout.updateLayoutParams<MarginLayoutParams> {
                 setMargins(0, 0, 0, 0)
             }

@@ -4836,7 +4836,7 @@
             "outputFile": "com.example.practiceandroid.app-debug-68:/values_values.arsc.flat",
             "map": [
                 {
-                    "source": "C:\\Users\\Nikita\\.gradle\\caches\\transforms-4\\aedea609ce5b5e77c1c7144bbbe29880\\transformed\\glide-4.16.0\\res\\values\\values.xml",
+                    "source": "C:\\Users\\Nikita\\.gradle\\caches\\transforms-4\\0d2cda55ae57984e157b98a3df7033e3\\transformed\\glide-4.12.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

@@ -1,7 +1,6 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.widget.LinearLayout.LayoutParams
@@ -28,12 +27,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -61,7 +62,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val lessonsRoadViewModel: LessonsRoadViewModel = viewModel()
     val lessonsViewModel: LessonsViewModel = viewModel()
     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#27A4FF")
+        color = android.graphics.Color.parseColor("#27A4FF")
     }
 
     val verticalScroll = rememberScrollState()
@@ -170,7 +171,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
                         val color = lessonsRoadViewModel.getParallaxImageColorForChapter(
                             lessons[0]["lesson_chapter"] ?: ""
                         )
-                        val colorFilter = ColorFilter.tint(colorResource(color), BlendMode.SrcIn)
+                        val colorFilter = ColorFilter.tint(Color(color), BlendMode.SrcIn)
                         parallaxBackgroundImageFilter.value = colorFilter
                         //тут проблема пост делается когда view уже создано
                         ItemExternalLessonsRoadScreen(
@@ -657,4 +658,12 @@ private fun setupLessonsRoadForSmallScreen(
     ivLineBottomRightHeight.value = lessonsViewModel.dpToPx(112)
     ivLineBottomRightMargins.clear()
     ivLineBottomRightMargins.addAll(listOf(0, 0, 0, -lessonsViewModel.dpToPx(2)))
+}
+
+@Preview
+@Composable
+fun LessonsRoadFragmentPreview() {
+    LessonsRoadScreen(
+        modifier = Modifier
+    )
 }

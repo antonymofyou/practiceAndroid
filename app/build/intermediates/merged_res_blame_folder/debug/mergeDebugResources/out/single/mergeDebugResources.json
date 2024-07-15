@@ -1,182 +1,186 @@
 [
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/xml_data_extraction_rules.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/xml/data_extraction_rules.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_chewy.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\chewy.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_lessons_road_bg_repeat.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/lessons_road_bg_repeat.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat_semibold.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat_semibold.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/xml_backup_rules.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/xml/backup_rules.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-xxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_upbtn.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/upbtn.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_upbtn.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\upbtn.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_roboto.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/roboto.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_fragment_test_adapter.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\fragment_test_adapter.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/layout_view_type_left.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/layout/view_type_left.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_baloo.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\baloo.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_shape_lesson.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/shape_lesson.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_lesson_circle_background.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\lesson_circle_background.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat_subrayada.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat_subrayada.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_item_error_lessons_road.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\item_error_lessons_road.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat_medium.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat_medium.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_roboto.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\roboto.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\xml\\backup_rules.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_nunito_extra_bold.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/nunito_extra_bold.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-xhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat_bold.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat_bold.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_lessons_road_bg.png.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/lessons_road_bg.png"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable-v24_ic_launcher_foreground.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable-v24/ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_view_type_right.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\view_type_right.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat_medium_new.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat_medium_new.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_view_type_left.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\view_type_left.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_nunito_regular.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\nunito_regular.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/layout_fragment_lessons.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/layout/fragment_lessons.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-hdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat_regular.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat_regular.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-xxxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/layout_item_external_lessons_road.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/layout/item_external_lessons_road.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat_subrayada.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat_subrayada.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_ic_cross.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/ic_cross.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_alfa_slab_one.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/alfa_slab_one.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-xxhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable-v24\\ic_launcher_foreground.xml"
     },
     {
         "merged": "com.example.practiceandroid.app-debug-68:/layout_fragment_test_adapter.xml.flat",
         "source": "com.example.practiceandroid.app-main-70:/layout/fragment_test_adapter.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat_semibold.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat_semibold.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_lessons_road_bg_repeat.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\lessons_road_bg_repeat.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/layout_view_type_right.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/layout/view_type_right.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_lessons_road_bg.png.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\lessons_road_bg.png"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-xhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_alfa_slab_one.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\alfa_slab_one.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat_bold.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat_bold.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_fragment_lessons_road.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\fragment_lessons_road.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_baloo.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/baloo.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-mdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-mdpi\\ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_ic_cross.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\ic_cross.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_chewy.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/chewy.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_fragment_lessons.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\fragment_lessons.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_lesson_circle_background.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/lesson_circle_background.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_montserrat_medium_new.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/montserrat_medium_new.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_nunito_bold.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\nunito_bold.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/ic_launcher_background.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_sf_pro.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\sf_pro.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_sf_pro.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/sf_pro.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_shape_lesson.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\shape_lesson.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/layout_fragment_lessons_road.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/layout/fragment_lessons_road.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat_medium.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat_medium.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/layout_item_error_lessons_road.xml.flat",
-        "source": "com.example.practiceandroid.app-main-70:/layout/item_error_lessons_road.xml"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\drawable_no_lesson_image.png.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\drawable\\no_lesson_image.png"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_nunito_extra_bold.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\nunito_extra_bold.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/drawable_no_lesson_image.png.flat",
-        "source": "com.example.practiceandroid.app-main-70:/drawable/no_lesson_image.png"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_nunito_bold.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/nunito_bold.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\layout_item_external_lessons_road.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\layout\\item_external_lessons_road.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/font_nunito_regular.ttf.flat",
-        "source": "com.example.practiceandroid.app-main-70:/font/nunito_regular.ttf"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\font_montserrat_regular.ttf.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\font\\montserrat_regular.ttf"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-68:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-70:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-debug-68:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\Nikita\\.gradle\\daemon\\8.6\\com.example.practiceandroid.app-main-70:\\xml\\data_extraction_rules.xml"
     }
 ]

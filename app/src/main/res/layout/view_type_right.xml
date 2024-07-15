@@ -92,7 +92,6 @@
 
         </LinearLayout>
 
-
         <ImageView
             android:id="@+id/ivLine"
             android:layout_width="120dp"
