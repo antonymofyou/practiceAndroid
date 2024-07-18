@@ -133,232 +133,6 @@ fun LessonsRoadScreen(modifier: Modifier) {
             }
 
             LessonsRoadListStatus.SUCCESS -> {
-                uppButtonLayout.value = true
-                val roadlist = arrayListOf<Map<String, String>>()
-                if (lessonsRoadViewModel.lessonsRoadList != null) {
-                    // Установка списка дорожки уроков
-                    for (road in lessonsRoadViewModel.lessonsRoadList!!) {
-                        roadlist.add(road)
-                    }
-                    lessonsRoadViewModel.groupedLessons =
-                        lessonsRoadViewModel.getLessonsByChapter(roadlist)
-                    // В зависимости от ширины экрана устанавливаем размеры дорожки уроков
-                    lessonsViewModel.isScreenLarge =
-                        lessonsViewModel.pxToDp(LocalContext.current.resources.displayMetrics.widthPixels) >= 730
-                    lessonsRoadViewModel.groupedLessons.forEachIndexed { index, lessons ->
-                        var modifier = Modifier
-                        var lessons = lessons
-                        var isScreenLarge = lessonsViewModel.isScreenLarge
-                        var lessonsRoadViewModel = lessonsRoadViewModel
-                        var lessonsViewModel = lessonsViewModel
-                        var previousItemViewType =
-                            lessonsRoadViewModel.getGroupedLessonsWithViewType(
-                                lessonsRoadViewModel.groupedLessons
-                            )[index].viewType
-                        var isScrollAdapter =
-                            lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)
-                        var onLessonClick: (lesson: Map<String, String>) -> Unit = { lesson ->
-                            if (lesson["status"] != "0") {
-                                lessonsViewModel.currentLesson.value = lesson
-                                lessonsViewModel.lessonStatus.value =
-                                    LessonStatus.LESSON
-                                lessonsViewModel.currentLessonNum.value =
-                                    lesson["lesson_number"]
-                            }
-                        }
-                        var parallaxBackgroundImageFilter: MutableState<ColorFilter?> =
-                            remember { mutableStateOf(null) }
-                        val color = lessonsRoadViewModel.getParallaxImageColorForChapter(
-                            lessons[0]["lesson_chapter"] ?: ""
-                        )
-                        val colorFilter = ColorFilter.tint(Color(color), BlendMode.SrcIn)
-                        parallaxBackgroundImageFilter.value = colorFilter
-                        //тут проблема пост делается когда view уже создано
-                        ItemExternalLessonsRoadScreen(
-                            modifier = modifier,
-                            lessons = lessons,
-                            isScreenLarge = isScreenLarge,
-                            lessonsRoadViewModel = lessonsRoadViewModel,
-                            lessonsViewModel = lessonsViewModel,
-                            previousItemViewType = previousItemViewType,
-                            ivLineBottomLeft = ivLineBottomLeft,
-                            ivLineBottomRight = ivLineBottomRight,
-                            ivLineTopLeft = ivLineTopLeft,
-                            ivLineTopRight = ivLineTopRight,
-                            clRootBackground = clRootBackground,
-                            clRootMargins = clRootMargins,
-                            cvChapterBottomBackground = cvChapterBottomBackground,
-                            cvChapterTopBackground = cvChapterTopBackground,
-                            tvChapterBottomText = tvChapterBottomText,
-                            tvChapterTopText = tvChapterTopText,
-                            isScrollAdapter = isScrollAdapter,
-                            chapterPosition = chapterPosition,
-                            // Слушатель нажатия по кружку урока
-                            onLessonClick = { lesson ->
-                                if (lesson["status"] != "0") {
-                                    lessonsViewModel.currentLesson.value = lesson
-                                    lessonsViewModel.lessonStatus.value =
-                                        LessonStatus.LESSON
-                                    lessonsViewModel.currentLessonNum.value =
-                                        lesson["lesson_number"]
-                                }
-                            },
-                            parallaxBackgroundImageFilter = parallaxBackgroundImageFilter,
-                            ivLineTopLeftWidth = ivLineTopLeftWidth,
-                            ivLineTopLeftHeight = ivLineTopLeftHeight,
-                            ivLineTopLeftMargins = ivLineTopLeftMargins,
-                            ivLineTopRightWidth = ivLineTopRightWidth,
-                            ivLineTopRightHeight = ivLineTopRightHeight,
-                            ivLineTopRightMargins = ivLineTopRightMargins,
-                            ivLineBottomLeftWidth = ivLineBottomLeftWidth,
-                            ivLineBottomLeftHeight = ivLineBottomLeftHeight,
-                            ivLineBottomLeftMargins = ivLineBottomLeftMargins,
-                            ivLineBottomRightWidth = ivLineBottomRightWidth,
-                            ivLineBottomRightHeight = ivLineBottomRightHeight,
-                            ivLineBottomRightMargins = ivLineBottomRightMargins,
-                            ivLineTopRightRotationX = ivLineTopRightRotationX,
-                            ivLineTopLeftRotationX = ivLineTopLeftRotationX,
-                            clRootMatchParent = clRootMatchParent,
-                            ivLineBottomLeftRes = ivLineBottomLeftRes,
-                            ivLineBottomRightRes = ivLineBottomRightRes,
-                            ivLineTopLeftRes = ivLineTopLeftRes,
-                            ivLineTopRightRes = ivLineTopRightRes,
-                            cvChapterBottomConstrainTo = cvChapterBottomConstrainTo,
-                            scrollYChanged = scrollYChanged,
-                            rvRootWidth = rvRootWidth
-                        )
-                        if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
-                            lessonsRoadViewModel.scrollToIndex = index + 2
-                            lessonsRoadViewModel.scrollToLesson =
-                                lessonsRoadViewModel.firstUnfulfilledLesson!!
-                            lessonsRoadViewModel.scrollToLessons = lessons
-                        }
-                        //опять пост
-                        if (chapterPosition.value != null) {
-                            if (index <= chapterPosition.value!!) {
-                                lessonsRoadViewModel.elementsAfterFirstUnfulfilledLessonHeightSum += lessonsRoadViewModel.toScrollRvHeight
-                            }
-                        }
-                        ivLineBottomLeft.value = false
-                        ivLineBottomRight.value = false
-                        ivLineTopLeft.value = false
-                        ivLineTopRight.value = false
-
-                        val groupedLessonsWithViewType =
-                            lessonsRoadViewModel.getGroupedLessonsWithViewType(
-                                lessonsRoadViewModel.groupedLessons
-                            )
-
-                        val chapterLessons = groupedLessonsWithViewType[index]
-                        val lessonChapter =
-                            chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
-                        clRootBackground.value = lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)
-                        cvChapterBottomBackground.value = lessonsRoadViewModel.getColorForChapterCardView(lessonChapter)
-                        cvChapterTopBackground.value = lessonsRoadViewModel.getColorForChapterCardView(lessonChapter)
-                        tvChapterBottomText.value = lessonChapter
-                        tvChapterTopText.value = lessonChapter
-                        if (lessonsViewModel.isScreenLarge) {
-                            setupLessonsRoadForLargeScreen(
-                                ivLineTopLeftWidth = ivLineTopLeftWidth,
-                                ivLineTopLeftHeight = ivLineTopLeftHeight,
-                                ivLineTopLeftMargins = ivLineTopLeftMargins,
-                                ivLineTopRightWidth = ivLineTopRightWidth,
-                                ivLineTopRightHeight = ivLineTopRightHeight,
-                                ivLineTopRightMargins = ivLineTopRightMargins,
-                                ivLineBottomLeftWidth = ivLineBottomLeftWidth,
-                                ivLineBottomLeftHeight = ivLineBottomLeftHeight,
-                                ivLineBottomLeftMargins = ivLineBottomLeftMargins,
-                                ivLineBottomRightWidth = ivLineBottomRightWidth,
-                                ivLineBottomRightHeight = ivLineBottomRightHeight,
-                                ivLineBottomRightMargins = ivLineBottomRightMargins,
-                                lessonsViewModel = lessonsViewModel
-                            )
-                        } else {
-                            setupLessonsRoadForSmallScreen(
-                                ivLineTopLeftWidth = ivLineTopLeftWidth,
-                                ivLineTopLeftHeight = ivLineTopLeftHeight,
-                                ivLineTopLeftMargins = ivLineTopLeftMargins,
-                                ivLineTopRightWidth = ivLineTopRightWidth,
-                                ivLineTopRightHeight = ivLineTopRightHeight,
-                                ivLineTopRightMargins = ivLineTopRightMargins,
-                                ivLineBottomLeftWidth = ivLineBottomLeftWidth,
-                                ivLineBottomLeftHeight = ivLineBottomLeftHeight,
-                                ivLineBottomLeftMargins = ivLineBottomLeftMargins,
-                                ivLineBottomRightWidth = ivLineBottomRightWidth,
-                                ivLineBottomRightHeight = ivLineBottomRightHeight,
-                                ivLineBottomRightMargins = ivLineBottomRightMargins,
-                                lessonsViewModel = lessonsViewModel
-                            )
-                        }
-                        // Устанавливаем линию раздела снизу
-                        if (index != groupedLessonsWithViewType.lastIndex) {
-                            paint.color =
-                                lessonsRoadViewModel.getLineColorForChapter(lessons[0]["lesson_chapter"]!!)
-                            setBottomLines(
-                                position = index,
-                                lessonsRoadViewModel = lessonsRoadViewModel,
-                                groupedLessonsWithViewType = groupedLessonsWithViewType,
-                                ivLineBottomRightRotationX = ivLineBottomRightRotationX,
-                                ivLineBottomRight = ivLineBottomRight,
-                                ivLineBottomLeft = ivLineBottomLeft,
-                                ivLineBottomRightWidth = ivLineBottomRightWidth,
-                                ivLineBottomRightHeight = ivLineBottomRightHeight,
-                                ivLineBottomLeftWidth = ivLineBottomLeftWidth,
-                                ivLineBottomLeftHeight = ivLineBottomLeftHeight,
-                                ivLineBottomRightRes = ivLineBottomRightRes,
-                                ivLineBottomLeftRes = ivLineBottomLeftRes,
-                                paint = paint,
-                            )
-                        } else {
-                            hideBottomLines(
-                                ivLineBottomRight = ivLineBottomRight,
-                                ivLineBottomLeft = ivLineBottomLeft,
-                            )
-                            // Устанавливаем для первого раздела отступ снизу,
-                            // чтобы не было белого фона по углам меню и раздел отображался корректно
-                            clRootMargins.clear()
-                            clRootMargins.addAll(listOf(0, 0, 0, 56 + lessonsViewModel.dpToPx(24)))
-                            // Делаем, чтобы фон расстягивался на весь экран, не оставляя пустоты
-                            clRootMatchParent.value = true
-                            // Убираем привязку нижнего названия раздела, чтобы он не расползался
-                            cvChapterBottomConstrainTo.value = false
-
-                        }
-                        // Устанавливаем линию раздела сверху
-                        if (index != 0) {
-                            paint.color =
-                                lessonsRoadViewModel.getLineColorForChapter(lessons[0]["lesson_chapter"]!!)
-                            setTopLines(
-                                position = index,
-                                groupedLessonsWithViewType = groupedLessonsWithViewType,
-                                ivLineTopRightRotationX = ivLineTopRightRotationX,
-                                ivLineTopLeftRotationX = ivLineTopLeftRotationX,
-                                ivLineTopLeft = ivLineTopLeft,
-                                ivLineTopRight = ivLineTopRight,
-                                ivLineTopRightWidth = ivLineTopRightWidth,
-                                ivLineTopRightHeight = ivLineTopRightHeight,
-                                lessonsRoadViewModel = lessonsRoadViewModel,
-                                paint = paint,
-                                ivLineTopLeftWidth = ivLineTopLeftWidth,
-                                ivLineTopLeftHeight = ivLineTopLeftHeight,
-                                ivLineTopLeftRes = ivLineTopLeftRes,
-                                ivLineTopRightRes = ivLineTopRightRes,
-                            )
-                        } else {
-                            hideTopLines(
-                                ivLineTopRight = ivLineTopRight,
-                                ivLineTopLeft = ivLineTopLeft
-                            )
-                        }
-                        if (lessonsViewModel.isScreenLarge) {
-                            rvRootWidth.value = lessonsViewModel.dpToPx(730)
-                        } else {
-                            rvRootWidth.value = lessonsViewModel.dpToPx(365)
-                        }
-                    }
-                }
-
-
             }
 
             else -> {}
@@ -369,7 +143,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
         ConstraintLayout(
             modifier = modifier
                 .fillMaxSize()
-                .verticalScroll(verticalScroll)
+                //.verticalScroll(verticalScroll)
         ) {
             val boxRef = createRef()
             if (uppButtonLayout.value) {
@@ -457,6 +231,229 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                 )
                             }
 
+                        }
+                        uppButtonLayout.value = true
+                        val roadlist = arrayListOf<Map<String, String>>()
+                        if (lessonsRoadViewModel.lessonsRoadList != null) {
+                            // Установка списка дорожки уроков
+                            for (road in lessonsRoadViewModel.lessonsRoadList!!) {
+                                roadlist.add(road)
+                            }
+                            lessonsRoadViewModel.groupedLessons =
+                                lessonsRoadViewModel.getLessonsByChapter(roadlist)
+                            // В зависимости от ширины экрана устанавливаем размеры дорожки уроков
+                            lessonsViewModel.isScreenLarge =
+                                lessonsViewModel.pxToDp(LocalContext.current.resources.displayMetrics.widthPixels) >= 730
+                            lessonsRoadViewModel.groupedLessons.forEachIndexed { index, lessons ->
+                                var modifier = Modifier
+                                var lessons = lessons
+                                var isScreenLarge = lessonsViewModel.isScreenLarge
+                                var lessonsRoadViewModel = lessonsRoadViewModel
+                                var lessonsViewModel = lessonsViewModel
+                                var previousItemViewType =
+                                    lessonsRoadViewModel.getGroupedLessonsWithViewType(
+                                        lessonsRoadViewModel.groupedLessons
+                                    )[index].viewType
+                                var isScrollAdapter =
+                                    lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)
+                                var onLessonClick: (lesson: Map<String, String>) -> Unit = { lesson ->
+                                    if (lesson["status"] != "0") {
+                                        lessonsViewModel.currentLesson.value = lesson
+                                        lessonsViewModel.lessonStatus.value =
+                                            LessonStatus.LESSON
+                                        lessonsViewModel.currentLessonNum.value =
+                                            lesson["lesson_number"]
+                                    }
+                                }
+                                var parallaxBackgroundImageFilter: MutableState<ColorFilter?> =
+                                    remember { mutableStateOf(null) }
+                                val color = lessonsRoadViewModel.getParallaxImageColorForChapter(
+                                    lessons[0]["lesson_chapter"] ?: ""
+                                )
+                                val colorFilter = ColorFilter.tint(Color(color), BlendMode.SrcIn)
+                                parallaxBackgroundImageFilter.value = colorFilter
+                                ItemExternalLessonsRoadScreen(
+                                    modifier = modifier,
+                                    lessons = lessons,
+                                    isScreenLarge = isScreenLarge,
+                                    lessonsRoadViewModel = lessonsRoadViewModel,
+                                    lessonsViewModel = lessonsViewModel,
+                                    previousItemViewType = previousItemViewType,
+                                    ivLineBottomLeft = ivLineBottomLeft,
+                                    ivLineBottomRight = ivLineBottomRight,
+                                    ivLineTopLeft = ivLineTopLeft,
+                                    ivLineTopRight = ivLineTopRight,
+                                    clRootBackground = clRootBackground,
+                                    clRootMargins = clRootMargins,
+                                    cvChapterBottomBackground = cvChapterBottomBackground,
+                                    cvChapterTopBackground = cvChapterTopBackground,
+                                    tvChapterBottomText = tvChapterBottomText,
+                                    tvChapterTopText = tvChapterTopText,
+                                    isScrollAdapter = isScrollAdapter,
+                                    chapterPosition = chapterPosition,
+                                    // Слушатель нажатия по кружку урока
+                                    onLessonClick = { lesson ->
+                                        if (lesson["status"] != "0") {
+                                            lessonsViewModel.currentLesson.value = lesson
+                                            lessonsViewModel.lessonStatus.value =
+                                                LessonStatus.LESSON
+                                            lessonsViewModel.currentLessonNum.value =
+                                                lesson["lesson_number"]
+                                        }
+                                    },
+                                    parallaxBackgroundImageFilter = parallaxBackgroundImageFilter,
+                                    ivLineTopLeftWidth = ivLineTopLeftWidth,
+                                    ivLineTopLeftHeight = ivLineTopLeftHeight,
+                                    ivLineTopLeftMargins = ivLineTopLeftMargins,
+                                    ivLineTopRightWidth = ivLineTopRightWidth,
+                                    ivLineTopRightHeight = ivLineTopRightHeight,
+                                    ivLineTopRightMargins = ivLineTopRightMargins,
+                                    ivLineBottomLeftWidth = ivLineBottomLeftWidth,
+                                    ivLineBottomLeftHeight = ivLineBottomLeftHeight,
+                                    ivLineBottomLeftMargins = ivLineBottomLeftMargins,
+                                    ivLineBottomRightWidth = ivLineBottomRightWidth,
+                                    ivLineBottomRightHeight = ivLineBottomRightHeight,
+                                    ivLineBottomRightMargins = ivLineBottomRightMargins,
+                                    ivLineTopRightRotationX = ivLineTopRightRotationX,
+                                    ivLineTopLeftRotationX = ivLineTopLeftRotationX,
+                                    clRootMatchParent = clRootMatchParent,
+                                    ivLineBottomLeftRes = ivLineBottomLeftRes,
+                                    ivLineBottomRightRes = ivLineBottomRightRes,
+                                    ivLineTopLeftRes = ivLineTopLeftRes,
+                                    ivLineTopRightRes = ivLineTopRightRes,
+                                    cvChapterBottomConstrainTo = cvChapterBottomConstrainTo,
+                                    scrollYChanged = scrollYChanged,
+                                    rvRootWidth = rvRootWidth
+                                )/*
+                                if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
+                                    lessonsRoadViewModel.scrollToIndex = index + 2
+                                    lessonsRoadViewModel.scrollToLesson =
+                                        lessonsRoadViewModel.firstUnfulfilledLesson!!
+                                    lessonsRoadViewModel.scrollToLessons = lessons
+                                }
+                                //опять пост
+                                if (chapterPosition.value != null) {
+                                    if (index <= chapterPosition.value!!) {
+                                        lessonsRoadViewModel.elementsAfterFirstUnfulfilledLessonHeightSum += lessonsRoadViewModel.toScrollRvHeight
+                                    }
+                                }
+                                ivLineBottomLeft.value = false
+                                ivLineBottomRight.value = false
+                                ivLineTopLeft.value = false
+                                ivLineTopRight.value = false
+
+                                val groupedLessonsWithViewType =
+                                    lessonsRoadViewModel.getGroupedLessonsWithViewType(
+                                        lessonsRoadViewModel.groupedLessons
+                                    )
+
+                                val chapterLessons = groupedLessonsWithViewType[index]
+                                val lessonChapter =
+                                    chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
+                                clRootBackground.value = lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)
+                                cvChapterBottomBackground.value = lessonsRoadViewModel.getColorForChapterCardView(lessonChapter)
+                                cvChapterTopBackground.value = lessonsRoadViewModel.getColorForChapterCardView(lessonChapter)
+                                tvChapterBottomText.value = lessonChapter
+                                tvChapterTopText.value = lessonChapter
+                                if (lessonsViewModel.isScreenLarge) {
+                                    setupLessonsRoadForLargeScreen(
+                                        ivLineTopLeftWidth = ivLineTopLeftWidth,
+                                        ivLineTopLeftHeight = ivLineTopLeftHeight,
+                                        ivLineTopLeftMargins = ivLineTopLeftMargins,
+                                        ivLineTopRightWidth = ivLineTopRightWidth,
+                                        ivLineTopRightHeight = ivLineTopRightHeight,
+                                        ivLineTopRightMargins = ivLineTopRightMargins,
+                                        ivLineBottomLeftWidth = ivLineBottomLeftWidth,
+                                        ivLineBottomLeftHeight = ivLineBottomLeftHeight,
+                                        ivLineBottomLeftMargins = ivLineBottomLeftMargins,
+                                        ivLineBottomRightWidth = ivLineBottomRightWidth,
+                                        ivLineBottomRightHeight = ivLineBottomRightHeight,
+                                        ivLineBottomRightMargins = ivLineBottomRightMargins,
+                                        lessonsViewModel = lessonsViewModel
+                                    )
+                                } else {
+                                    setupLessonsRoadForSmallScreen(
+                                        ivLineTopLeftWidth = ivLineTopLeftWidth,
+                                        ivLineTopLeftHeight = ivLineTopLeftHeight,
+                                        ivLineTopLeftMargins = ivLineTopLeftMargins,
+                                        ivLineTopRightWidth = ivLineTopRightWidth,
+                                        ivLineTopRightHeight = ivLineTopRightHeight,
+                                        ivLineTopRightMargins = ivLineTopRightMargins,
+                                        ivLineBottomLeftWidth = ivLineBottomLeftWidth,
+                                        ivLineBottomLeftHeight = ivLineBottomLeftHeight,
+                                        ivLineBottomLeftMargins = ivLineBottomLeftMargins,
+                                        ivLineBottomRightWidth = ivLineBottomRightWidth,
+                                        ivLineBottomRightHeight = ivLineBottomRightHeight,
+                                        ivLineBottomRightMargins = ivLineBottomRightMargins,
+                                        lessonsViewModel = lessonsViewModel
+                                    )
+                                }
+                                // Устанавливаем линию раздела снизу
+                                if (index != groupedLessonsWithViewType.lastIndex) {
+                                    paint.color =
+                                        lessonsRoadViewModel.getLineColorForChapter(lessons[0]["lesson_chapter"]!!)
+                                    setBottomLines(
+                                        position = index,
+                                        lessonsRoadViewModel = lessonsRoadViewModel,
+                                        groupedLessonsWithViewType = groupedLessonsWithViewType,
+                                        ivLineBottomRightRotationX = ivLineBottomRightRotationX,
+                                        ivLineBottomRight = ivLineBottomRight,
+                                        ivLineBottomLeft = ivLineBottomLeft,
+                                        ivLineBottomRightWidth = ivLineBottomRightWidth,
+                                        ivLineBottomRightHeight = ivLineBottomRightHeight,
+                                        ivLineBottomLeftWidth = ivLineBottomLeftWidth,
+                                        ivLineBottomLeftHeight = ivLineBottomLeftHeight,
+                                        ivLineBottomRightRes = ivLineBottomRightRes,
+                                        ivLineBottomLeftRes = ivLineBottomLeftRes,
+                                        paint = paint,
+                                    )
+                                } else {
+                                    hideBottomLines(
+                                        ivLineBottomRight = ivLineBottomRight,
+                                        ivLineBottomLeft = ivLineBottomLeft,
+                                    )
+                                    // Устанавливаем для первого раздела отступ снизу,
+                                    // чтобы не было белого фона по углам меню и раздел отображался корректно
+                                    clRootMargins.clear()
+                                    clRootMargins.addAll(listOf(0, 0, 0, 56 + lessonsViewModel.dpToPx(24)))
+                                    // Делаем, чтобы фон расстягивался на весь экран, не оставляя пустоты
+                                    clRootMatchParent.value = true
+                                    // Убираем привязку нижнего названия раздела, чтобы он не расползался
+                                    cvChapterBottomConstrainTo.value = false
+
+                                }
+                                // Устанавливаем линию раздела сверху
+                                if (index != 0) {
+                                    paint.color =
+                                        lessonsRoadViewModel.getLineColorForChapter(lessons[0]["lesson_chapter"]!!)
+                                    setTopLines(
+                                        position = index,
+                                        groupedLessonsWithViewType = groupedLessonsWithViewType,
+                                        ivLineTopRightRotationX = ivLineTopRightRotationX,
+                                        ivLineTopLeftRotationX = ivLineTopLeftRotationX,
+                                        ivLineTopLeft = ivLineTopLeft,
+                                        ivLineTopRight = ivLineTopRight,
+                                        ivLineTopRightWidth = ivLineTopRightWidth,
+                                        ivLineTopRightHeight = ivLineTopRightHeight,
+                                        lessonsRoadViewModel = lessonsRoadViewModel,
+                                        paint = paint,
+                                        ivLineTopLeftWidth = ivLineTopLeftWidth,
+                                        ivLineTopLeftHeight = ivLineTopLeftHeight,
+                                        ivLineTopLeftRes = ivLineTopLeftRes,
+                                        ivLineTopRightRes = ivLineTopRightRes,
+                                    )
+                                } else {
+                                    hideTopLines(
+                                        ivLineTopRight = ivLineTopRight,
+                                        ivLineTopLeft = ivLineTopLeft
+                                    )
+                                }
+                                if (lessonsViewModel.isScreenLarge) {
+                                    rvRootWidth.value = lessonsViewModel.dpToPx(730)
+                                } else {
+                                    rvRootWidth.value = lessonsViewModel.dpToPx(365)
+                                }*/
+                            }
                         }
 
 
@@ -662,7 +659,7 @@ private fun setupLessonsRoadForSmallScreen(
 
 @Preview
 @Composable
-fun LessonsRoadFragmentPreview() {
+fun LessonsRoadScreenPreview() {
     LessonsRoadScreen(
         modifier = Modifier
     )

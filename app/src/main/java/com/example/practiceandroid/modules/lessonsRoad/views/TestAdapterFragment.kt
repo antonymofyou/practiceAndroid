@@ -101,9 +101,9 @@ class TestAdapterFragment : Fragment() {
                         }
                     }
                 }
-
+                binding.flRootLessonsRoad.addView(itemExternalLesssonsRoadBinding.root)
                 //Устанавливаем цвета картинкам параллакса в зависимости от раздела
-                itemExternalLesssonsRoadBinding.parallaxBackgroundImage.clearColorFilter()
+                /*itemExternalLesssonsRoadBinding.parallaxBackgroundImage.clearColorFilter()
                 val color = lessonsRoadViewModel.getParallaxImageColorForChapter(
                     lessons[0]["lesson_chapter"] ?: "")
                 val colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
@@ -221,7 +221,7 @@ class TestAdapterFragment : Fragment() {
                     updateLayoutParams<ConstraintLayout.LayoutParams> {
                         height = ConstraintLayout.LayoutParams.WRAP_CONTENT
                     }
-                }
+                }*/
             }
         }
         /*val roadlist = arrayListOf<Map<String, String>>()

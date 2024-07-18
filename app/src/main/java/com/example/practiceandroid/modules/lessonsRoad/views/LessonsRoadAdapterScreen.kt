@@ -90,7 +90,8 @@ fun LessonsRoadAdapterScreen(
 //поменять на column
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
+            .width(365.dp)
+            .fillMaxHeight()
             .padding(top = 24.dp),
 
         ) {
@@ -191,7 +192,7 @@ fun RightLessonItem(
                     modifier = modifier
                         .width(ivLineWidthLeft.value.dp)
                         .height(ivLineHeightLeft.value.dp)
-                        .padding(end = (-10).dp)
+                        .offset(x = (-10).dp)
                         .graphicsLayer {
                             rotationY = 0f
                         },
@@ -474,7 +475,7 @@ fun LeftLessonItem(
                         .width(ivLineWidthLeft.value.dp)
                         .height(ivLineHeightLeft.value.dp)
                         .align(Alignment.CenterVertically)
-                        .padding(end = (-10).dp)
+                        .offset(x = (-10).dp)
                         .graphicsLayer {
                             rotationY = 0f
                         },
@@ -765,7 +766,8 @@ fun SetupLinesWhenFirstElementInLeftSide(
                         path = circlePath,
                         paint = paint,
                         width = ivLineWidth.value,
-                        height = ivLineHeight.value - lessonsViewModel.dpToPx(50)
+                        height = ivLineHeight.value
+                        //height = ivLineHeight.value - lessonsViewModel.dpToPx(50)
                     )
                 }
                 ivLineRes.value = lineToLeft.value
@@ -775,12 +777,13 @@ fun SetupLinesWhenFirstElementInLeftSide(
                 else {
                     ivLineWidth.value = lessonsViewModel.dpToPx(120)
                 }
-                if (lineToRight == null) {
+                if (lineToRight.value == null) {
                     lineToRight.value = lessonsRoadViewModel.createLineBitmapLeftToRight(
                         path = circlePath,
                         paint = paint,
                         width = ivLineWidth.value,
-                        height = ivLineHeight.value - lessonsViewModel.dpToPx(50)
+                        height = ivLineHeight.value
+                        //height = ivLineHeight.value - lessonsViewModel.dpToPx(50)
                     )
                 }
                 ivLineRes.value = lineToRight.value
@@ -903,7 +906,7 @@ fun LessonsRoadAdapterScreenPreview() {
         lessonsRoadViewModel.groupedLessons =
             lessonsRoadViewModel.getLessonsByChapter(roadlist)
 
-        /*LessonsRoadAdapterScreen(
+        LessonsRoadAdapterScreen(
             lessons = lessonsRoadViewModel.groupedLessons[lessonsRoadViewModel.groupedLessons.lastIndex],
             isScreenLarge = false,
             lessonsRoadViewModel = lessonsRoadViewModel,
@@ -914,8 +917,8 @@ fun LessonsRoadAdapterScreenPreview() {
             onLessonClick = {},
         )
 
-         */
-        lessonsRoadViewModel.groupedLessons.forEachIndexed { index, lessons ->
+
+        /*lessonsRoadViewModel.groupedLessons.forEachIndexed { index, lessons ->
             Log.d("LOL", "lessons = $index($lessons)")
             LessonsRoadAdapterScreen(
                 lessons = lessons,
@@ -927,7 +930,7 @@ fun LessonsRoadAdapterScreenPreview() {
                 // Слушатель нажатия по кружку урока
                 onLessonClick = {},
             )
-        }
+        }*/
     }
 }
 

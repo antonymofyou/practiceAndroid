@@ -2,6 +2,7 @@ package com.example.practiceandroid.modules.lessonsRoad.views
 
 import android.graphics.*
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -129,6 +130,7 @@ class LessonsRoadFragment : Fragment() {
                         lessonsRoadViewModel.groupedLessons.forEachIndexed{index, lessons ->
                             val itemExternalLesssonsRoadBinding =
                                 ItemExternalLessonsRoadBinding.inflate(LayoutInflater.from(context))
+                            Log.d("KEK", "external created")
                             itemExternalLesssonsRoadBinding.rvRoot.apply {
                                 layoutManager = LinearLayoutManager(requireContext())
                                 adapter = LessonsRoadAdapter(

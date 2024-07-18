@@ -34,8 +34,8 @@ class LessonsFragment : Fragment() {
         // Переключаемся по фрагментам в зависимости от статуса страницы
 
                         childFragmentManager.commit {
-                            //replace<LessonsRoadFragment>(R.id.fragmentContainerLessons)
-                            replace<TestAdapterFragment>(R.id.fragmentContainerLessons)
+                            replace<LessonsRoadFragment>(R.id.fragmentContainerLessons)
+                            //replace<TestAdapterFragment>(R.id.fragmentContainerLessons)
                             setReorderingAllowed(true)
                             //addToBackStack(null)
                         }
