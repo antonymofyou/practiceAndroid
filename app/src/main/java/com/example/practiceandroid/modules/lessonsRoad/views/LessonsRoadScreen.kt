@@ -3,6 +3,7 @@ package com.example.practiceandroid.modules.lessonsRoad.views
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Path
+import android.util.Log
 import android.widget.LinearLayout.LayoutParams
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -93,7 +94,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val clRootHeight = remember { mutableStateOf(0) }
     val clRootMargins = remember { mutableStateListOf(0, 0, 0, 0) }
     val coroutineScope = rememberCoroutineScope()
-    val clRootBackground: MutableState<Int?> = remember { mutableStateOf(null) }
+    val clRootBackground: MutableState<Color?> = remember { mutableStateOf(null) }
     val lessonsRoadListStatus =
         remember { mutableStateOf(lessonsRoadViewModel.lessonsRoadListStatus.value) }
     val chapterPosition: MutableState<Int?> = remember { mutableStateOf(null) }
@@ -324,7 +325,20 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     cvChapterBottomConstrainTo = cvChapterBottomConstrainTo,
                                     scrollYChanged = scrollYChanged,
                                     rvRootWidth = rvRootWidth
-                                )/*
+                                )
+                                val groupedLessonsWithViewType =
+                                    lessonsRoadViewModel.getGroupedLessonsWithViewType(
+                                        lessonsRoadViewModel.groupedLessons
+                                    )
+                                val chapterLessons = groupedLessonsWithViewType[index]
+                                val lessonChapter =
+                                    chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
+                                if (lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter) != -1596) {
+                                    clRootBackground.value = Color(lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter))
+                                }
+
+                                Log.d("PAR", "ChapterLesson = ${lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)}")
+                                /*
                                 if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                                     lessonsRoadViewModel.scrollToIndex = index + 2
                                     lessonsRoadViewModel.scrollToLesson =

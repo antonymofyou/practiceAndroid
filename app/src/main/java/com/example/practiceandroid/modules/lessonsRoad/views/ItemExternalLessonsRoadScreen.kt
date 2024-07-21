@@ -3,6 +3,7 @@ package com.example.practiceandroid.modules.lessonsRoad.views
 import android.app.Application
 import android.graphics.Bitmap
 import android.media.Image
+import android.util.Log
 import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatorMutex
@@ -11,6 +12,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -108,7 +110,7 @@ fun ItemExternalLessonsRoadScreen(
     ivLineBottomRightHeight: MutableState<Int>,
     ivLineBottomRightMargins: SnapshotStateList<Int>,
     chapterPosition: MutableState<Int?>,
-    clRootBackground: MutableState<Int?>,
+    clRootBackground: MutableState<Color?>,
     clRootMatchParent: MutableState<Boolean>,
     ivLineBottomLeftRes: MutableState<Bitmap?>,
     ivLineBottomRightRes: MutableState<Bitmap?>,
@@ -191,7 +193,7 @@ fun ItemExternalLessonsRoadScreen(
                         end = clRootMargins[2].dp,
                         bottom = clRootMargins[3].dp
                     )
-                    .background(Color(clRootBackground.value!!))
+                    .background(clRootBackground.value!!)
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                             lessonsRoadViewModel.toScrollRvHeight = coordinates.size.height
@@ -212,7 +214,7 @@ fun ItemExternalLessonsRoadScreen(
                         end = clRootMargins[2].dp,
                         bottom = clRootMargins[3].dp
                     )
-                    .background(Color(clRootBackground.value!!))
+                    .background(clRootBackground.value!!)
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                             lessonsRoadViewModel.toScrollRvHeight = coordinates.size.height
@@ -270,6 +272,7 @@ fun ItemExternalLessonsRoadScreen(
         },
         constraintSet = constraints,
     ) {
+        Log.d("PARP", "clRoot = ${clRootBackground.value}")
         val heightOfPhone =
             LocalConfiguration.current.screenHeightDp * LocalConfiguration.current.densityDpi / 160
         Box(
@@ -289,9 +292,11 @@ fun ItemExternalLessonsRoadScreen(
                 modifier =
                 modifier
                     .fillMaxWidth()
-                    .height(parallaxBackgroundImageHeight.value.dp)
+                    .fillMaxHeight()
+                    //.height(parallaxBackgroundImageHeight.value.dp)
                     .layoutId("parallaxBackgroundImage")
-                    .alpha(0.8f),
+                    .alpha(0.8f)
+                ,
                 contentScale = ContentScale.FillBounds,
                 //Возможно будет ошибка и надо было писать modifier = Modifier.graphicsLayer(colorFilter = colorFilter)
                 colorFilter = parallaxBackgroundImageFilter.value
@@ -313,7 +318,7 @@ fun ItemExternalLessonsRoadScreen(
                     scrollYChanged.value = true
                 }
         ) {
-
+            Log.d("KIK", "Adapter created")
             LessonsRoadAdapterScreen(
                 modifier = modifier,
                 lessons = lessons,
@@ -520,7 +525,7 @@ fun ItemExternalLessonsRoadScreenPreview() {
     val clRootHeight = remember { mutableStateOf(0) }
     val clRootMargins = remember { mutableStateListOf(0, 0, 0, 0) }
     val coroutineScope = rememberCoroutineScope()
-    val clRootBackground: MutableState<Int?> = remember { mutableStateOf(null) }
+    val clRootBackground: MutableState<Color?> = remember { mutableStateOf(null) }
     val lessonsRoadListStatus =
         remember { mutableStateOf(lessonsRoadViewModel.lessonsRoadListStatus.value) }
     val chapterPosition: MutableState<Int?> = remember { mutableStateOf(null) }

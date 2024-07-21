@@ -244,6 +244,7 @@ class LessonsRoadAdapter(
                         }
                     }
                     if (lineToLeft == null) {
+                        Log.d("LOL", "ivLine height = ${holder.ivForLine.layoutParams.height}, width = ${holder.ivForLine.layoutParams.width}, dpToDx = ${lessonsViewModel.dpToPx(50)}")
                         lineToLeft = lessonsRoadViewModel.createLineBitmapRightToLeft(
                             path = circlePath,
                             paint = paint,
@@ -328,6 +329,7 @@ class LessonsRoadAdapter(
                     }
                 }
                 if (lineToRight == null) {
+                    Log.d("LOL", "ivLine height = ${holder.ivForLine.layoutParams.height}, width = ${holder.ivForLine.layoutParams.width}, dpToDx = ${lessonsViewModel.dpToPx(50)}")
                     lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
                         path = circlePath,
                         paint = paint,

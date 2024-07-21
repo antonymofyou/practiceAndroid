@@ -199,7 +199,6 @@ class LessonsRoadFragment : Fragment() {
                             val chapterLessons = groupedLessonsWithViewType[index]
                             val lessonChapter =
                                 chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
-
                             itemExternalLesssonsRoadBinding.clRoot.setBackgroundColor(
                                 lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)
                             )
