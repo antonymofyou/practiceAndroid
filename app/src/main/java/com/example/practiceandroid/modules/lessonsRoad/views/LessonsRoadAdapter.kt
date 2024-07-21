@@ -74,6 +74,7 @@ class LessonsRoadAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        Log.d("KIK", "viewType = $viewType")
         return when (viewType) {
             // Рисуем View в зависимости от типа ViewHolder
             VIEW_TYPE_RIGHT -> ViewHolder.RightViewHolder(
@@ -92,7 +93,6 @@ class LessonsRoadAdapter(
     // Установка значений из массива во вью
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val lesson = lessons[position]
-        Log.d("LOL", "lessons.size = ${lessons.size}")
         try {
             // Очищаем картинку
             holder.ivLessonsImageProgress.visibility = View.VISIBLE
@@ -144,16 +144,13 @@ class LessonsRoadAdapter(
                 Log.d("LOL", "previousItemViewType == VIEW_TYPE_LEFT")
                 setupLinesWhenFirstElementInRightSide(holder, position)
             } else {
-                Log.d("LOL", "previousItemViewType")
+                Log.d("LOL", "previousItemViewType == VIEW_TYPE_RIGHT")
                 setupLinesWhenFirstElementInLeftSide(holder, position)
             }
             if (isScrollAdapter && lessonsRoadViewModel.firstUnfulfilledLesson!!["lesson_number"]!!.toInt() < lesson["lesson_number"]!!.toInt()) {
                 holder.rootLayout.post {
-//                    Log.d("lessonNumberAdapter", "${lesson["lesson_number"]}")
                     lessonsRoadViewModel.scrollRecyclerHeightSumAfterScrollElement += holder.rootLayout.marginTop
                     lessonsRoadViewModel.scrollRecyclerHeightSumAfterScrollElement += holder.rootLayout.measuredHeight
-//                    Log.d("lessonNumberAdapter", "${holder.rootLayout.marginTop}")
-//                    Log.d("lessonNumberAdapter", "${lessonsRoadViewModel.scrollRecyclerHeightSumAfterScrollElement}")
                 }
             }
 
@@ -206,6 +203,7 @@ class LessonsRoadAdapter(
                     width = lessonsViewModel.dpToPx(120)
                 }
             }
+            //здесь строится линия
             if (position != lessons.lastIndex) {
                 holder.ivForLine.visibility = View.VISIBLE
                 // Если это первый кружок или если это кружок справа, убираем отрицательный верхний отступ, иначе оставляем
@@ -293,8 +291,6 @@ class LessonsRoadAdapter(
     // Установка линий, когда первый элемент находиться на правой стороне
     private fun setupLinesWhenFirstElementInRightSide(holder: ViewHolder, position: Int) {
         if (lessons.size == 1) {
-            Log.d("LOL", "lessons.size = 1")
-
             holder.rootLayout.updateLayoutParams<MarginLayoutParams> {
                 setMargins(0, 0, 0, 0)
             }

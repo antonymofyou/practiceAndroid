@@ -1,1 +1,7 @@
 package,name,composable,skippable,restartable,readonly,inline,isLambda,hasDefaults,defaultsGroup,groups,calls,
+com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadAdapterScreen,LessonsRoadAdapterScreen,1,1,1,0,0,0,0,0,1,1,
+com.example.practiceandroid.modules.lessonsRoad.views.RightLessonItem,RightLessonItem,1,1,1,0,0,0,0,0,3,3,
+com.example.practiceandroid.modules.lessonsRoad.views.LeftLessonItem,LeftLessonItem,1,1,1,0,0,0,0,0,1,1,
+com.example.practiceandroid.modules.lessonsRoad.views.SetupLinesWhenFirstElementInLeftSide,SetupLinesWhenFirstElementInLeftSide,1,1,1,0,0,0,0,0,1,0,
+com.example.practiceandroid.modules.lessonsRoad.views.SetupLinesWhenFirstElementInRightSide,SetupLinesWhenFirstElementInRightSide,1,1,1,0,0,0,0,0,1,0,
+com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadAdapterScreenPreview,LessonsRoadAdapterScreenPreview,1,1,1,0,0,0,0,0,1,2,

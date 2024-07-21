@@ -75,33 +75,34 @@ class TestAdapterFragment : Fragment() {
             // В зависимости от ширины экрана устанавливаем размеры дорожки уроков
             lessonsViewModel.isScreenLarge =
                 lessonsViewModel.pxToDp(requireContext().resources.displayMetrics.widthPixels) >= 730
-
+            lessonsRoadViewModel.groupedLessons[0]
             lessonsRoadViewModel.groupedLessons.forEachIndexed{index, lessons ->
-                val itemExternalLesssonsRoadBinding =
-                    ItemExternalLessonsRoadBinding.inflate(LayoutInflater.from(context))
-                itemExternalLesssonsRoadBinding.rvRoot.apply {
-                    layoutManager = LinearLayoutManager(requireContext())
-                    adapter = LessonsRoadAdapter(
-                        requireContext(),
-                        lessons,
-                        lessonsViewModel.isScreenLarge,
-                        lessonsRoadViewModel,
-                        lessonsViewModel,
-                        lessonsRoadViewModel.getGroupedLessonsWithViewType(
-                            lessonsRoadViewModel.groupedLessons
-                        )[index].viewType,
-                        lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)
-                    ) { lesson ->
-                        if (lesson["status"] != "0") {
-                            lessonsViewModel.currentLesson.value = lesson
-                            lessonsViewModel.lessonStatus.value =
-                                LessonStatus.LESSON
-                            lessonsViewModel.currentLessonNum.value =
-                                lesson["lesson_number"]
-                        }
+            val itemExternalLesssonsRoadBinding =
+                ItemExternalLessonsRoadBinding.inflate(LayoutInflater.from(context))
+            itemExternalLesssonsRoadBinding.rvRoot.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = LessonsRoadAdapter(
+                    requireContext(),
+                    lessonsRoadViewModel.groupedLessons[0],
+                    lessonsViewModel.isScreenLarge,
+                    lessonsRoadViewModel,
+                    lessonsViewModel,
+                    lessonsRoadViewModel.getGroupedLessonsWithViewType(
+                        lessonsRoadViewModel.groupedLessons
+                    )[0].viewType,
+                    lessonsRoadViewModel.groupedLessons[0].contains(lessonsRoadViewModel.firstUnfulfilledLesson)
+                ) { lesson ->
+                    if (lesson["status"] != "0") {
+                        lessonsViewModel.currentLesson.value = lesson
+                        lessonsViewModel.lessonStatus.value =
+                            LessonStatus.LESSON
+                        lessonsViewModel.currentLessonNum.value =
+                            lesson["lesson_number"]
                     }
                 }
-                binding.flRootLessonsRoad.addView(itemExternalLesssonsRoadBinding.root)
+            }
+            binding.flRootLessonsRoad.addView(itemExternalLesssonsRoadBinding.root)
+        }
                 //Устанавливаем цвета картинкам параллакса в зависимости от раздела
                 /*itemExternalLesssonsRoadBinding.parallaxBackgroundImage.clearColorFilter()
                 val color = lessonsRoadViewModel.getParallaxImageColorForChapter(
@@ -222,7 +223,7 @@ class TestAdapterFragment : Fragment() {
                         height = ConstraintLayout.LayoutParams.WRAP_CONTENT
                     }
                 }*/
-            }
+            //}
         }
         /*val roadlist = arrayListOf<Map<String, String>>()
         if (lessonsRoadViewModel.lessonsRoadList != null) {

@@ -5,10 +5,10 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LessonsRoadAdapterScreenPreview">
+      <SelectionState runConfigName="ItemExternalLessonsRoadScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LessonsRoadScreenPreview">
+      <SelectionState runConfigName="LessonsRoadAdapterScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
