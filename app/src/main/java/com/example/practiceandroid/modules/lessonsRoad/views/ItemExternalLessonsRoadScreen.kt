@@ -89,8 +89,7 @@ fun ItemExternalLessonsRoadScreen(
     clRootMargins: SnapshotStateList<Int>,
     cvChapterBottomBackground: MutableState<Int?>,
     cvChapterTopBackground: MutableState<Int?>,
-    tvChapterBottomText: MutableState<String>,
-    tvChapterTopText: MutableState<String>,
+    tvChapterText: String,
     isScrollAdapter: Boolean = false,
     // Слушатель нажатия по кружку урока
     onLessonClick: (lesson: Map<String, String>) -> Unit,
@@ -110,7 +109,7 @@ fun ItemExternalLessonsRoadScreen(
     ivLineBottomRightHeight: MutableState<Int>,
     ivLineBottomRightMargins: SnapshotStateList<Int>,
     chapterPosition: MutableState<Int?>,
-    clRootBackground: MutableState<Color?>,
+    clRootBackground: Color,
     clRootMatchParent: MutableState<Boolean>,
     ivLineBottomLeftRes: MutableState<Bitmap?>,
     ivLineBottomRightRes: MutableState<Bitmap?>,
@@ -193,7 +192,7 @@ fun ItemExternalLessonsRoadScreen(
                         end = clRootMargins[2].dp,
                         bottom = clRootMargins[3].dp
                     )
-                    .background(clRootBackground.value!!)
+                    .background(clRootBackground)
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                             lessonsRoadViewModel.toScrollRvHeight = coordinates.size.height
@@ -214,7 +213,7 @@ fun ItemExternalLessonsRoadScreen(
                         end = clRootMargins[2].dp,
                         bottom = clRootMargins[3].dp
                     )
-                    .background(clRootBackground.value!!)
+                    .background(clRootBackground)
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                             lessonsRoadViewModel.toScrollRvHeight = coordinates.size.height
@@ -444,7 +443,7 @@ fun ItemExternalLessonsRoadScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = tvChapterTopText.value,
+                    text = tvChapterText,
                     modifier = Modifier
                         .wrapContentSize(),
                     fontSize = 20.sp,
@@ -477,7 +476,7 @@ fun ItemExternalLessonsRoadScreen(
                 Text(
                     modifier = modifier
                         .wrapContentSize(),
-                    text = tvChapterBottomText.value,
+                    text = tvChapterText,
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                     fontSize = 20.sp,
@@ -494,7 +493,7 @@ fun ItemExternalLessonsRoadScreen(
 @Preview
 @Composable
 fun ItemExternalLessonsRoadScreenPreview() {
-    var lessonsViewModel = LessonsViewModel(LocalContext.current.applicationContext as Application)
+   /* var lessonsViewModel = LessonsViewModel(LocalContext.current.applicationContext as Application)
     var lessonsRoadViewModel =
         LessonsRoadViewModel(LocalContext.current.applicationContext as Application)
     val verticalScroll = rememberScrollState()
@@ -525,7 +524,7 @@ fun ItemExternalLessonsRoadScreenPreview() {
     val clRootHeight = remember { mutableStateOf(0) }
     val clRootMargins = remember { mutableStateListOf(0, 0, 0, 0) }
     val coroutineScope = rememberCoroutineScope()
-    val clRootBackground: MutableState<Color?> = remember { mutableStateOf(null) }
+    val clRootBackground: Color = Color(0)
     val lessonsRoadListStatus =
         remember { mutableStateOf(lessonsRoadViewModel.lessonsRoadListStatus.value) }
     val chapterPosition: MutableState<Int?> = remember { mutableStateOf(null) }
@@ -615,5 +614,5 @@ fun ItemExternalLessonsRoadScreenPreview() {
                 )
             }
         }
-    }
+    }*/
 }

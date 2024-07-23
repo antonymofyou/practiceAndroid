@@ -377,6 +377,7 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
 
     // Получения цвета раздела по названию
     fun getBackgroundColorForChapter(chapter: String): Int {
+        Log.d("PAR", "chapter = ${chapter}")
         return when (chapter) {
             "Политика" -> ContextCompat.getColor(app, R.color.politic_lesson_chapter_color)
             "Социология" -> ContextCompat.getColor(app, R.color.society_lesson_chapter_color)

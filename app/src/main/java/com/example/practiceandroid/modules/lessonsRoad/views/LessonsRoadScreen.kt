@@ -65,7 +65,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = android.graphics.Color.parseColor("#27A4FF")
     }
-
+    var lessonIsNotEmpty = false
     val verticalScroll = rememberScrollState()
     val loadingLayout = remember { mutableStateOf(false) }
     val tvErrorLessonsRoadList = remember { mutableStateOf(false) }
@@ -94,14 +94,12 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val clRootHeight = remember { mutableStateOf(0) }
     val clRootMargins = remember { mutableStateListOf(0, 0, 0, 0) }
     val coroutineScope = rememberCoroutineScope()
-    val clRootBackground: MutableState<Color?> = remember { mutableStateOf(null) }
     val lessonsRoadListStatus =
         remember { mutableStateOf(lessonsRoadViewModel.lessonsRoadListStatus.value) }
     val chapterPosition: MutableState<Int?> = remember { mutableStateOf(null) }
     val cvChapterBottomBackground: MutableState<Int?> = remember { mutableStateOf(null) }
     val cvChapterTopBackground: MutableState<Int?> = remember { mutableStateOf(null) }
-    val tvChapterBottomText = remember { mutableStateOf("Человек и общество") }
-    val tvChapterTopText = remember { mutableStateOf("Человек и общество") }
+    var tvChapterText = "Человек и общество"
     val clRootMatchParent = remember { mutableStateOf(false) }
     val ivLineTopRightRotationX = remember { mutableStateOf(0f) }
     val ivLineTopLeftRotationX = remember { mutableStateOf(0f) }
@@ -273,6 +271,15 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                 )
                                 val colorFilter = ColorFilter.tint(Color(color), BlendMode.SrcIn)
                                 parallaxBackgroundImageFilter.value = colorFilter
+                                val groupedLessonsWithViewType =
+                                    lessonsRoadViewModel.getGroupedLessonsWithViewType(
+                                        lessonsRoadViewModel.groupedLessons
+                                    )
+                                val chapterLessons = groupedLessonsWithViewType[index]
+                                val lessonChapter =
+                                    chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
+                                tvChapterText = lessonChapter
+                                val clRootBackground = Color(lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter))
                                 ItemExternalLessonsRoadScreen(
                                     modifier = modifier,
                                     lessons = lessons,
@@ -288,8 +295,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     clRootMargins = clRootMargins,
                                     cvChapterBottomBackground = cvChapterBottomBackground,
                                     cvChapterTopBackground = cvChapterTopBackground,
-                                    tvChapterBottomText = tvChapterBottomText,
-                                    tvChapterTopText = tvChapterTopText,
+                                    tvChapterText = tvChapterText,
                                     isScrollAdapter = isScrollAdapter,
                                     chapterPosition = chapterPosition,
                                     // Слушатель нажатия по кружку урока
@@ -326,17 +332,6 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     scrollYChanged = scrollYChanged,
                                     rvRootWidth = rvRootWidth
                                 )
-                                val groupedLessonsWithViewType =
-                                    lessonsRoadViewModel.getGroupedLessonsWithViewType(
-                                        lessonsRoadViewModel.groupedLessons
-                                    )
-                                val chapterLessons = groupedLessonsWithViewType[index]
-                                val lessonChapter =
-                                    chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
-                                if (lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter) != -1596) {
-                                    clRootBackground.value = Color(lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter))
-                                }
-
                                 Log.d("PAR", "ChapterLesson = ${lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)}")
                                 /*
                                 if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
