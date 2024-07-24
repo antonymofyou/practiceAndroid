@@ -236,7 +236,6 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
 
     // Функция для получения цвета по номеру статуса
     fun getLessonsStatusColorById(id: String): Int {
-        Log.d("KEK","id = $id")
         return Color.parseColor(
             when (id) {
                 "0" -> "#808080"
@@ -377,7 +376,6 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
 
     // Получения цвета раздела по названию
     fun getBackgroundColorForChapter(chapter: String): Int {
-        Log.d("PAR", "chapter = ${chapter}")
         return when (chapter) {
             "Политика" -> ContextCompat.getColor(app, R.color.politic_lesson_chapter_color)
             "Социология" -> ContextCompat.getColor(app, R.color.society_lesson_chapter_color)

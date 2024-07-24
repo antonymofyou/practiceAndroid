@@ -74,7 +74,6 @@ class LessonsRoadAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d("KIK", "viewType = $viewType")
         return when (viewType) {
             // Рисуем View в зависимости от типа ViewHolder
             VIEW_TYPE_RIGHT -> ViewHolder.RightViewHolder(

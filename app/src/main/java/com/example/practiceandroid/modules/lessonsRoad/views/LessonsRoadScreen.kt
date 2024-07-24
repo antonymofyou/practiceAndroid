@@ -6,6 +6,7 @@ import android.graphics.Path
 import android.util.Log
 import android.widget.LinearLayout.LayoutParams
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -57,6 +59,7 @@ var topLeftBitmap: Bitmap? = null
 var topRightBitmap: Bitmap? = null
 var bottomLeftBitmap: Bitmap? = null
 var bottomRightBitmap: Bitmap? = null
+
 @Composable
 fun LessonsRoadScreen(modifier: Modifier) {
     // Объявляем ViewModel
@@ -85,7 +88,6 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val ivLineBottomRightHeight = remember { mutableStateOf(112) }
     val ivLineBottomRightMargins = remember { mutableStateListOf(0, 0, 92, (-4)) }
     val ivLineBottomRightRes: MutableState<Bitmap?> = remember { mutableStateOf(null) }
-    val uppButtonLayout = remember { mutableStateOf(true) }
     val ivLineBottomLeft: MutableState<Boolean> = remember { mutableStateOf(false) }
     val ivLineBottomRight: MutableState<Boolean> = remember { mutableStateOf(false) }
     val ivLineTopLeft: MutableState<Boolean> = remember { mutableStateOf(false) }
@@ -109,14 +111,9 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val ivLineTopLeftRes: MutableState<Bitmap?> = remember { mutableStateOf(null) }
     val rvRootWidth = remember { mutableStateOf(365) }
     val scrollYChanged = remember { mutableStateOf(false) }
-    //val rvRootHeight = remember { mutableStateOf() }
-
-
-    //lessonsRoadViewModel.lessonsRoadListStatus.observeAsState()
     if (lessonsRoadListStatus.value != null) {
         loadingLayout.value = false
         tvErrorLessonsRoadList.value = false
-        uppButtonLayout.value = false
         when (lessonsRoadListStatus.value) {
             LessonsRoadListStatus.LOADING -> {
                 loadingLayout.value = false
@@ -142,34 +139,31 @@ fun LessonsRoadScreen(modifier: Modifier) {
         ConstraintLayout(
             modifier = modifier
                 .fillMaxSize()
-                //.verticalScroll(verticalScroll)
         ) {
-            val boxRef = createRef()
-            if (uppButtonLayout.value) {
+            if (scrollState.value >= scrollState.maxValue * 0.1) {
+                val boxRef = createRef()
                 Box(
                     modifier = modifier
                         .fillMaxSize()
-                        .zIndex(8.dp.value)
+                        .zIndex(1f)
                         .constrainAs(boxRef) {
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                        }
+                            top.linkTo(parent.top, margin = 20.dp)
+                            end.linkTo(parent.end, margin = 20.dp)
+                        },
+                    contentAlignment = Alignment.TopEnd
                 ) {
-                    Button(
+                    Image(
                         modifier = modifier
                             .size(44.dp)
-                            .padding(20.dp),
-                        onClick = {
-                            coroutineScope.launch {
-                                scrollState.animateScrollTo(0)
+                            .clickable {
+                                coroutineScope.launch {
+                                    scrollState.animateScrollTo(0)
+                                }
                             }
-                        }
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.upbtn),
-                            contentDescription = null,
-                        )
-                    }
+                            .wrapContentSize(),
+                        painter = painterResource(R.drawable.upbtn),
+                        contentDescription = null,
+                    )
                 }
             }
             //NestedScroll
@@ -198,8 +192,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
                             .fillMaxSize()
                             .onGloballyPositioned {
 
-                            }
-                        ,
+                            },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         if (loadingLayout.value) {
@@ -231,7 +224,6 @@ fun LessonsRoadScreen(modifier: Modifier) {
                             }
 
                         }
-                        uppButtonLayout.value = true
                         val roadlist = arrayListOf<Map<String, String>>()
                         if (lessonsRoadViewModel.lessonsRoadList != null) {
                             // Установка списка дорожки уроков
@@ -255,15 +247,16 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     )[index].viewType
                                 var isScrollAdapter =
                                     lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)
-                                var onLessonClick: (lesson: Map<String, String>) -> Unit = { lesson ->
-                                    if (lesson["status"] != "0") {
-                                        lessonsViewModel.currentLesson.value = lesson
-                                        lessonsViewModel.lessonStatus.value =
-                                            LessonStatus.LESSON
-                                        lessonsViewModel.currentLessonNum.value =
-                                            lesson["lesson_number"]
+                                var onLessonClick: (lesson: Map<String, String>) -> Unit =
+                                    { lesson ->
+                                        if (lesson["status"] != "0") {
+                                            lessonsViewModel.currentLesson.value = lesson
+                                            lessonsViewModel.lessonStatus.value =
+                                                LessonStatus.LESSON
+                                            lessonsViewModel.currentLessonNum.value =
+                                                lesson["lesson_number"]
+                                        }
                                     }
-                                }
                                 var parallaxBackgroundImageFilter: MutableState<ColorFilter?> =
                                     remember { mutableStateOf(null) }
                                 val color = lessonsRoadViewModel.getParallaxImageColorForChapter(
@@ -277,9 +270,12 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     )
                                 val chapterLessons = groupedLessonsWithViewType[index]
                                 val lessonChapter =
-                                    chapterLessons.lessons[0]["lesson_chapter"] ?: "Неизвестный раздел"
+                                    chapterLessons.lessons[0]["lesson_chapter"]
+                                        ?: "Неизвестный раздел"
                                 tvChapterText = lessonChapter
-                                val clRootBackground = Color(lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter))
+                                val clRootBackground = Color(
+                                    lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)
+                                )
                                 ItemExternalLessonsRoadScreen(
                                     modifier = modifier,
                                     lessons = lessons,
@@ -332,7 +328,14 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     scrollYChanged = scrollYChanged,
                                     rvRootWidth = rvRootWidth
                                 )
-                                Log.d("PAR", "ChapterLesson = ${lessonsRoadViewModel.getBackgroundColorForChapter(lessonChapter)}")
+                                Log.d(
+                                    "PAR",
+                                    "ChapterLesson = ${
+                                        lessonsRoadViewModel.getBackgroundColorForChapter(
+                                            lessonChapter
+                                        )
+                                    }"
+                                )
                                 /*
                                 if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
                                     lessonsRoadViewModel.scrollToIndex = index + 2
@@ -494,7 +497,7 @@ private fun setTopLines(
     ivLineTopLeftHeight: MutableState<Int>,
     ivLineTopLeftRes: MutableState<Bitmap?>,
     ivLineTopRightRes: MutableState<Bitmap?>,
-    ) {
+) {
     circlePath.reset()
     if (groupedLessonsWithViewType[position].viewType == LessonsRoadAdapter.VIEW_TYPE_LEFT) {
         ivLineTopRightRotationX.value = 180f

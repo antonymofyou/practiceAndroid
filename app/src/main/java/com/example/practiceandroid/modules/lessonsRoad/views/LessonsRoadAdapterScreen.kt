@@ -98,9 +98,7 @@ fun LessonsRoadAdapterScreen(
 
         ) {
         for (index in 0..lessons.lastIndex) {
-            Log.d("KIK", "adapter created")
             val viewType = if (index % 2 == 0) VIEW_TYPE_RIGHT else VIEW_TYPE_LEFT
-            Log.d("KIK", "viewType = $viewType")
             when (viewType) {
                 VIEW_TYPE_RIGHT -> RightLessonItem(
                     position = index,
@@ -147,7 +145,7 @@ fun RightLessonItem(
     isScreenLarge: Boolean,
     onLessonClick: (lesson: Map<String, String>) -> Unit,
     isScrollAdapter: Boolean,
-) {//возможно переделывать надо будет
+) {
     val circlePath = Path()
     val lineToRight: MutableState<Bitmap?> = remember { mutableStateOf(null) }
     val lineToLeft: MutableState<Bitmap?> = remember { mutableStateOf(null) }
@@ -169,7 +167,7 @@ fun RightLessonItem(
     val marginTop = remember { mutableStateOf(0) }
     val measuredHeight = remember { mutableStateOf(0) }
     val colorForCV = remember { mutableStateOf(Color(0xFF4CAF50)) }
-    Log.d("KAK", "ivLineHeight = ${ivLineHeightRight.value}")
+    val checker = remember { mutableStateOf(false) }
     //try {
     if (ivLineWidthLeftReal.value == 0) {
         Spacer(modifier
@@ -178,13 +176,12 @@ fun RightLessonItem(
             .onGloballyPositioned {
                 ivLineHeightLeftReal.value = it.size.height
                 ivLineWidthLeftReal.value = it.size.width
-                Log.d("KAK", "Reals height = ${it.size.height} width = ${it.size.width}")
             }
         )
     }
-    if (ivLineHeightLeftReal.value != 0) {
+    if (ivLineHeightLeftReal.value != 0 && checker.value == false) {
+        checker.value = true
         if (previousItemViewType == LessonsRoadAdapter.VIEW_TYPE_LEFT) {
-            Log.d("KIK", "RightLesson viewTypeLeft and setupRightSide")
             SetupLinesWhenFirstElementInRightSide(
                 position = position,
                 lessons = lessons,
@@ -207,7 +204,6 @@ fun RightLessonItem(
             )
 
         } else {
-            Log.d("KIK", "RightLesson viewTypeRight and setupLeftSide")
             SetupLinesWhenFirstElementInLeftSide(
                 position = position,
                 lessons = lessons,
@@ -241,12 +237,10 @@ fun RightLessonItem(
                 bottom = marginsForFL[3].dp
             )
             .fillMaxWidth()
-            //.offset(y = (marginsForFL[1]).dp)
             .wrapContentHeight()
             //Получение высоты после flRootLayout после постройки UI
             .onGloballyPositioned { layoutCoordinates ->
                 measuredHeight.value = layoutCoordinates.size.height
-                Log.d("LOL", "measuredHeight changed = ${measuredHeight.value}")
             },
         contentAlignment = Alignment.CenterEnd
     ) {
@@ -255,7 +249,6 @@ fun RightLessonItem(
             modifier = modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
-                //.height(llHorizontalContainer.value!!)
         ) {
             if (ivLineLeft.value == true && ivLineRes.value != null) {
                 //id = ivForLine
@@ -264,7 +257,6 @@ fun RightLessonItem(
                         .width(ivLineWidthLeft.value.dp)
                         .height(ivLineHeightLeft.value.dp)
                         .rotate(ivLineRotationY.value)
-                        //.padding(bottom = 4.dp, start = (-10).dp)
                         .offset(y = (-4).dp, x = (-10).dp)
                         .graphicsLayer {
                             rotationY = 0f
@@ -272,7 +264,6 @@ fun RightLessonItem(
                         .onGloballyPositioned {
                             ivLineHeightLeftReal.value = it.size.height
                             ivLineWidthLeftReal.value = it.size.width
-                            Log.d("KAK", "IvLineHeight = ${it.size.height} width = ${it.size.width}")
                                               },
                     bitmap = ivLineRes.value!!.asImageBitmap(),
                     contentDescription = null,
@@ -315,7 +306,6 @@ fun RightLessonItem(
                                             resource: Drawable,
                                             transition: Transition<in Drawable>?
                                         ) {
-                                            Log.d("LOL", "onResourceReady")
                                             image.value = resource
                                         }
 
@@ -415,6 +405,7 @@ fun RightLessonItem(
                 )
             }
         }
+        Log.d("LOL", "end of rightLesson")
     }
     circlePath.reset()
 
@@ -446,8 +437,8 @@ fun LeftLessonItem(
     var ivLineRes: MutableState<Bitmap?> = remember { mutableStateOf(null) }
     var ivLineWidthRight = remember { mutableStateOf(120) }
     var ivLineHeightRight = remember { mutableStateOf(177) }
-    var ivLineWidthRightReal = remember { mutableStateOf(120) }
-    var ivLineHeightRightReal = remember { mutableStateOf(177) }
+    var ivLineWidthRightReal = remember { mutableStateOf(0) }
+    var ivLineHeightRightReal = remember { mutableStateOf(0) }
     var ivLineWidthLeft = remember { mutableStateOf(70) }
     var ivLineHeightLeft = remember { mutableStateOf(60) }
     var ivLineRotationY = remember { mutableStateOf(0f) }
@@ -455,51 +446,64 @@ fun LeftLessonItem(
     var marginTop = remember { mutableStateOf(0) }
     var measuredHeight = remember { mutableStateOf(0) }
     val colorForCV = remember { mutableStateOf(Color(0xFF4CAF50)) }
+    val checker = remember { mutableStateOf(false) }
     //try {
-    if (previousItemViewType == LessonsRoadAdapter.VIEW_TYPE_LEFT) {
-        Log.d("KIK", "LeftLesson viewTypeLeft and setupRightSide")
-        SetupLinesWhenFirstElementInRightSide(
-            position = position,
-            lessons = lessons,
-            marginsForFL = marginsForFL,
-            ivLineRight = ivLineRight,
-            ivLineLeft = ivLineLeft,
-            ivLineWidth = ivLineWidthRightReal,
-            ivLineHeight = ivLineHeightRightReal,
-            lessonsViewModel = lessonsViewModel,
-            lessonsRoadViewModel = lessonsRoadViewModel,
-            ivLineRotationY = ivLineRotationY,
-            isScreenLarge = isScreenLarge,
-            ivLineMargins = ivLineMargins,
-            lineToRight = lineToRight,
-            lineToLeft = lineToLeft,
-            circlePath = circlePath,
-            paint = paint,
-            llHorizontalContainer = llHorizontalContainer,
-            ivLineRes = ivLineRes,
-        )
-    } else if (previousItemViewType == LessonsRoadAdapter.VIEW_TYPE_RIGHT) {
-        Log.d("KIK", "LeftLesson viewTypeRight and setupLeftSide")
-        SetupLinesWhenFirstElementInLeftSide(
-            position = position,
-            lessons = lessons,
-            marginsForFL = marginsForFL,
-            ivLineLeft = ivLineLeft,
-            ivLineWidth = ivLineWidthLeft,
-            ivLineRes = ivLineRes,
-            ivLineMargins = ivLineMargins,
-            ivLineRotationY = ivLineRotationY,
-            lineToRight = lineToRight,
-            lineToLeft = lineToLeft,
-            lessonsViewModel = lessonsViewModel,
-            isScreenLarge = isScreenLarge,
-            llHorizontalContainer = llHorizontalContainer,
-            circlePath = circlePath,
-            lessonsRoadViewModel = lessonsRoadViewModel,
-            paint = paint,
-            ivLineHeight = ivLineHeightLeft,
+    if (ivLineWidthRightReal.value == 0) {
+        Spacer(modifier = modifier
+            .width(ivLineWidthRight.value.dp)
+            .height(ivLineHeightRight.value.dp)
+            .onGloballyPositioned {
+                ivLineHeightRightReal.value = it.size.height
+                ivLineWidthRightReal.value = it.size.width
+            }
         )
     }
+    if (ivLineHeightRightReal.value != 0  && checker.value == false) {
+        checker.value = true
+        if (previousItemViewType == LessonsRoadAdapter.VIEW_TYPE_LEFT) {
+            SetupLinesWhenFirstElementInRightSide(
+                position = position,
+                lessons = lessons,
+                marginsForFL = marginsForFL,
+                ivLineRight = ivLineRight,
+                ivLineLeft = ivLineLeft,
+                ivLineWidth = ivLineWidthRightReal,
+                ivLineHeight = ivLineHeightRightReal,
+                lessonsViewModel = lessonsViewModel,
+                lessonsRoadViewModel = lessonsRoadViewModel,
+                ivLineRotationY = ivLineRotationY,
+                isScreenLarge = isScreenLarge,
+                ivLineMargins = ivLineMargins,
+                lineToRight = lineToRight,
+                lineToLeft = lineToLeft,
+                circlePath = circlePath,
+                paint = paint,
+                llHorizontalContainer = llHorizontalContainer,
+                ivLineRes = ivLineRes,
+            )
+        } else if (previousItemViewType == LessonsRoadAdapter.VIEW_TYPE_RIGHT) {
+            SetupLinesWhenFirstElementInLeftSide(
+                position = position,
+                lessons = lessons,
+                marginsForFL = marginsForFL,
+                ivLineLeft = ivLineLeft,
+                ivLineWidth = ivLineWidthLeft,
+                ivLineRes = ivLineRes,
+                ivLineMargins = ivLineMargins,
+                ivLineRotationY = ivLineRotationY,
+                lineToRight = lineToRight,
+                lineToLeft = lineToLeft,
+                lessonsViewModel = lessonsViewModel,
+                isScreenLarge = isScreenLarge,
+                llHorizontalContainer = llHorizontalContainer,
+                circlePath = circlePath,
+                lessonsRoadViewModel = lessonsRoadViewModel,
+                paint = paint,
+                ivLineHeight = ivLineHeightLeft,
+            )
+        }
+    }
+
     if (isScrollAdapter && lessonsRoadViewModel.firstUnfulfilledLesson!!["lesson_number"]!!.toInt() < lesson["lesson_number"]!!.toInt()) {
         lessonsRoadViewModel.scrollRecyclerHeightSumAfterScrollElement += marginsForFL[1]
         lessonsRoadViewModel.scrollRecyclerHeightSumAfterScrollElement += measuredHeight.value
@@ -672,7 +676,6 @@ fun LeftLessonItem(
                         .align(Alignment.Bottom)
                         .rotate(ivLineRotationY.value)
                         .zIndex(0f)
-                        //.padding(bottom = 4.dp, start = (-10).dp)
                         .graphicsLayer {
                             rotationY = 0f
                         }
@@ -686,6 +689,8 @@ fun LeftLessonItem(
                 )
             }
         }
+        Log.d("LOL", "end of leftLesson")
+
     }
     /*} catch (e: Exception) {
         Log.d("LessonRoadAdapter", e.message.toString())
@@ -858,7 +863,6 @@ fun SetupLinesWhenFirstElementInRightSide(
             }
             //Здесь фиксить надо
             if (lineToLeft.value == null) {
-                Log.d("KAK", "lineToLeft width = ${ivLineWidth.value} height = ${ivLineHeight.value}")
                 lineToLeft.value = lessonsRoadViewModel.createLineBitmapRightToLeft(
                     path = circlePath,
                     paint = paint,

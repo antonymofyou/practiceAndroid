@@ -119,7 +119,7 @@ fun ItemExternalLessonsRoadScreen(
     rvRootWidth: MutableState<Int>,
     scrollYChanged: MutableState<Boolean>
 ) {
-
+    Log.d("LOL", "item created")
     val parallaxBackgroundImageHeight = remember { mutableStateOf(0) }
     //val parallaxBackgroundImageFilter: MutableState<ColorFilter?> = remember { mutableStateOf(null) }
     val constraints = ConstraintSet {
