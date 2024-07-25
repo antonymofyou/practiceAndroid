@@ -179,6 +179,7 @@ fun RightLessonItem(
             }
         )
     }
+    //Установка линий между значками уроков
     if (ivLineHeightLeftReal.value != 0 && checker.value == false) {
         checker.value = true
         if (previousItemViewType == LessonsRoadAdapter.VIEW_TYPE_LEFT) {
@@ -250,14 +251,15 @@ fun RightLessonItem(
                 .wrapContentWidth()
                 .wrapContentHeight()
         ) {
+            //Линия к следующему уроку
             if (ivLineLeft.value == true && ivLineRes.value != null) {
                 //id = ivForLine
                 Image(
                     modifier = modifier
-                        .width(ivLineWidthLeft.value.dp)
-                        .height(ivLineHeightLeft.value.dp)
+                        .width(ivLineWidthRight.value.dp)
+                        .height(ivLineHeightRight.value.dp)
                         .rotate(ivLineRotationY.value)
-                        .offset(y = (-4).dp, x = (-10).dp)
+                        .offset(y = (10).dp, x = (60).dp)
                         .graphicsLayer {
                             rotationY = 0f
                         }
@@ -450,8 +452,8 @@ fun LeftLessonItem(
     //try {
     if (ivLineWidthRightReal.value == 0) {
         Spacer(modifier = modifier
-            .width(ivLineWidthRight.value.dp)
-            .height(ivLineHeightRight.value.dp)
+            .width(ivLineWidthLeft.value.dp)
+            .height(ivLineHeightLeft.value.dp)
             .onGloballyPositioned {
                 ivLineHeightRightReal.value = it.size.height
                 ivLineWidthRightReal.value = it.size.width
@@ -487,7 +489,7 @@ fun LeftLessonItem(
                 lessons = lessons,
                 marginsForFL = marginsForFL,
                 ivLineLeft = ivLineLeft,
-                ivLineWidth = ivLineWidthLeft,
+                ivLineWidth = ivLineWidthRight,
                 ivLineRes = ivLineRes,
                 ivLineMargins = ivLineMargins,
                 ivLineRotationY = ivLineRotationY,
@@ -499,7 +501,7 @@ fun LeftLessonItem(
                 circlePath = circlePath,
                 lessonsRoadViewModel = lessonsRoadViewModel,
                 paint = paint,
-                ivLineHeight = ivLineHeightLeft,
+                ivLineHeight = ivLineHeightRight,
             )
         }
     }
@@ -672,10 +674,10 @@ fun LeftLessonItem(
                     modifier = modifier
                         .width(ivLineWidthRight.value.dp)
                         .height(ivLineHeightRight.value.dp)
-                        .offset(x = (-10).dp, y = 50.dp)
+                        .offset(x = (-10).dp, y = 60.dp)
                         .align(Alignment.Bottom)
                         .rotate(ivLineRotationY.value)
-                        .zIndex(0f)
+                        //.zIndex(0f)
                         .graphicsLayer {
                             rotationY = 0f
                         }
@@ -770,7 +772,7 @@ fun SetupLinesWhenFirstElementInLeftSide(
                     ivLineMargins.addAll(listOf(0, 0, -lessonsViewModel.dpToPx(10)))
                 }
                 if (lineToLeft.value == null) {
-                    lineToLeft.value = lessonsRoadViewModel.createLineBitmapRightToLeft(
+                    lineToLeft.value = lessonsRoadViewModel.createLineBitmapLeftToRight(
                         path = circlePath,
                         paint = paint,
                         width = ivLineWidth.value,
@@ -786,6 +788,7 @@ fun SetupLinesWhenFirstElementInLeftSide(
                     ivLineWidth.value = lessonsViewModel.dpToPx(120)
                 }
                 if (lineToRight.value == null) {
+                    Log.d("kek", "width = ${ivLineWidth.value} height = ${ivLineHeight.value}")
                     lineToRight.value = lessonsRoadViewModel.createLineBitmapLeftToRight(
                         path = circlePath,
                         paint = paint,
@@ -863,31 +866,35 @@ fun SetupLinesWhenFirstElementInRightSide(
             }
             //Здесь фиксить надо
             if (lineToLeft.value == null) {
-                lineToLeft.value = lessonsRoadViewModel.createLineBitmapRightToLeft(
+                Log.d("kek", "toLeft width = ${ivLineWidth.value} height = ${ivLineHeight.value}")
+                lineToLeft.value = lessonsRoadViewModel.createLineBitmapLeftToRight(
                     path = circlePath,
                     paint = paint,
-                    width = ivLineWidth.value,
-                    height = ivLineHeight.value
+                    width = ivLineWidth.value + lessonsViewModel.dpToPx(80),
+                    height = ivLineHeight.value + lessonsViewModel.dpToPx(150)
                 )
+                Log.d("KEK", "to left ready width = ${ivLineWidth.value + lessonsViewModel.dpToPx(80)} height = ${ivLineHeight.value + lessonsViewModel.dpToPx(150)}")
             }
             ivLineRes.value = lineToLeft.value
         } else {
             ivLineRight.value = true
-            ivLineRotationY.value = 0f
+            ivLineRotationY.value = -15f
             if (isScreenLarge) {
                 ivLineWidth.value = lessonsViewModel.dpToPx(470)
                 //Я не понял зачем в XML коде 2 раза ставились margin
             } else {
-                ivLineWidth.value = lessonsViewModel.dpToPx(120)
+                //ivLineWidth.value = 435
 
             }
             if (lineToRight.value == null) {
+                Log.d("kek", "toRight width = ${ivLineWidth.value} height = ${ivLineHeight.value}")
                 lineToRight.value = lessonsRoadViewModel.createLineBitmapLeftToRight(
                     path = circlePath,
                     paint = paint,
-                    width = ivLineWidth.value,
-                    height = ivLineHeight.value + lessonsViewModel.dpToPx(20)
+                    width = ivLineWidth.value + lessonsViewModel.dpToPx(80),
+                    height = ivLineHeight.value + lessonsViewModel.dpToPx(150)
                 )
+                Log.d("KEK", "to right ready width = ${ivLineWidth.value + lessonsViewModel.dpToPx(80)} height = ${ivLineHeight.value + lessonsViewModel.dpToPx(150)}")
             }
             ivLineRes.value = lineToRight.value
         }
@@ -916,7 +923,7 @@ fun LessonsRoadAdapterScreenPreview() {
         lessonsRoadViewModel.groupedLessons =
             lessonsRoadViewModel.getLessonsByChapter(roadlist)
 
-        /*LessonsRoadAdapterScreen(
+        LessonsRoadAdapterScreen(
             lessons = lessonsRoadViewModel.groupedLessons[lessonsRoadViewModel.groupedLessons.lastIndex],
             isScreenLarge = false,
             lessonsRoadViewModel = lessonsRoadViewModel,
@@ -925,7 +932,7 @@ fun LessonsRoadAdapterScreenPreview() {
             isScrollAdapter = false,
             // Слушатель нажатия по кружку урока
             onLessonClick = {},
-        )*/
+        )
 
 
         lessonsRoadViewModel.groupedLessons.forEachIndexed { index, lessons ->

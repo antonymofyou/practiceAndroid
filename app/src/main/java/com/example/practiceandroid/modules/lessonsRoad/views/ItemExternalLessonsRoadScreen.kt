@@ -317,7 +317,6 @@ fun ItemExternalLessonsRoadScreen(
                     scrollYChanged.value = true
                 }
         ) {
-            Log.d("KIK", "Adapter created")
             LessonsRoadAdapterScreen(
                 modifier = modifier,
                 lessons = lessons,
@@ -493,7 +492,7 @@ fun ItemExternalLessonsRoadScreen(
 @Preview
 @Composable
 fun ItemExternalLessonsRoadScreenPreview() {
-   /* var lessonsViewModel = LessonsViewModel(LocalContext.current.applicationContext as Application)
+   var lessonsViewModel = LessonsViewModel(LocalContext.current.applicationContext as Application)
     var lessonsRoadViewModel =
         LessonsRoadViewModel(LocalContext.current.applicationContext as Application)
     val verticalScroll = rememberScrollState()
@@ -531,7 +530,7 @@ fun ItemExternalLessonsRoadScreenPreview() {
     val cvChapterBottomBackground: MutableState<Int?> = remember { mutableStateOf(null) }
     val cvChapterTopBackground: MutableState<Int?> = remember { mutableStateOf(null) }
     val tvChapterBottomText = remember { mutableStateOf("Человек и общество") }
-    val tvChapterTopText = remember { mutableStateOf("Человек и общество") }
+    val tvChapterTopText = "Человек и общество"
     val clRootMatchParent = remember { mutableStateOf(false) }
     val ivLineTopRightRotationX = remember { mutableStateOf(0f) }
     val ivLineTopLeftRotationX = remember { mutableStateOf(0f) }
@@ -581,8 +580,7 @@ fun ItemExternalLessonsRoadScreenPreview() {
                     clRootMargins = clRootMargins,
                     cvChapterBottomBackground = cvChapterBottomBackground,
                     cvChapterTopBackground = cvChapterTopBackground,
-                    tvChapterBottomText = tvChapterBottomText,
-                    tvChapterTopText = tvChapterTopText,
+                    tvChapterText = tvChapterTopText,
                     isScrollAdapter = false,
                     // Слушатель нажатия по кружку урока
                     onLessonClick = {},
@@ -614,5 +612,5 @@ fun ItemExternalLessonsRoadScreenPreview() {
                 )
             }
         }
-    }*/
+    }
 }
