@@ -2,13 +2,9 @@ package com.example.practiceandroid.modules.lessonsRoad.views
 
 import android.app.Application
 import android.graphics.Bitmap
-import android.media.Image
 import android.util.Log
-import android.widget.TextView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,17 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,25 +33,20 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import com.skydoves.landscapist.rememberDrawablePainter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,7 +54,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
@@ -82,11 +68,6 @@ fun ItemExternalLessonsRoadScreen(
     lessonsRoadViewModel: LessonsRoadViewModel,
     lessonsViewModel: LessonsViewModel,
     previousItemViewType: Int,
-    ivLineBottomLeft: MutableState<Boolean>,
-    ivLineBottomRight: MutableState<Boolean>,
-    ivLineTopLeft: MutableState<Boolean>,
-    ivLineTopRight: MutableState<Boolean>,
-    clRootMargins: SnapshotStateList<Int>,
     cvChapterBottomBackground: MutableState<Int?>,
     cvChapterTopBackground: MutableState<Int?>,
     tvChapterText: String,
@@ -94,20 +75,6 @@ fun ItemExternalLessonsRoadScreen(
     // Слушатель нажатия по кружку урока
     onLessonClick: (lesson: Map<String, String>) -> Unit,
     parallaxBackgroundImageFilter: MutableState<ColorFilter?>,
-    ivLineTopLeftWidth: MutableState<Int>,
-    ivLineTopLeftHeight: MutableState<Int>,
-    ivLineTopLeftMargins: SnapshotStateList<Int>,
-    ivLineTopRightWidth: MutableState<Int>,
-    ivLineTopRightHeight: MutableState<Int>,
-    ivLineTopRightMargins: SnapshotStateList<Int>,
-    ivLineTopRightRotationX: MutableState<Float>,
-    ivLineTopLeftRotationX: MutableState<Float>,
-    ivLineBottomLeftWidth: MutableState<Int>,
-    ivLineBottomLeftHeight: MutableState<Int>,
-    ivLineBottomLeftMargins: SnapshotStateList<Int>,
-    ivLineBottomRightWidth: MutableState<Int>,
-    ivLineBottomRightHeight: MutableState<Int>,
-    ivLineBottomRightMargins: SnapshotStateList<Int>,
     chapterPosition: MutableState<Int?>,
     clRootBackground: Color,
     clRootMatchParent: MutableState<Boolean>,
@@ -187,10 +154,10 @@ fun ItemExternalLessonsRoadScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(
-                        start = clRootMargins[0].dp,
-                        top = clRootMargins[1].dp,
-                        end = clRootMargins[2].dp,
-                        bottom = clRootMargins[3].dp
+                        start = 0.dp,
+                        top = 0.dp,
+                        end = 0.dp,
+                        bottom = 0.dp
                     )
                     .background(clRootBackground)
                     .onGloballyPositioned { coordinates ->
@@ -208,10 +175,10 @@ fun ItemExternalLessonsRoadScreen(
                 modifier
                     .fillMaxSize()
                     .padding(
-                        start = clRootMargins[0].dp,
-                        top = clRootMargins[1].dp,
-                        end = clRootMargins[2].dp,
-                        bottom = clRootMargins[3].dp
+                        start = 0.dp,
+                        top = 0.dp,
+                        end = 0.dp,
+                        bottom = 0.dp
                     )
                     .background(clRootBackground)
                     .onGloballyPositioned { coordinates ->
@@ -232,10 +199,10 @@ fun ItemExternalLessonsRoadScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(
-                        start = clRootMargins[0].dp,
-                        top = clRootMargins[1].dp,
-                        end = clRootMargins[2].dp,
-                        bottom = clRootMargins[3].dp
+                        start = 0.dp,
+                        top = 0.dp,
+                        end = 0.dp,
+                        bottom = 0.dp
                     )
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
@@ -251,10 +218,10 @@ fun ItemExternalLessonsRoadScreen(
                 modifier
                     .fillMaxSize()
                     .padding(
-                        start = clRootMargins[0].dp,
-                        top = clRootMargins[1].dp,
-                        end = clRootMargins[2].dp,
-                        bottom = clRootMargins[3].dp
+                        start = 0.dp,
+                        top = 0.dp,
+                        end = 0.dp,
+                        bottom = 0.dp
                     )
                     .onGloballyPositioned { coordinates ->
                         if (lessons.contains(lessonsRoadViewModel.firstUnfulfilledLesson)) {
@@ -332,10 +299,10 @@ fun ItemExternalLessonsRoadScreen(
         if (ivLineBottomLeftRes.value != null) {
             Image(
                 modifier = modifier
-                    .height(ivLineBottomLeftHeight.value.dp)
-                    .width(ivLineBottomLeftWidth.value.dp)
+                    .height(105.dp)
+                    .width(90.dp)
                     .layoutId("ivLineBottomLeft")
-                    .offset(x = ivLineBottomLeftMargins[0].dp, y = ivLineBottomLeftMargins[3].dp)
+                    .offset(x = 94.dp, y = 0.dp)
                 //.padding(start = ivLineBottomLeftMargins[0].dp, top = ivLineBottomLeftMargins[1].dp, end = ivLineBottomLeftMargins[2].dp, bottom = ivLineBottomLeftMargins[3].dp)
                 ,
                 bitmap = ivLineBottomLeftRes.value!!.asImageBitmap(),
@@ -344,10 +311,10 @@ fun ItemExternalLessonsRoadScreen(
         } else {
             Spacer(
                 modifier = modifier
-                    .height(ivLineBottomLeftHeight.value.dp)
-                    .width(ivLineBottomLeftWidth.value.dp)
+                    .height(105.dp)
+                    .width(90.dp)
                     .layoutId("ivLineBottomLeft")
-                    .offset(x = ivLineBottomLeftMargins[0].dp, y = ivLineBottomLeftMargins[3].dp),
+                    .offset(x = 94.dp, y = 0.dp),
                 //.padding(start = ivLineBottomLeftMargins[0].dp, top = ivLineBottomLeftMargins[1].dp, end = ivLineBottomLeftMargins[2].dp, bottom = ivLineBottomLeftMargins[3].dp)
             )
         }
@@ -356,30 +323,30 @@ fun ItemExternalLessonsRoadScreen(
                 bitmap = ivLineBottomRightRes.value!!.asImageBitmap(),
                 contentDescription = null,
                 modifier = modifier
-                    .width(ivLineBottomRightWidth.value.dp)
-                    .height(ivLineBottomRightHeight.value.dp)
+                    .width(100.dp)
+                    .height(112.dp)
                     .layoutId("ivLineBottomRight")
-                    .offset(x = ivLineBottomRightMargins[0].dp, y = ivLineBottomRightMargins[3].dp)
+                    .offset(x = 0.dp, y = 92.dp)
                 //.padding(start = ivLineBottomRightMargins[0].dp, top = ivLineBottomRightMargins[1].dp, end = ivLineBottomRightMargins[2].dp, bottom = ivLineBottomRightMargins[3].dp)
             )
         } else {
             Spacer(
                 modifier = modifier
-                    .width(ivLineBottomRightWidth.value.dp)
-                    .height(ivLineBottomRightHeight.value.dp)
+                    .width(100.dp)
+                    .height(112.dp)
                     .layoutId("ivLineBottomRight")
-                    .offset(x = ivLineBottomRightMargins[0].dp, y = ivLineBottomRightMargins[3].dp),
+                    .offset(x = 0.dp, y = 92.dp),
                 //.padding(start = ivLineBottomRightMargins[0].dp, top = ivLineBottomRightMargins[1].dp, end = ivLineBottomRightMargins[2].dp, bottom = ivLineBottomRightMargins[3].dp)
             )
         }
         if (ivLineTopLeftRes.value != null) {
             Image(
                 modifier = modifier
-                    .width(ivLineTopLeftWidth.value.dp)
-                    .height(ivLineTopLeftHeight.value.dp)
+                    .width(100.dp)
+                    .height(110.dp)
                     .layoutId("ivLineTopLeft")
-                    .graphicsLayer(rotationX = ivLineTopLeftRotationX.value)
-                    .offset(x = ivLineTopLeftMargins[0].dp, y = ivLineTopLeftMargins[3].dp),
+                    .graphicsLayer(rotationX = 0f)
+                    .offset(x = 84.dp, y = 0.dp),
                 //.padding(start = ivLineTopLeftMargins[0].dp, top = ivLineTopLeftMargins[1].dp, end = ivLineTopLeftMargins[2].dp, bottom = ivLineTopLeftMargins[3].dp),
                 bitmap = ivLineTopLeftRes.value!!.asImageBitmap(),
                 contentDescription = null,
@@ -387,11 +354,11 @@ fun ItemExternalLessonsRoadScreen(
         } else {
             Spacer(
                 modifier = modifier
-                    .width(ivLineTopLeftWidth.value.dp)
-                    .height(ivLineTopLeftHeight.value.dp)
+                    .width(100.dp)
+                    .height(110.dp)
                     .layoutId("ivLineTopLeft")
-                    .graphicsLayer(rotationX = ivLineTopLeftRotationX.value)
-                    .offset(x = ivLineTopLeftMargins[0].dp, y = ivLineTopLeftMargins[3].dp)
+                    .graphicsLayer(rotationX = 0f)
+                    .offset(x = 84.dp, y = 0.dp)
                 //.padding(start = ivLineTopLeftMargins[0].dp, top = ivLineTopLeftMargins[1].dp, end = ivLineTopLeftMargins[2].dp, bottom = ivLineTopLeftMargins[3].dp),
             )
         }
@@ -399,11 +366,11 @@ fun ItemExternalLessonsRoadScreen(
         if (ivLineTopRightRes.value != null) {
             Image(
                 modifier = modifier
-                    .width(ivLineTopRightWidth.value.dp)
-                    .height(ivLineTopRightHeight.value.dp)
+                    .width(100.dp)
+                    .height(105.dp)
                     .layoutId("ivLineTopRight")
-                    .graphicsLayer(rotationX = ivLineTopRightRotationX.value)
-                    .offset(x = ivLineTopRightMargins[0].dp, y = ivLineTopRightMargins[3].dp),
+                    .graphicsLayer(rotationX = 0f)
+                    .offset(x = 0.dp, y = 90.dp),
                 //.padding(start = ivLineTopRightMargins[0].dp, top = ivLineTopRightMargins[1].dp, end = ivLineTopRightMargins[2].dp, bottom = ivLineTopRightMargins[3].dp),
                 bitmap = ivLineTopRightRes.value!!.asImageBitmap(),
                 contentDescription = null
@@ -411,11 +378,11 @@ fun ItemExternalLessonsRoadScreen(
         } else {
             Spacer(
                 modifier = modifier
-                    .width(ivLineTopRightWidth.value.dp)
-                    .height(ivLineTopRightHeight.value.dp)
+                    .width(100.dp)
+                    .height(105.dp)
                     .layoutId("ivLineTopRight")
-                    .graphicsLayer(rotationX = ivLineTopRightRotationX.value)
-                    .offset(x = ivLineTopRightMargins[0].dp, y = ivLineTopRightMargins[3].dp),
+                    .graphicsLayer(rotationX = 0f)
+                    .offset(x = 0.dp, y = 90.dp),
                 //.padding(start = ivLineTopRightMargins[0].dp, top = ivLineTopRightMargins[1].dp, end = ivLineTopRightMargins[2].dp, bottom = ivLineTopRightMargins[3].dp),
             )
         }
@@ -573,11 +540,6 @@ fun ItemExternalLessonsRoadScreenPreview() {
                     lessonsRoadViewModel = lessonsRoadViewModel,
                     lessonsViewModel = lessonsViewModel,
                     previousItemViewType = 1,
-                    ivLineBottomLeft = ivLineBottomLeft,
-                    ivLineBottomRight = ivLineBottomRight,
-                    ivLineTopLeft = ivLineTopLeft,
-                    ivLineTopRight = ivLineTopRight,
-                    clRootMargins = clRootMargins,
                     cvChapterBottomBackground = cvChapterBottomBackground,
                     cvChapterTopBackground = cvChapterTopBackground,
                     tvChapterText = tvChapterTopText,
@@ -585,20 +547,6 @@ fun ItemExternalLessonsRoadScreenPreview() {
                     // Слушатель нажатия по кружку урока
                     onLessonClick = {},
                     parallaxBackgroundImageFilter = parallaxBackgroundImageFilter,
-                    ivLineTopLeftWidth = ivLineTopLeftWidth,
-                    ivLineTopLeftHeight = ivLineTopLeftHeight,
-                    ivLineTopLeftMargins = ivLineTopLeftMargins,
-                    ivLineTopRightWidth = ivLineTopRightWidth,
-                    ivLineTopRightHeight = ivLineTopRightHeight,
-                    ivLineTopRightMargins = ivLineTopRightMargins,
-                    ivLineTopRightRotationX = ivLineTopRightRotationX,
-                    ivLineTopLeftRotationX = ivLineTopLeftRotationX,
-                    ivLineBottomLeftWidth = ivLineBottomLeftWidth,
-                    ivLineBottomLeftHeight = ivLineBottomLeftHeight,
-                    ivLineBottomLeftMargins = ivLineBottomLeftMargins,
-                    ivLineBottomRightWidth = ivLineBottomRightWidth,
-                    ivLineBottomRightHeight = ivLineBottomRightHeight,
-                    ivLineBottomRightMargins = ivLineBottomRightMargins,
                     chapterPosition = chapterPosition,
                     clRootBackground = clRootBackground,
                     clRootMatchParent = clRootMatchParent,

@@ -88,12 +88,6 @@ fun LessonsRoadScreen(modifier: Modifier) {
     val ivLineBottomRightHeight = remember { mutableStateOf(112) }
     val ivLineBottomRightMargins = remember { mutableStateListOf(0, 0, 92, (-4)) }
     val ivLineBottomRightRes: MutableState<Bitmap?> = remember { mutableStateOf(null) }
-    val ivLineBottomLeft: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val ivLineBottomRight: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val ivLineTopLeft: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val ivLineTopRight: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val ivLineBottomRightRotationX = remember { mutableStateOf(0f) }
-    val clRootHeight = remember { mutableStateOf(0) }
     val clRootMargins = remember { mutableStateListOf(0, 0, 0, 0) }
     val coroutineScope = rememberCoroutineScope()
     val lessonsRoadListStatus =
@@ -283,12 +277,7 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                     lessonsRoadViewModel = lessonsRoadViewModel,
                                     lessonsViewModel = lessonsViewModel,
                                     previousItemViewType = previousItemViewType,
-                                    ivLineBottomLeft = ivLineBottomLeft,
-                                    ivLineBottomRight = ivLineBottomRight,
-                                    ivLineTopLeft = ivLineTopLeft,
-                                    ivLineTopRight = ivLineTopRight,
                                     clRootBackground = clRootBackground,
-                                    clRootMargins = clRootMargins,
                                     cvChapterBottomBackground = cvChapterBottomBackground,
                                     cvChapterTopBackground = cvChapterTopBackground,
                                     tvChapterText = tvChapterText,
@@ -305,20 +294,6 @@ fun LessonsRoadScreen(modifier: Modifier) {
                                         }
                                     },
                                     parallaxBackgroundImageFilter = parallaxBackgroundImageFilter,
-                                    ivLineTopLeftWidth = ivLineTopLeftWidth,
-                                    ivLineTopLeftHeight = ivLineTopLeftHeight,
-                                    ivLineTopLeftMargins = ivLineTopLeftMargins,
-                                    ivLineTopRightWidth = ivLineTopRightWidth,
-                                    ivLineTopRightHeight = ivLineTopRightHeight,
-                                    ivLineTopRightMargins = ivLineTopRightMargins,
-                                    ivLineBottomLeftWidth = ivLineBottomLeftWidth,
-                                    ivLineBottomLeftHeight = ivLineBottomLeftHeight,
-                                    ivLineBottomLeftMargins = ivLineBottomLeftMargins,
-                                    ivLineBottomRightWidth = ivLineBottomRightWidth,
-                                    ivLineBottomRightHeight = ivLineBottomRightHeight,
-                                    ivLineBottomRightMargins = ivLineBottomRightMargins,
-                                    ivLineTopRightRotationX = ivLineTopRightRotationX,
-                                    ivLineTopLeftRotationX = ivLineTopLeftRotationX,
                                     clRootMatchParent = clRootMatchParent,
                                     ivLineBottomLeftRes = ivLineBottomLeftRes,
                                     ivLineBottomRightRes = ivLineBottomRightRes,
