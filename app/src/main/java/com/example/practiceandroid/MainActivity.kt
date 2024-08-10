@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.practiceandroid.modules.lessonsRoad.views.LessonsFragment
+import com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadCompose
 import com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadFragment
 import com.example.practiceandroid.theme.PracticeAndroidTheme
 
@@ -19,18 +20,19 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         
         setContent {
-            PracticeAndroidTheme {
-                AndroidView(factory= {context->
-                    val fragmentContainer = FragmentContainerView(context)
-                    fragmentContainer.id = ViewCompat.generateViewId()
-                    (context as AppCompatActivity).supportFragmentManager.commit {
-                        replace<LessonsFragment>(fragmentContainer.id)
-                        setReorderingAllowed(true)
-                    }
-
-                    fragmentContainer
-                })
-            }
+//            PracticeAndroidTheme {
+//                AndroidView(factory= {context->
+//                    val fragmentContainer = FragmentContainerView(context)
+//                    fragmentContainer.id = ViewCompat.generateViewId()
+//                    (context as AppCompatActivity).supportFragmentManager.commit {
+//                        replace<LessonsFragment>(fragmentContainer.id)
+//                        setReorderingAllowed(true)
+//                    }
+//
+//                    fragmentContainer
+//                })
+//            }
+            LessonsRoadCompose()
         }
     }
 }
