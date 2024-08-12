@@ -27,7 +27,7 @@ fun LessonsChapterCompose(lessonsRoadViewModel: LessonsRoadViewModel, chapter: A
             .fillMaxWidth()
             .height(500.dp) // временно для лучшего отображения
             // TODO Заливка цветом перекрывает фон
-            .background(Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)))
+            .background(Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)).copy(alpha = 0.5f))
     ) {
         Text(
             text = chapterName
