@@ -13,8 +13,11 @@ import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.graphics.transform
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
@@ -39,17 +42,28 @@ fun LessonsRoadCompose() {
             lessonsRoadViewModel.getLessonsByChapter(roadList)
     }
 
-    // Фоновое изображение, которое может повторяться
-    val imageBrush =
-        ShaderBrush(
-            ImageShader(
-                ImageBitmap.imageResource(
-                    id = R.drawable.lessons_road_bg
-                ),
-                tileModeX = TileMode.Repeated,
-                tileModeY = TileMode.Repeated
-            )
-        )
+    // Скейлим изображение по ширине
+    val imageBitmap = ImageBitmap.imageResource(id = R.drawable.lessons_road_bg)
+
+    val density = LocalDensity.current.density
+    val screenWidthPx = with(LocalConfiguration.current) { screenWidthDp * density }
+
+    val imageWidth = imageBitmap.width.toFloat()
+
+    val scaleX = screenWidthPx / imageWidth
+    val scaleY = scaleX
+
+    // Устанавливаем фон
+    val scaledShader = ImageShader(
+        imageBitmap,
+        tileModeY = TileMode.Repeated
+    ).apply {
+        transform {
+            setScale(scaleX, scaleY)
+        }
+    }
+
+    val imageBrush = ShaderBrush(scaledShader)
 
     Box(
         modifier = Modifier
@@ -68,4 +82,10 @@ fun LessonsRoadCompose() {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun LessonsRoadComposePreview(){
+    LessonsRoadCompose()
 }
