@@ -21,8 +21,10 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 import com.example.practiceandroid.R
 
@@ -99,4 +101,19 @@ fun LessonsChapterCompose(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun LessonsChapterComposePreview() {
+    val lessonChapter = arrayListOf( mapOf(
+        Pair("lesson_number", "39"),
+        Pair("lesson_name", "Политические партии"),
+        Pair("lesson_short_name", "Политические партии"),
+        Pair("lesson_chapter", "Политика"),
+        Pair("lesson_img_adr", "/images/lessons/39.png"),
+        Pair("status", "3")
+    ) )
+
+    LessonsChapterCompose(viewModel(), lessonChapter)
 }
