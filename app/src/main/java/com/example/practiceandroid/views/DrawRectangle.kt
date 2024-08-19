@@ -4,6 +4,9 @@ import android.R.attr.scaleX
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -30,37 +34,54 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.practiceandroid.models.ResponseShapes
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 // Компонент для отрисовки прямоугольника на основе данных, переданных в объекте shape
 @Composable
 fun DrawRectangle(shape: ResponseShapes.Shape) {
-    var scale by remember { mutableStateOf(1f) }
 
+    var scale by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(shape.x.dp.value) }
     var offsetY by remember { mutableStateOf(shape.y.dp.value) }
 
-    // Обработка жестов для масштабирования
-    val gestureModifier = Modifier.pointerInput(Unit) {
-        detectTransformGestures { _, pan, zoom, _ ->
-            scale *= zoom
-            // При перемещении учитываем текущий масштаб
-            offsetX += pan.x * scale
-            offsetY += pan.y * scale
-        }
+    // Создание состояния для обработки трансформаций (масштабирование, перемещение и вращение)
+    val state = rememberTransformableState { scaleChange, offsetChange, _ ->
+
+        // Обновляем масштабирование, учитывая текущее изменение масштаба
+        scale *= scaleChange
+
+        // Перемещение с учетом текущего масштаба
+        // Применяем масштабирование к смещению
+        val rotatedOffsetX = offsetChange.x * scale
+        val rotatedOffsetY = offsetChange.y * scale
+
+        // Рассчитываем косинус и синус угла вращения в радианах
+        // Преобразуем угол вращения из градусов в радианы
+        val cosRotation = cos(Math.toRadians((shape.rotation?.toDouble() ?: 0f).toDouble())).toFloat()
+        val sinRotation = sin(Math.toRadians((shape.rotation?.toDouble() ?: 0f).toDouble())).toFloat()
+
+        // Применяем вращение к смещению
+        // Расчитываем новое смещение с учетом вращения
+        val transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
+        val transformedOffsetY = rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+
+        offsetX += transformedOffsetX
+        offsetY += transformedOffsetY
     }
+
 
     // Контейнер Row для размещения текста внутри прямоугольника
     Row(
         modifier = Modifier
             .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
                 rotationZ = shape.rotation ?: 0f,
                 translationX = offsetX,
                 translationY = offsetY,
-                scaleX = scale,
-                scaleY = scale
             )
-            .then(gestureModifier)
             // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
             .background(
                 color = Color(android.graphics.Color.parseColor(shape.color)),
@@ -72,6 +93,7 @@ fun DrawRectangle(shape: ResponseShapes.Shape) {
                 color = Color(android.graphics.Color.parseColor(shape.borderColor)),
                 shape = RoundedCornerShape(shape.cornerRadius?.dp ?: 0.dp)
             )
+            .transformable(state)
             .padding(16.dp)
             .width(shape.width.dp)
             .height(shape.height.dp)
