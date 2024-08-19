@@ -35,7 +35,6 @@ import com.example.practiceandroid.models.ResponseShapes
 // Компонент для отрисовки прямоугольника на основе данных, переданных в объекте shape
 @Composable
 fun DrawRectangle(shape: ResponseShapes.Shape) {
-    // Контейнер Row для размещения текста внутри прямоугольника
     var scale by remember { mutableStateOf(1f) }
 
     var offsetX by remember { mutableStateOf(shape.x.dp.value) }
@@ -51,6 +50,7 @@ fun DrawRectangle(shape: ResponseShapes.Shape) {
         }
     }
 
+    // Контейнер Row для размещения текста внутри прямоугольника
     Row(
         modifier = Modifier
             .graphicsLayer(
