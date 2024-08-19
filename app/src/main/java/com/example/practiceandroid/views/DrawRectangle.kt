@@ -1,12 +1,9 @@
 package com.example.practiceandroid.views
 
-import android.R.attr.scaleX
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.gestures.transformable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,8 +35,8 @@ fun DrawRectangle(shape: ResponseShapes.Shape) {
         modifier = Modifier
             .graphicsLayer(
                 rotationZ = shape.rotation ?: 0f,
-                translationX = shape.x.dp.value,
-                translationY = shape.y.dp.value,
+                translationX = shape.x,
+                translationY = shape.y,
             )
             // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
             .background(
