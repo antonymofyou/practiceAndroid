@@ -46,7 +46,7 @@ fun LessonsChapterCompose(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .requiredHeight(200.dp)
+            .requiredHeight(500.dp)
             // TODO Заливка цветом перекрывает фон
             .background(
                 Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)).copy(
@@ -63,7 +63,7 @@ fun LessonsChapterCompose(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp, 24.dp, 16.dp, 24.dp)
-                    .clip(RoundedCornerShape(20.dp))
+                    .clip(RoundedCornerShape(25.dp))
                     .background(Color.White)
                     .height(50.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -79,6 +79,12 @@ fun LessonsChapterCompose(
                     textAlign = TextAlign.Center,
                 )
             }
+            Column {
+                for (lesson in chapter) {
+                    LessonCardCompose(lessonsRoadViewModel, lesson)
+                }
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
