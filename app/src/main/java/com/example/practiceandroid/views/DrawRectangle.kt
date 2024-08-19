@@ -1,7 +1,9 @@
 package com.example.practiceandroid.views
 
+import android.R.attr.scaleX
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -9,10 +11,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -24,17 +31,36 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.practiceandroid.models.ResponseShapes
 
+
 // Компонент для отрисовки прямоугольника на основе данных, переданных в объекте shape
 @Composable
 fun DrawRectangle(shape: ResponseShapes.Shape) {
     // Контейнер Row для размещения текста внутри прямоугольника
+    var scale by remember { mutableStateOf(1f) }
+
+    var offsetX by remember { mutableStateOf(shape.x.dp.value) }
+    var offsetY by remember { mutableStateOf(shape.y.dp.value) }
+
+    // Обработка жестов для масштабирования
+    val gestureModifier = Modifier.pointerInput(Unit) {
+        detectTransformGestures { _, pan, zoom, _ ->
+            scale *= zoom
+            // При перемещении учитываем текущий масштаб
+            offsetX += pan.x * scale
+            offsetY += pan.y * scale
+        }
+    }
+
     Row(
         modifier = Modifier
             .graphicsLayer(
-                rotationZ = shape.rotation?.let { it } ?: 0f,
-                translationX = shape.x.dp.value,
-                translationY = shape.y.dp.value
+                rotationZ = shape.rotation ?: 0f,
+                translationX = offsetX,
+                translationY = offsetY,
+                scaleX = scale,
+                scaleY = scale
             )
+            .then(gestureModifier)
             // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
             .background(
                 color = Color(android.graphics.Color.parseColor(shape.color)),
