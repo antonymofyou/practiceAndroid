@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +45,6 @@ fun LessonsChapterCompose(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .requiredHeight(500.dp)
             // TODO Заливка цветом перекрывает фон
             .background(
                 Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)).copy(
@@ -91,8 +89,7 @@ fun LessonsChapterCompose(
                     .padding(16.dp, 24.dp, 16.dp, 24.dp)
                     .clip(RoundedCornerShape(25.dp))
                     .background(Color.White)
-                    .height(50.dp)
-                    .weight(1f, false),
+                    .height(50.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
