@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.example.practiceandroid.ConfigData
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 
@@ -58,22 +60,40 @@ fun LessonCardCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<St
             .width(130.dp)
             .height(240.dp)
     ) {
-        // TODO Временно отображается изображение по умолчанию для всех уроков
-        Image(
-            painter = painterResource(id = R.drawable.no_lesson_image),
-            contentDescription = "lesson_avatar",
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.Center,
-            modifier = Modifier
-                .width(120.dp)
-                .height(120.dp)
-                .clip(RoundedCornerShape(60.dp))
-                .border(4.dp, Color.White, CircleShape)
-                .graphicsLayer {
-                    this.scaleX = 1.21f
-                    this.scaleY = 1.21f
-                }
-        )
+        val lessonAddress = lesson["lesson_img_adr"]
+        if (lessonAddress != null) {
+            AsyncImage(
+                model = ConfigData.BASE_URL + lessonAddress,
+                contentDescription = "lesson_avatar",
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center,
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(60.dp))
+                    .border(4.dp, Color.White, CircleShape)
+                    .graphicsLayer {
+                        this.scaleX = 1.21f
+                        this.scaleY = 1.21f
+                    }
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.no_lesson_image),
+                contentDescription = "lesson_avatar",
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center,
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(60.dp))
+                    .border(4.dp, Color.White, CircleShape)
+                    .graphicsLayer {
+                        this.scaleX = 1.21f
+                        this.scaleY = 1.21f
+                    }
+            )
+        }
 
         Box (
             modifier = Modifier

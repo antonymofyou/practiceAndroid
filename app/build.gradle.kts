@@ -110,6 +110,10 @@ dependencies {
     // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
     //ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
