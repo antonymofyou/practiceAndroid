@@ -1,24 +1,16 @@
 package com.example.practiceandroid.views
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.TransformableState
-import androidx.compose.foundation.gestures.transformable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.SpanStyle
@@ -33,10 +25,9 @@ import androidx.compose.ui.zIndex
 import com.example.practiceandroid.ext.valueOf
 import com.example.practiceandroid.models.ResponseShapes
 
-// Компонент для отрисовки прямоугольника на основе данных, переданных в объекте shape
+// Компонент для отрисовки круга на основе данных, переданных в объекте shape
 @Composable
-fun DrawRectangle(shape: ResponseShapes.Shape) {
-    // Контейнер Row для размещения текста внутри прямоугольника
+fun DrawCircle(shape: ResponseShapes.Shape) {
     Row(
         modifier = Modifier
             .graphicsLayer(
@@ -44,12 +35,10 @@ fun DrawRectangle(shape: ResponseShapes.Shape) {
                 translationX = shape.x,
                 translationY = shape.y,
             )
-            // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
             .background(
                 color = Color(android.graphics.Color.parseColor(shape.color)),
                 shape = RoundedCornerShape(shape.cornerRadius?.dp ?: 0.dp)
             )
-            // Устанавливаем границу для прямоугольника
             .border(
                 width = shape.borderWidth?.dp ?: 0.dp,
                 color = Color(android.graphics.Color.parseColor(shape.borderColor)),
@@ -60,7 +49,7 @@ fun DrawRectangle(shape: ResponseShapes.Shape) {
             .height(shape.height.dp)
             .zIndex(shape.zIndex),
         verticalAlignment = Alignment.valueOf(shape.textVerticalAlignment)
-    ) {
+    ){
         // Перебираем текстовые блоки внутри фигуры
         shape.text?.forEach { textBlock ->
             // Создаем строку с аннотациями для стилизации текста
@@ -86,4 +75,5 @@ fun DrawRectangle(shape: ResponseShapes.Shape) {
             )
         }
     }
+
 }

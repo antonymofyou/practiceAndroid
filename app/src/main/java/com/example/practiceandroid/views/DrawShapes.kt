@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import com.example.practiceandroid.ext.decodeBase64ToBitmap
 import com.example.practiceandroid.models.ResponseShapes
 
 @Composable
@@ -45,7 +46,9 @@ fun DrawShapes(responseShapes: ResponseShapes) {
             // Определяем тип фигуры и вызываем соответствующую функцию для ее отрисовки
             when (shape.type) {
                 "rectangle" -> DrawRectangle(shape)
-                // Другие типы фигур (например, "circle", "image" и т.д.) могут быть добавлены сюда
+                "circle" -> DrawCircle(shape)
+                "arrow" -> DrawArrow(shape)
+                "image" -> DrawImage(shape, image = (responseShapes.imageDictionary[shape.imageId]!!).decodeBase64ToBitmap())
             }
         }
     }
