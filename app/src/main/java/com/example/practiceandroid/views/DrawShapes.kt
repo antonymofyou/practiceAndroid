@@ -35,7 +35,7 @@ fun DrawShapes(responseShapes: ResponseShapes) {
         val localDensity = LocalDensity.current
         val state = rememberTransformableState { scaleChange, offsetChange, _ ->
 
-            // Проверяем, выходим ли за границы Parent view
+            // Проверяем, выходим ли за границы Root view
             if (maxWidth.value * (scale * scaleChange) <= maxWidth.value){
                 scale = (scale * scaleChange).coerceIn(0.5f, 3f)
             }
