@@ -13,8 +13,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalDensity
 import com.example.practiceandroid.ext.decodeBase64ToBitmap
 import com.example.practiceandroid.models.ResponseShapes
 
@@ -22,28 +23,30 @@ import com.example.practiceandroid.models.ResponseShapes
 fun DrawShapes(responseShapes: ResponseShapes) {
 
     var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
 
     var offset by remember { mutableStateOf(Offset.Zero) }
 
+    // Минимально допустимые значения для смещения
+    var minOffsetX = 0f
+    var minOffsetY = 0f
 
-    BoxWithConstraints {
+    BoxWithConstraints (
+    ){
+        val localDensity = LocalDensity.current
         val state = rememberTransformableState { scaleChange, offsetChange, _ ->
-            // Обновляем масштабирование, учитывая текущее изменение масштаба
-            scale = (scale * scaleChange).coerceIn(0.9f, 3f)
 
-            // Вычисляем дополнительное пространство для смещения
-            val extraWidth = (scale * maxWidth - maxWidth).coerceAtLeast(0.dp)
-            val extraHeight = (scale * maxHeight - maxHeight).coerceAtLeast(0.dp)
+            // Проверяем, выходим ли за границы Parent view
+            if (maxWidth.value * (scale * scaleChange) <= maxWidth.value){
+                scale = (scale * scaleChange).coerceIn(0.5f, 3f)
+            }
 
-            val maxX = extraWidth / 2f
-            val maxY = extraHeight / 2f
+            // Максимально допустимые значения для смещения
+            val maxOffsetX = maxWidth.value - maxWidth.value * scale - (-minOffsetX)
+            val maxOffsetY = maxHeight.value - maxHeight.value * scale - (-minOffsetY)
 
-            // Корректируем смещение с учетом масштабирования и ограничений
             offset = Offset(
-                x = (offset.x + offsetChange.x * scale).coerceIn(-maxX.value, maxX.value),
-                y = (offset.y + offsetChange.y * scale).coerceIn(-maxY.value, maxY.value)
+                x = offset.x + (offsetChange.x * scale).coerceIn(minOffsetX, maxOffsetX),
+                y = offset.y + (offsetChange.y * scale).coerceIn(minOffsetY, maxOffsetY)
             )
         }
 
@@ -56,6 +59,11 @@ fun DrawShapes(responseShapes: ResponseShapes) {
                     translationY = offset.y
                 }
                 .fillMaxSize()
+                .onGloballyPositioned { coordinates ->
+                    val positionInRoot = coordinates.positionInRoot()
+                    minOffsetX = with(localDensity) { -positionInRoot.x.toDp().value }
+                    minOffsetY = with(localDensity) { -positionInRoot.y.toDp().value }
+                }
                 .transformable(state)
         ) {
             // Перебираем все фигуры в списке shapes, который был передан в responseShapes
