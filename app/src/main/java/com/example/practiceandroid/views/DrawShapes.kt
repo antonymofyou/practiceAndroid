@@ -36,7 +36,8 @@ fun DrawShapes(responseShapes: ResponseShapes) {
         val state = rememberTransformableState { scaleChange, offsetChange, _ ->
 
             // Проверяем, выходим ли за границы Root view
-            if (maxWidth.value * (scale * scaleChange) <= maxWidth.value){
+            if ((maxWidth.value * (scale * scaleChange) <= maxWidth.value) &&
+                (maxHeight.value * (scale * scaleChange) <= maxHeight.value)){
                 scale = (scale * scaleChange).coerceIn(0.5f, 3f)
             }
 
