@@ -67,16 +67,21 @@ fun LessonsRoadCompose() {
 
     Box(
         modifier = Modifier
-            .verticalScroll(scrollState)
             .fillMaxSize()
-            .background(
-                imageBrush
-            )
-            .graphicsLayer {
-                translationY = .2f * scrollState.value  // Замедление смещения слоя при скролле
-            }
     ) {
-        Column {
+        Box (
+            modifier = Modifier
+                .fillMaxSize()
+                .background(imageBrush)
+                .graphicsLayer {
+                    translationY = .2f * scrollState.value
+                }
+        )
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
             for (chapter in lessonsRoadViewModel.groupedLessons) {
                 LessonsChapterCompose(lessonsRoadViewModel, chapter)
             }
