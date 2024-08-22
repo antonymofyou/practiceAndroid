@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 Box (
-                    modifier = Modifier.height(300.dp).width(300.dp)
+                    modifier = Modifier.fillMaxSize()
                 ){
                     DrawShapes(mainViewModel.responseShapes.value)
                 }
