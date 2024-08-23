@@ -56,8 +56,8 @@ fun DrawShapes(responseShapes: ResponseShapes) {
 
             offset = if ((minOffsetX > maxOffsetX) || (minOffsetY > maxOffsetY)) {
                 Offset(
-                    x = offset.x + (offsetChange.x * scale).coerceIn(maxOffsetX, minOffsetX),
-                    y = offset.y + (offsetChange.y * scale).coerceIn(maxOffsetY, minOffsetY)
+                    x = offset.x + (offsetChange.x * scale * scale).coerceIn(maxOffsetX, minOffsetX),
+                    y = offset.y + (offsetChange.y * scale * scale).coerceIn(maxOffsetY, minOffsetY)
                 )
             }
             else {
