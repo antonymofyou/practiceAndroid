@@ -22,12 +22,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 
+// Константы для определения типа view
+val VIEW_TYPE_RIGHT = 0
+val VIEW_TYPE_LEFT = 1
+
 /**
  * Функция, отвечающая за дорожку уроков
  */
-@Preview
 @Composable
-fun LessonsRoadCompose() {
+fun LessonsRoadCompose(viewType: Int) {
     val scrollState = rememberScrollState()
 
     // Получение сгруппированных по разделам уроков
@@ -82,8 +85,10 @@ fun LessonsRoadCompose() {
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
+            var index = 0   // общий порядковый номер уроков
             for (chapter in lessonsRoadViewModel.groupedLessons) {
-                LessonsChapterCompose(lessonsRoadViewModel, chapter)
+                LessonsChapterCompose(lessonsRoadViewModel, chapter, viewType, index)
+                index += chapter.size
             }
         }
     }
@@ -92,5 +97,5 @@ fun LessonsRoadCompose() {
 @Preview
 @Composable
 fun LessonsRoadComposePreview(){
-    LessonsRoadCompose()
+    LessonsRoadCompose(VIEW_TYPE_LEFT)
 }

@@ -1,7 +1,5 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
-import android.graphics.Bitmap
-import android.graphics.Paint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import android.graphics.Path
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,20 +28,23 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 import com.example.practiceandroid.R
-import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewModel
 
 /**
  * Функция, за отображение раздела
  *
  * @param lessonsRoadViewModel: view model
  * @param chapter: список уроков по конкретному разделу
+ * @param viewType: тип view
+ * @param index: порядковый номер первого урока из раздела в общем списке занятий
  */
 @Composable
 fun LessonsChapterCompose(
     lessonsRoadViewModel: LessonsRoadViewModel,
-    chapter: ArrayList<Map<String, String>>
+    chapter: ArrayList<Map<String, String>>,
+    viewType: Int,
+    index: Int
 ) {
-    val lessonsViewModel = viewModel<LessonsViewModel>()
+
     val chapterName = chapter[0]["lesson_chapter"] ?: "Неизвестный раздел"
 
     Box(
@@ -81,68 +82,28 @@ fun LessonsChapterCompose(
                     textAlign = TextAlign.Center,
                 )
             }
-            Column {
-                var marginTop = 0.dp
-                var lineToLeft: Bitmap? = null
-                var lineBitmap: Bitmap?
-                var rotationY = 0f
-                val circlePath = Path()
-                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = lessonsRoadViewModel.getLineColorForChapter(chapter[0]["lesson_chapter"]!!)
-                }
 
-                chapter.forEachIndexed{ index, lesson ->
-                    lineBitmap = null
-
-                    if (lesson.size > 1) {
-                        marginTop = if (index == 0) {
-                            0.dp
-                        } else if (index % 2 != 0) {
-                            (-130).dp
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                var position = index
+                chapter.forEachIndexed { index, lesson ->
+                    if (viewType == VIEW_TYPE_LEFT) {
+                        if (position % 2 == 0) {
+                            LessonCardLeftCompose(lessonsRoadViewModel, lesson, position, (index == 0 || index == chapter.lastIndex))
                         } else {
-                            (-50).dp
+                            LessonCardRightCompose(lessonsRoadViewModel, lesson, position, (index == 0 || index == chapter.lastIndex))
                         }
-
-                        // TODO isScreenLarge
-
-                        if (index != chapter.lastIndex) {
-                            marginTop = if (index == 0) {
-                                0.dp
-                            } else if (index % 2 != 0) {
-                                (-130).dp
-                            } else {
-                                (-50).dp
-                            }
-
-                            if (index % 2 == 0) {
-                                rotationY = 180f
-                                if (lineToLeft == null) {
-                                    lineToLeft = lessonsRoadViewModel.createLineBitmapRightToLeft(
-                                        path = circlePath,
-                                        paint = paint,
-                                        width = lessonsViewModel.dpToPx(70),
-                                        height = lessonsViewModel.dpToPx(60)
-                                    )
-                                }
-                                lineBitmap = lineToLeft
-                            } else {
-                                rotationY = 0f
-                                if (lineToLeft == null) {
-                                    lineToLeft = lessonsRoadViewModel.createLineBitmapRightToLeft(
-                                        path = circlePath,
-                                        paint = paint,
-                                        width = lessonsViewModel.dpToPx(70),
-                                        height = lessonsViewModel.dpToPx(60) - lessonsViewModel.dpToPx(
-                                            50
-                                        )
-                                    )
-                                }
-                                lineBitmap = lineToLeft
-                            }
+                    } else {
+                        if (position % 2 == 0) {
+                            LessonCardRightCompose(lessonsRoadViewModel, lesson, position, (index == 0 || index == chapter.lastIndex))
+                        } else {
+                            LessonCardLeftCompose(lessonsRoadViewModel, lesson, position, (index == 0 || index == chapter.lastIndex))
                         }
                     }
-
-                    LessonCardLeftCompose(lessonsRoadViewModel, lesson, marginTop, lineBitmap, rotationY, index == chapter.lastIndex)
+                    ++position
                 }
             }
 
@@ -173,24 +134,14 @@ fun LessonsChapterCompose(
 @Preview
 @Composable
 fun LessonsChapterComposePreview() {
-    val lessonChapter = arrayListOf(
-        mapOf(
-            Pair("lesson_number", "39"),
-            Pair("lesson_name", "Политические партии"),
-            Pair("lesson_short_name", "Политические партии"),
-            Pair("lesson_chapter", "Политика"),
-            Pair("lesson_img_adr", "/images/lessons/39.png"),
-            Pair("status", "3")
-        ),
-        mapOf(
-            Pair("lesson_number", "38"),
-            Pair("lesson_name", "Правовое государство и гражданское общество."),
-            Pair("lesson_short_name", "Правовое государство"),
-            Pair("lesson_chapter", "Политика"),
-            Pair("lesson_img_adr", "/images/lessons/38.png"),
-            Pair("status", "2")
-        )
-    )
+    val lessonChapter = arrayListOf( mapOf(
+        Pair("lesson_number", "39"),
+        Pair("lesson_name", "Политические партии"),
+        Pair("lesson_short_name", "Политические партии"),
+        Pair("lesson_chapter", "Политика"),
+        Pair("lesson_img_adr", "/images/lessons/39.png"),
+        Pair("status", "3")
+    ) )
 
-    LessonsChapterCompose(viewModel(), lessonChapter)
+    LessonsChapterCompose(viewModel(), lessonChapter, VIEW_TYPE_LEFT, 0)
 }

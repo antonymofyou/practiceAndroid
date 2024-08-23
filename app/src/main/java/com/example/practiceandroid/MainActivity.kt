@@ -12,6 +12,8 @@ import androidx.fragment.app.replace
 import com.example.practiceandroid.modules.lessonsRoad.views.LessonsFragment
 import com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadCompose
 import com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadFragment
+import com.example.practiceandroid.modules.lessonsRoad.views.VIEW_TYPE_LEFT
+import com.example.practiceandroid.modules.lessonsRoad.views.VIEW_TYPE_RIGHT
 import com.example.practiceandroid.theme.PracticeAndroidTheme
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 //                    fragmentContainer
 //                })
 //            }
-            LessonsRoadCompose()
+            LessonsRoadCompose(VIEW_TYPE_LEFT)
         }
     }
 }
