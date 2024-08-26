@@ -64,9 +64,9 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Ma
     Box(
         contentAlignment = Alignment.TopStart,
         modifier = if (position % 2 == 0 || isFirstOrLastLessonInChapter)
-            Modifier.fillMaxWidth().wrapContentHeight()
+            Modifier.fillMaxWidth().wrapContentHeight().padding(50.dp, 0.dp, 0.dp, 0.dp)
         else
-            Modifier.fillMaxWidth().height(240.dp)
+            Modifier.fillMaxWidth().height(240.dp).padding(50.dp, 0.dp, 0.dp, 0.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,9 +179,9 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: M
     Box(
         contentAlignment = Alignment.TopEnd,
         modifier = if (position % 2 == 0 || isFirstOrLastLessonInChapter)
-            Modifier.fillMaxWidth().wrapContentHeight()
+            Modifier.fillMaxWidth().wrapContentHeight().padding(0.dp, 0.dp, 50.dp, 0.dp)
         else
-            Modifier.fillMaxWidth().height(240.dp)
+            Modifier.fillMaxWidth().height(240.dp).padding(0.dp, 0.dp, 50.dp, 0.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
