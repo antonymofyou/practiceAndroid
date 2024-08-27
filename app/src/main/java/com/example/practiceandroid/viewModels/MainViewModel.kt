@@ -1,5 +1,3 @@
-package com.example.practiceandroid.viewModels
-
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -42,7 +40,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
       "type": "circle",
       "x": 170,
       "y": 100,
-      "width": 200,
+      "width": 100,
       "height": 100,
       "color": "#9ddb6b",
       "borderColor": "#C70039",
@@ -65,9 +63,9 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     {
       "id": 4,
       "type": "rectangle",
-      "x": 300,
+      "x": 0,
       "y": 300,
-      "width": 200,
+      "width": 400,
       "height": 100,
       "color": "#FF5733",
       "borderColor": "#C70039",
@@ -85,7 +83,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
               "textDecoration": "underline"
             },
             {
-              "text": " This is a test text.",
+              "text": " Test text.",
               "fontSize": 18,
               "fontColor": "#333333"
             }
@@ -101,7 +99,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
               "fontColor": "#333333"
             },
             {
-              "text": " This is a test text.",
+              "text": " Test text.",
               "fontSize": 18,
               "fontColor": "#333333"
             }
@@ -125,7 +123,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     }
   ],
   "imageDictionary": {
-    "1": "exampleImageBase64"
+    "1": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAAXNSR0IArs4c6QAAAoNJREFUeJzt202Ko0AAhmEd5gxZB9wHIeQKyQVCeRE9RbnOISQX0EsoWQqNuUlmUUMhdn78JHZseJ+VbbUpfUlMNbRBAODDQr91u90+eibLFYb/K/359Jn8JsQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEtALAGxBMQSEEswMVZVVWEY+n8Q95qmSZLEDSVJ0jTN+NElzzt0G63rurtH9fd7XdeNGV3yvNNjWWsfHWWMcTuttf7XjDFjRhc77/RYfuK7R/lzGlzey9G6rt2VlGXpRsuydHvqup5vXjXW3zvZXnHzZVnW33m9Xt3GZrMZbPihR6NxHB+Px6+vL/8I0eFwCIIgiqI0Teebd71eSxeu3eB3u11d1/0L8Nq2fXRU27bPR4MgOJ1O7sc8z5Mkcdvn83nueSXaO+vu6b7Ffr+31mZZ5t841to4jueeV7KgdVaaplEUuW1jzEIC9U25Z921Wq0mDA1Gt9utu3P98Lwjve2d5T8yl8tlsBHH8fNRt5HneVEUbrsoijzPf2beKcZ/lT76AnZf8FEUdV3XdZ37TA3WO49G67p2L2iM8QsFt26YdV5p6fDOWGVZfn/Z/tLpyai/W/XX3FEUzT3vx2J9X2f7peDzUb//yZ455h3JHzjLA+VVVbnVwITRBc7r/27n6fvXePp+CmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiCUgloBYAmIJiAXgN/kHCNX2Mu0yEwMAAAAASUVORK5CYII="
   }
 }
 """.trimIndent()

@@ -1,12 +1,9 @@
 package com.example.practiceandroid.models
 
 data class ResponseShapes(
-    val imageDictionary: ImageDictionary,
+    val imageDictionary: Map<String, String>,
     val shapes: List<Shape>
 ) {
-    data class ImageDictionary(
-        val `1`: String
-    )
 
     data class Shape(
         val borderColor: String?,
@@ -23,18 +20,18 @@ data class ResponseShapes(
         val textVerticalAlignment: String?,
         val type: String,
         val width: Int,
-        val x: Int,
-        val y: Int,
+        val x: Float,
+        val y: Float,
         val zIndex: Float
     ) {
         data class Text(
             val alignment: String,
-            val text: List<Text>
+            var text: List<Text>
         ) {
             data class Text(
                 val fontColor: String,
                 val fontSize: Int,
-                val text: String,
+                var text: String,
                 val textDecoration: String?,
                 val type: String?
             )
