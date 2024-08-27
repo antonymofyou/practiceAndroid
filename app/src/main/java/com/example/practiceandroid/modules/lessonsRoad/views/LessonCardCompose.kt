@@ -47,11 +47,11 @@ import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadVie
  * @param lessonsRoadViewModel
  * @param lesson: информация о уроке
  * @param position: порядковый номер урока в списке всех занятий
- * @param isFirstOrLastLessonInChapter: разделение случаев,
- * когда урок или первый в разделе, или последний
+ * @param isFirstLessonInChapter: указывает, если урок первый в списке занятий из раздела
+ * @param isLastLessonInChapter: указывает, если урок последний в списке занятий из раздела
  */
 @Composable
-fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<String, String>, position: Int, isFirstOrLastLessonInChapter: Boolean) {
+fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean) {
 
     val statusText = lesson["status"]?.let {
         lessonsRoadViewModel.setLessonStatusNameById(it)
@@ -61,12 +61,22 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Ma
         Color(lessonsRoadViewModel.getLessonsStatusColorById(it))
     } ?: Color(0xFF4CAF50)
 
+    var boxModifier = Modifier.fillMaxWidth()
+    boxModifier = if (isFirstLessonInChapter && isLastLessonInChapter) {
+        boxModifier.wrapContentHeight().padding(50.dp, 98.dp, 0.dp, 98.dp)
+    } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
+        boxModifier.wrapContentHeight().padding(50.dp, 0.dp, 0.dp, 98.dp)
+    } else if (isFirstLessonInChapter && !isLastLessonInChapter) {
+        boxModifier.wrapContentHeight().padding(50.dp, 98.dp, 0.dp, 0.dp)
+    } else if (position % 2 == 0) {
+        boxModifier.wrapContentHeight().padding(50.dp, 0.dp, 0.dp, 0.dp)
+    } else {
+        boxModifier.height(240.dp).padding(50.dp, 0.dp, 0.dp, 0.dp)
+    }
+
     Box(
         contentAlignment = Alignment.TopStart,
-        modifier = if (position % 2 == 0 || isFirstOrLastLessonInChapter)
-            Modifier.fillMaxWidth().wrapContentHeight().padding(50.dp, 0.dp, 0.dp, 0.dp)
-        else
-            Modifier.fillMaxWidth().height(240.dp).padding(50.dp, 0.dp, 0.dp, 0.dp)
+        modifier = boxModifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -162,11 +172,11 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Ma
  * @param lessonsRoadViewModel
  * @param lesson: информация о уроке
  * @param position: порядковый номер урока в списке всех занятий
- * @param isFirstOrLastLessonInChapter: разделение случаев,
- * когда урок или первый в разделе, или последний
+ * @param isFirstLessonInChapter: указывает, если урок первый в списке занятий из раздела
+ * @param isLastLessonInChapter: указывает, если урок последний в списке занятий из раздела
  */
 @Composable
-fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<String, String>, position: Int, isFirstOrLastLessonInChapter: Boolean) {
+fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean) {
 
     val statusText = lesson["status"]?.let {
         lessonsRoadViewModel.setLessonStatusNameById(it)
@@ -176,12 +186,22 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: M
         Color(lessonsRoadViewModel.getLessonsStatusColorById(it))
     } ?: Color(0xFF4CAF50)
 
+    var boxModifier = Modifier.fillMaxWidth()
+    boxModifier = if (isFirstLessonInChapter && isLastLessonInChapter) {
+        boxModifier.wrapContentHeight().padding(0.dp, 98.dp, 50.dp, 98.dp)
+    } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
+        boxModifier.wrapContentHeight().padding(0.dp, 0.dp, 50.dp, 98.dp)
+    } else if (isFirstLessonInChapter && !isLastLessonInChapter) {
+        boxModifier.wrapContentHeight().padding(0.dp, 98.dp, 50.dp, 0.dp)
+    } else if (position % 2 == 0) {
+        boxModifier.wrapContentHeight().padding(0.dp, 0.dp, 50.dp, 0.dp)
+    } else {
+        boxModifier.height(240.dp).padding(0.dp, 0.dp, 50.dp, 0.dp)
+    }
+
     Box(
         contentAlignment = Alignment.TopEnd,
-        modifier = if (position % 2 == 0 || isFirstOrLastLessonInChapter)
-            Modifier.fillMaxWidth().wrapContentHeight().padding(0.dp, 0.dp, 50.dp, 0.dp)
-        else
-            Modifier.fillMaxWidth().height(240.dp).padding(0.dp, 0.dp, 50.dp, 0.dp)
+        modifier = boxModifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -282,6 +302,6 @@ fun LessonCardComposePreview() {
         Pair("status", "3")
     )
 
-    LessonCardLeftCompose(viewModel(), lesson, 0, true)
+    LessonCardLeftCompose(viewModel(), lesson, 0, isFirstLessonInChapter = true, isLastLessonInChapter = true)
 }
 
