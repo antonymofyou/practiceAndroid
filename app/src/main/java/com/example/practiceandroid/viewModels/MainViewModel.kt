@@ -65,9 +65,9 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     {
       "id": 4,
       "type": "rectangle",
-      "x": 300,
+      "x": 0,
       "y": 300,
-      "width": 200,
+      "width": 400,
       "height": 100,
       "color": "#FF5733",
       "borderColor": "#C70039",
@@ -85,7 +85,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
               "textDecoration": "underline"
             },
             {
-              "text": " This is a test text.",
+              "text": " Test text.",
               "fontSize": 18,
               "fontColor": "#333333"
             }
@@ -101,7 +101,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
               "fontColor": "#333333"
             },
             {
-              "text": " This is a test text.",
+              "text": " Test text.",
               "fontSize": 18,
               "fontColor": "#333333"
             }

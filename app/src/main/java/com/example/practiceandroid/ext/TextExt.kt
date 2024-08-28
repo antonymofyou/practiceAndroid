@@ -14,7 +14,7 @@ fun Alignment.Companion.valueOf(textVerticalAlignment: String?): Alignment.Verti
 }
 
 // Преобразует строковое значение выравнивания текста в соответствующее значение TextAlign
-fun TextAlign.Companion.valueOf(alignment: String): TextAlign? {
+fun TextAlign.Companion.valueOf(alignment: String): TextAlign {
     return when (alignment) {
         "left" -> TextAlign.Left
         "right" -> TextAlign.Right
@@ -23,6 +23,6 @@ fun TextAlign.Companion.valueOf(alignment: String): TextAlign? {
         "start" -> TextAlign.Start
         "end" -> TextAlign.End
         "unspecified" -> TextAlign.Unspecified
-        else -> null
+        else -> TextAlign.Left
     }
 }
