@@ -86,8 +86,9 @@ fun LessonsRoadCompose(viewType: Int) {
                 .verticalScroll(scrollState)
         ) {
             var index = 0   // общий порядковый номер уроков
+            val lastIndex = lessonsRoadViewModel.groupedLessons.map { it.size }.sum() - 1  // индекс последнего урока
             for (chapter in lessonsRoadViewModel.groupedLessons) {
-                LessonsChapterCompose(lessonsRoadViewModel, chapter, viewType, index)
+                LessonsChapterCompose(lessonsRoadViewModel, chapter, viewType, index, lastIndex)
                 index += chapter.size
             }
         }

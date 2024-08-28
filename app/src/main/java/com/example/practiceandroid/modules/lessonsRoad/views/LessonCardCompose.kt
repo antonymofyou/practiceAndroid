@@ -1,5 +1,6 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
+import android.graphics.Paint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,8 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import android.graphics.Path
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -39,19 +43,22 @@ import coil.compose.AsyncImage
 import com.example.practiceandroid.ConfigData
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
+import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewModel
 
 /**
  * Функция, отвечающая за отображение кружка урока,
  * когда первый урок находится слева
  *
  * @param lessonsRoadViewModel
+ * @param lessonsViewModel
  * @param lesson: информация о уроке
  * @param position: порядковый номер урока в списке всех занятий
  * @param isFirstLessonInChapter: указывает, если урок первый в списке занятий из раздела
  * @param isLastLessonInChapter: указывает, если урок последний в списке занятий из раздела
+ * @param lastIndex: номер самого последнего урока
  */
 @Composable
-fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean) {
+fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsViewModel: LessonsViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean, lastIndex: Int) {
 
     val statusText = lesson["status"]?.let {
         lessonsRoadViewModel.setLessonStatusNameById(it)
@@ -62,28 +69,75 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Ma
     } ?: Color(0xFF4CAF50)
 
     var boxModifier = Modifier.fillMaxWidth()
-    boxModifier = if (isFirstLessonInChapter && isLastLessonInChapter) {
-        boxModifier.wrapContentHeight().padding(50.dp, 98.dp, 0.dp, 98.dp)
+    var paddingTop = 0.dp
+    var paddingBottom = 0.dp
+    if (isFirstLessonInChapter && isLastLessonInChapter) {
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(50.dp, 0.dp, 0.dp, 0.dp)
+        paddingTop = 98.dp
+        paddingBottom = 98.dp
     } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
-        boxModifier.wrapContentHeight().padding(50.dp, 0.dp, 0.dp, 98.dp)
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(50.dp, 0.dp, 0.dp, 0.dp)
+        paddingBottom = 98.dp
     } else if (isFirstLessonInChapter && !isLastLessonInChapter) {
-        boxModifier.wrapContentHeight().padding(50.dp, 98.dp, 0.dp, 0.dp)
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(50.dp, 0.dp, 0.dp, 0.dp)
+        paddingTop = 98.dp
     } else if (position % 2 == 0) {
-        boxModifier.wrapContentHeight().padding(50.dp, 0.dp, 0.dp, 0.dp)
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(50.dp, 0.dp, 0.dp, 0.dp)
     } else {
-        boxModifier.height(240.dp).padding(50.dp, 0.dp, 0.dp, 0.dp)
+        boxModifier = boxModifier
+            .height(240.dp)
+            .padding(50.dp, 0.dp, 0.dp, 0.dp)
     }
 
     Box(
         contentAlignment = Alignment.TopStart,
         modifier = boxModifier
     ) {
+        val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
+        if (isFirstLessonInChapter && position != 0) {
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+            }
+            val circlePath = Path()
+            val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                path = circlePath,
+                paint = paint,
+                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 115),
+                height = lessonsViewModel.dpToPx(110)
+            )
+            Box (
+                modifier = Modifier
+                    .width((screenWidthDp - 50).dp)
+                    .height(100.dp)
+                    .padding(50.dp, 0.dp, 0.dp, 0.dp)
+            ) {
+                Image(
+                    bitmap = lineToRight.asImageBitmap(),
+                    contentDescription = "Right line",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .graphicsLayer {
+                            rotationY = 180f
+                        }
+                )
+            }
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .width(130.dp)
                 .wrapContentHeight()
+                .padding(0.dp, paddingTop, 0.dp, paddingBottom)
         ) {
             val lessonAddress = lesson["lesson_img_adr"]
             if (lessonAddress != null) {
@@ -162,6 +216,14 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Ma
                     .offset(0.dp, (-6).dp)
             )
         }
+
+//        if (position != lastIndex) {
+//            if (isLastLessonInChapter) {
+//                TODO("Bottom line")
+//            } else {
+//                TODO("Side line")
+//            }
+//        }
     }
 }
 
@@ -170,13 +232,15 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Ma
  * когда первый урок находится справа
  *
  * @param lessonsRoadViewModel
+ * @param lessonsViewModel
  * @param lesson: информация о уроке
  * @param position: порядковый номер урока в списке всех занятий
  * @param isFirstLessonInChapter: указывает, если урок первый в списке занятий из раздела
  * @param isLastLessonInChapter: указывает, если урок последний в списке занятий из раздела
+ * @param lastIndex: номер самого последнего урока
  */
 @Composable
-fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean) {
+fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsViewModel: LessonsViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean, lastIndex: Int) {
 
     val statusText = lesson["status"]?.let {
         lessonsRoadViewModel.setLessonStatusNameById(it)
@@ -187,28 +251,72 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lesson: M
     } ?: Color(0xFF4CAF50)
 
     var boxModifier = Modifier.fillMaxWidth()
-    boxModifier = if (isFirstLessonInChapter && isLastLessonInChapter) {
-        boxModifier.wrapContentHeight().padding(0.dp, 98.dp, 50.dp, 98.dp)
+    var paddingTop = 0.dp
+    var paddingBottom = 0.dp
+    if (isFirstLessonInChapter && isLastLessonInChapter) {
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(0.dp, 0.dp, 50.dp, 0.dp)
+        paddingTop = 98.dp
+        paddingBottom = 98.dp
     } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
-        boxModifier.wrapContentHeight().padding(0.dp, 0.dp, 50.dp, 98.dp)
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(0.dp, 0.dp, 50.dp, 0.dp)
+        paddingBottom = 98.dp
     } else if (isFirstLessonInChapter && !isLastLessonInChapter) {
-        boxModifier.wrapContentHeight().padding(0.dp, 98.dp, 50.dp, 0.dp)
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(0.dp, 0.dp, 50.dp, 0.dp)
+        paddingTop = 98.dp
     } else if (position % 2 == 0) {
-        boxModifier.wrapContentHeight().padding(0.dp, 0.dp, 50.dp, 0.dp)
+        boxModifier = boxModifier
+            .wrapContentHeight()
+            .padding(0.dp, 0.dp, 50.dp, 0.dp)
     } else {
-        boxModifier.height(240.dp).padding(0.dp, 0.dp, 50.dp, 0.dp)
+        boxModifier = boxModifier
+            .height(240.dp)
+            .padding(0.dp, 0.dp, 50.dp, 0.dp)
     }
 
     Box(
         contentAlignment = Alignment.TopEnd,
         modifier = boxModifier
     ) {
+        val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
+        if (isFirstLessonInChapter && position != 0) {
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+            }
+            val circlePath = Path()
+            val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                path = circlePath,
+                paint = paint,
+                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 115),
+                height = lessonsViewModel.dpToPx(110)
+            )
+            Box (
+                contentAlignment = Alignment.TopEnd,
+                modifier = Modifier
+                    .width((screenWidthDp - 50).dp)
+                    .height(100.dp)
+                    .padding(0.dp, 0.dp, 50.dp, 0.dp)
+            ) {
+                Image(
+                    bitmap = lineToRight.asImageBitmap(),
+                    contentDescription = "Right line",
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .width(130.dp)
                 .wrapContentHeight()
+                .padding(0.dp, paddingTop, 0.dp, paddingBottom)
         ) {
             val lessonAddress = lesson["lesson_img_adr"]
             if (lessonAddress != null) {
@@ -302,6 +410,6 @@ fun LessonCardComposePreview() {
         Pair("status", "3")
     )
 
-    LessonCardLeftCompose(viewModel(), lesson, 0, isFirstLessonInChapter = true, isLastLessonInChapter = true)
+    LessonCardLeftCompose(viewModel(), viewModel(), lesson, 0, isFirstLessonInChapter = true, isLastLessonInChapter = true, 0)
 }
 

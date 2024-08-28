@@ -43,13 +43,15 @@ import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewMod
  * @param chapter: список уроков по конкретному разделу
  * @param viewType: тип view
  * @param index: порядковый номер первого урока из раздела в общем списке занятий
+ * @param lastIndex: номер самого последнего урока
  */
 @Composable
 fun LessonsChapterCompose(
     lessonsRoadViewModel: LessonsRoadViewModel,
     chapter: ArrayList<Map<String, String>>,
     viewType: Int,
-    index: Int
+    index: Int,
+    lastIndex: Int
 ) {
 
     val chapterName = chapter[0]["lesson_chapter"] ?: "Неизвестный раздел"
@@ -81,15 +83,15 @@ fun LessonsChapterCompose(
             chapter.forEachIndexed { index, lesson ->
                 if (viewType == VIEW_TYPE_LEFT) {
                     if (position % 2 == 0) {
-                        LessonCardLeftCompose(lessonsRoadViewModel, lesson, position, index == 0, index == chapter.lastIndex)
+                        LessonCardLeftCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     } else {
-                        LessonCardRightCompose(lessonsRoadViewModel, lesson, position, index == 0, index == chapter.lastIndex)
+                        LessonCardRightCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     }
                 } else {
                     if (position % 2 == 0) {
-                        LessonCardRightCompose(lessonsRoadViewModel, lesson, position, index == 0, index == chapter.lastIndex)
+                        LessonCardRightCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     } else {
-                        LessonCardLeftCompose(lessonsRoadViewModel, lesson, position, index == 0, index == chapter.lastIndex)
+                        LessonCardLeftCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     }
                 }
                 ++position
@@ -164,5 +166,5 @@ fun LessonsChapterComposePreview() {
         Pair("status", "3")
     ) )
 
-    LessonsChapterCompose(viewModel(), lessonChapter, VIEW_TYPE_LEFT, 0)
+    LessonsChapterCompose(viewModel(), lessonChapter, VIEW_TYPE_LEFT, 0, 0)
 }
