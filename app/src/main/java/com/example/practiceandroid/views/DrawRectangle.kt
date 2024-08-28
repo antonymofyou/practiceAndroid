@@ -81,53 +81,29 @@ fun DrawRectangle(shape: ResponseShapes.Shape, focusManager: FocusManager) {
         verticalAlignment = Alignment.valueOf(shape.textVerticalAlignment)
     ) {
         // Перебираем текстовые блоки внутри фигуры
+        // Перебираем текстовые блоки внутри фигуры
         shape.text?.forEach { textBlock ->
-            textBlock.text.forEachIndexed { index, textSegment ->
-                val text = remember{mutableStateOf( textSegment.text)}
-                BasicTextField(
-                    value = text.value,
-                    {text.value = it},
-                    textStyle = TextStyle(textAlign = TextAlign.valueOf(textBlock.alignment),
-                        color = Color(android.graphics.Color.parseColor(textSegment.fontColor)),
-                        fontSize = textSegment.fontSize.sp,
-                        fontWeight = if (textSegment.type == "bold") FontWeight.Bold else FontWeight.Normal,
-                        textDecoration = if (textSegment.textDecoration == "underline") TextDecoration.Underline else null),
-                    modifier = Modifier.width(IntrinsicSize.Min),
-                    singleLine = false,
-                    enabled = true,
-                )
-                {
-                    val interactionSource = remember { MutableInteractionSource() }
-                    OutlinedTextFieldDefaults.DecorationBox(
-                        value = text.value,
-                        visualTransformation = VisualTransformation.None,
-                        innerTextField = it,
-                        singleLine = false,
-                        enabled = true,
-                        interactionSource = interactionSource,
-                    )
-
+            // Создаем строку с аннотациями для стилизации текста
+            val annotatedString = buildAnnotatedString {
+                textBlock.text.forEach { textSegment ->
+                    // Применяем стили к каждому сегменту текста
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color(android.graphics.Color.parseColor(textSegment.fontColor)),
+                            fontSize = textSegment.fontSize.sp,
+                            fontWeight = if (textSegment.type == "bold") FontWeight.Bold else FontWeight.Normal,
+                            textDecoration = if (textSegment.textDecoration == "underline") TextDecoration.Underline else null
+                        ),
+                    ) {
+                        append(textSegment.text)
+                    }
                 }
             }
+            // Отрисовываем текст внутри Row с применением заданных стилей и выравниванием
+            Text(
+                text = annotatedString,
+                textAlign = TextAlign.valueOf(textBlock.alignment),
+            )
         }
     }
 }
-
-//"text": [
-//{
-//    "alignment": "left",
-//    "text": [
-//    {
-//        "text": "Hello",
-//        "type": "bold",
-//        "fontSize": 24,
-//        "fontColor": "#333333",
-//        "textDecoration": "underline"
-//    },
-//    {
-//        "text": " This is a test text.",
-//        "fontSize": 18,
-//        "fontColor": "#333333"
-//    }
-//    ]
-//},

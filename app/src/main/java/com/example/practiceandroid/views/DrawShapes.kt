@@ -85,7 +85,6 @@ fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
         ) {
             // Перебираем все фигуры в списке shapes, который был передан в responseShapes
             responseShapes.shapes.forEach { shape ->
-                if (shape.type == "rectangle" && shape.text != null) {
                     // Определяем тип фигуры и вызываем соответствующую функцию для ее отрисовки
                     when (shape.type) {
                         "rectangle" -> DrawRectangle(shape, focusManager)
@@ -97,7 +96,6 @@ fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
                         )
                     }
                 }
-            }
         }
     }
 }
