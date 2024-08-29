@@ -18,8 +18,8 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -43,9 +43,11 @@ fun DrawImage(
 
     var offset by remember { mutableStateOf(Offset(shape.x, shape.y)) }
 
-    // Минимально допустимые значения для смещения
-    var minOffsetX = -offset.x
-    var minOffsetY = -offset.y
+    // Границы элемента
+    var top = offset.x
+    var left = offset.y
+    var right = left + shape.width.dp.value
+    var bottom = top + shape.height.dp.value
 
     val localDensity = LocalDensity.current
     val state = rememberTransformableState { scaleChange, offsetChange, _ ->
@@ -57,36 +59,32 @@ fun DrawImage(
         val cosRotation = cos(rotationRadians).toFloat()
         val sinRotation = sin(rotationRadians).toFloat()
 
-        // Рассчитываем минимальные и максимальные смещения с учетом вращения
-        val rotatedMinOffsetX = minOffsetX * cosRotation - minOffsetY * sinRotation
-        val rotatedMinOffsetY = minOffsetX * sinRotation + minOffsetY * cosRotation
+        // MinMax значения для смещения
+        val minOffsetX = -left
+        val minOffsetY = -top
+        val maxOffsetX = maxWidth - right
+        val maxOffsetY = maxHeight - bottom
 
-        val scaledWidth = shape.width * scale
-        val scaledHeight = shape.height * scale
-
-        val rotatedScaledWidthX = scaledWidth * cosRotation - scaledWidth * sinRotation
-        val rotatedScaledHeightY = scaledHeight * sinRotation + scaledHeight * cosRotation
-
-        val maxOffsetX = maxWidth - rotatedScaledWidthX - (-rotatedMinOffsetX)
-        val maxOffsetY = maxHeight - rotatedScaledHeightY - (-rotatedMinOffsetY)
-
-        // Ограничение смещения по оси Y
-        val rotatedOffsetY = if (minOffsetY > maxOffsetY) {
-            (offsetChange.y * scale).coerceIn(maxOffsetY, minOffsetY)
-        } else {
-            (offsetChange.y * scale).coerceIn(minOffsetY, maxOffsetY)
-        }
-
-        // Ограничение смещения по оси X
-        val rotatedOffsetX = if (minOffsetX > maxOffsetX) {
-            (offsetChange.x * scale).coerceIn(maxOffsetX, minOffsetX)
-        } else {
-            (offsetChange.x * scale).coerceIn(minOffsetX, maxOffsetX)
-        }
+        var rotatedOffsetY = offsetChange.y * scale
+        var rotatedOffsetX = offsetChange.x * scale
 
         // Применение вращения к смещению
-        val transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
-        val transformedOffsetY = rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+        var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
+        var transformedOffsetY = rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+
+        // Ограничение смещения по оси X
+        transformedOffsetX = if (minOffsetX > maxOffsetX) {
+            transformedOffsetX.coerceIn(maxOffsetX, minOffsetX)
+        } else {
+            transformedOffsetX.coerceIn(minOffsetX, maxOffsetX)
+        }
+
+        // Ограничение смещения по оси Y
+        transformedOffsetY = if (minOffsetY > maxOffsetY) {
+            transformedOffsetY.coerceIn(maxOffsetY, minOffsetY)
+        } else {
+            transformedOffsetY.coerceIn(minOffsetY, maxOffsetY)
+        }
 
         // Обновление значения смещения
         offset = Offset(
@@ -112,10 +110,12 @@ fun DrawImage(
             .zIndex(shape.zIndex)
             .clip(shape = RoundedCornerShape(shape.cornerRadius?.dp ?: 0.dp))
             .clickable { focusManager.clearFocus() }
-            .onGloballyPositioned { coordinates ->
-                val positionInRoot = coordinates.positionInParent()
-                minOffsetX = with(localDensity) { -positionInRoot.x.toDp().value }
-                minOffsetY = with(localDensity) { -positionInRoot.y.toDp().value }
+            .onGloballyPositioned { layoutCoordinates ->
+                val rect = layoutCoordinates.boundsInParent()
+                left = with(localDensity) { rect.left.toDp().value }
+                top = with(localDensity) { rect.top.toDp().value }
+                right = with(localDensity) { rect.right.toDp().value }
+                bottom = with(localDensity) { rect.bottom.toDp().value }
             }
             .transformable(state),
     )

@@ -22,7 +22,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
       "zIndex": 0.5,
       "cornerRadius": 5,
       "borderWidth": 5,
-      "rotation": 90
+      "rotation": 34
     },
     {
       "id": 2,

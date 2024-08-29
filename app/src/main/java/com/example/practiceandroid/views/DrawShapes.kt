@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.practiceandroid.ext.decodeBase64ToBitmap
 import com.example.practiceandroid.models.ResponseShapes
 
+//Компонент для отрисовки фигур, focusManager - для сброса фокуса ввода текста
 @Composable
 fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
 
@@ -31,16 +32,11 @@ fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
 
     var offset by remember { mutableStateOf(Offset.Zero) }
 
-    // Минимально допустимые значения для смещения
-    var minOffsetX = 0f
-    var minOffsetY = 0f
-
     BoxWithConstraints (
         modifier = Modifier
             .clipToBounds()
             .clickable { focusManager.clearFocus() }
     ){
-        val localDensity = LocalDensity.current
         val state = rememberTransformableState { scaleChange, offsetChange, _ ->
             scale = (scale * scaleChange).coerceIn(0.85f, 3f)
         }
@@ -56,11 +52,6 @@ fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
                 .fillMaxSize()
                 // Добавил для отладки
                 .border(4.dp, Color.Gray)
-                .onGloballyPositioned { coordinates ->
-                    val positionInRoot = coordinates.positionInParent()
-                    minOffsetX = with(localDensity) { -positionInRoot.x.toDp().value }
-                    minOffsetY = with(localDensity) { -positionInRoot.y.toDp().value }
-                }
                 .transformable(state)
                 .clipToBounds()
         ) {
