@@ -24,9 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import android.graphics.Path
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -115,20 +121,24 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
             )
             Box (
                 modifier = Modifier
-                    .width((screenWidthDp - 50).dp)
+                    .width((screenWidthDp / 2 - 50).dp)
                     .height(100.dp)
                     .padding(50.dp, 0.dp, 0.dp, 0.dp)
             ) {
                 Image(
                     bitmap = lineToRight.asImageBitmap(),
                     contentDescription = "Right line",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .graphicsLayer {
                             rotationY = 180f
                         }
                 )
             }
+        }
+
+        var columnHeight by remember {
+            mutableStateOf(0.dp)
         }
 
         Column(
@@ -138,6 +148,9 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
                 .width(130.dp)
                 .wrapContentHeight()
                 .padding(0.dp, paddingTop, 0.dp, paddingBottom)
+                .onGloballyPositioned { coordinates ->
+                    columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
+                }
         ) {
             val lessonAddress = lesson["lesson_img_adr"]
             if (lessonAddress != null) {
@@ -217,13 +230,38 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
             )
         }
 
-//        if (position != lastIndex) {
-//            if (isLastLessonInChapter) {
-//                TODO("Bottom line")
-//            } else {
+        if (position != lastIndex) {
+            if (isLastLessonInChapter) {
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+                }
+                val circlePath = Path()
+                val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                    path = circlePath,
+                    paint = paint,
+                    width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 115),
+                    height = lessonsViewModel.dpToPx(115)
+                )
+                Box (
+                    contentAlignment = Alignment.BottomEnd,
+                    modifier = Modifier
+                        .width((screenWidthDp / 2 - 50).dp)
+                        .height(columnHeight + 98.dp)
+                        .padding(65.dp, 0.dp, 0.dp, 0.dp)
+                ) {
+                    Image(
+                        bitmap = lineToRight.asImageBitmap(),
+                        contentDescription = "Right line",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .rotate(180f)
+                    )
+                }
+            }
+//            else {
 //                TODO("Side line")
 //            }
-//        }
+        }
     }
 }
 
@@ -289,23 +327,22 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                 color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
             }
             val circlePath = Path()
-            val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+            val lineToLeft = lessonsRoadViewModel.createLineBitmapRightToLeft(
                 path = circlePath,
                 paint = paint,
-                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 115),
-                height = lessonsViewModel.dpToPx(110)
+                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
+                height = lessonsViewModel.dpToPx(100)
             )
             Box (
-                contentAlignment = Alignment.TopEnd,
+                contentAlignment = Alignment.TopStart,
                 modifier = Modifier
-                    .width((screenWidthDp - 50).dp)
+                    .width((screenWidthDp / 2 - 50).dp)
                     .height(100.dp)
-                    .padding(0.dp, 0.dp, 50.dp, 0.dp)
             ) {
                 Image(
-                    bitmap = lineToRight.asImageBitmap(),
+                    bitmap = lineToLeft.asImageBitmap(),
                     contentDescription = "Right line",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Fit
                 )
             }
         }
