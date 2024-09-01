@@ -116,14 +116,14 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
             val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
                 path = circlePath,
                 paint = paint,
-                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 115),
+                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
                 height = lessonsViewModel.dpToPx(110)
             )
             Box (
+                contentAlignment = Alignment.TopEnd,
                 modifier = Modifier
                     .width((screenWidthDp / 2 - 50).dp)
-                    .height(100.dp)
-                    .padding(50.dp, 0.dp, 0.dp, 0.dp)
+                    .height(110.dp)
             ) {
                 Image(
                     bitmap = lineToRight.asImageBitmap(),
@@ -239,15 +239,14 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
                 val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
                     path = circlePath,
                     paint = paint,
-                    width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 115),
-                    height = lessonsViewModel.dpToPx(115)
+                    width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
+                    height = lessonsViewModel.dpToPx(117)
                 )
                 Box (
                     contentAlignment = Alignment.BottomEnd,
                     modifier = Modifier
                         .width((screenWidthDp / 2 - 50).dp)
-                        .height(columnHeight + 98.dp)
-                        .padding(65.dp, 0.dp, 0.dp, 0.dp)
+                        .height(columnHeight + 98.dp + if (isFirstLessonInChapter && position != 0) 98.dp else 0.dp)
                 ) {
                     Image(
                         bitmap = lineToRight.asImageBitmap(),
@@ -347,6 +346,10 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
             }
         }
 
+        var columnHeight by remember {
+            mutableStateOf(0.dp)
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
@@ -354,6 +357,9 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                 .width(130.dp)
                 .wrapContentHeight()
                 .padding(0.dp, paddingTop, 0.dp, paddingBottom)
+                .onGloballyPositioned { coordinates ->
+                    columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
+                }
         ) {
             val lessonAddress = lesson["lesson_img_adr"]
             if (lessonAddress != null) {
@@ -431,6 +437,41 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                     .wrapContentHeight()
                     .offset(0.dp, (-6).dp)
             )
+        }
+
+        if (position != lastIndex) {
+            if (isLastLessonInChapter) {
+                val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+                }
+                val circlePath = Path()
+                val lineToRight = lessonsRoadViewModel.createLineBitmapRightToLeft(
+                    path = circlePath,
+                    paint = paint,
+                    width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
+                    height = lessonsViewModel.dpToPx(105)
+                )
+                Box (
+                    contentAlignment = Alignment.BottomStart,
+                    modifier = Modifier
+                        .width((screenWidthDp / 2 - 50).dp)
+                        .height(
+                            columnHeight + 98.dp + if (isFirstLessonInChapter && position != 0) 98.dp else 0.dp)
+                ) {
+                    Image(
+                        bitmap = lineToRight.asImageBitmap(),
+                        contentDescription = "Right line",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .graphicsLayer {
+                                rotationX = 180f
+                            }
+                    )
+                }
+            }
+//            else {
+//                TODO("Side line")
+//            }
         }
     }
 }
