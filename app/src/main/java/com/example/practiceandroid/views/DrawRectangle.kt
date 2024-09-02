@@ -3,6 +3,7 @@ package com.example.practiceandroid.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,6 +26,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -140,7 +142,51 @@ fun DrawRectangle(
                 right = with(localDensity) { rect.right.toDp().value }
                 bottom = with(localDensity) { rect.bottom.toDp().value }
             }
-            .transformable(state),
+            .pointerInput(Unit) {
+                detectTransformGestures { _, offsetChange, scaleChange, _ ->
+
+                    // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
+                    scale = (scale * scaleChange).coerceIn(0.85f, 3f)
+
+                    // Рассчитываем косинус и синус угла вращения в радианах
+                    val rotationRadians = Math.toRadians((shape.rotation?.toDouble() ?: 0.0))
+                    val cosRotation = cos(rotationRadians).toFloat()
+                    val sinRotation = sin(rotationRadians).toFloat()
+
+                    // MinMax значения для смещения
+                    val minOffsetX = -left
+                    val minOffsetY = -top
+                    val maxOffsetX = maxWidth - right
+                    val maxOffsetY = maxHeight - bottom
+
+                    var rotatedOffsetY = offsetChange.y * scale
+                    var rotatedOffsetX = offsetChange.x * scale
+
+                    // Применение вращения к смещению
+                    var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
+                    var transformedOffsetY = rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+
+                    // Ограничение смещения по оси X
+                    transformedOffsetX = if (minOffsetX > maxOffsetX) {
+                        transformedOffsetX.coerceIn(maxOffsetX, minOffsetX)
+                    } else {
+                        transformedOffsetX.coerceIn(minOffsetX, maxOffsetX)
+                    }
+
+                    // Ограничение смещения по оси Y
+                    transformedOffsetY = if (minOffsetY > maxOffsetY) {
+                        transformedOffsetY.coerceIn(maxOffsetY, minOffsetY)
+                    } else {
+                        transformedOffsetY.coerceIn(minOffsetY, maxOffsetY)
+                    }
+
+                    // Обновление значения смещения
+                    offset = Offset(
+                        x = offset.x + transformedOffsetX,
+                        y = offset.y + transformedOffsetY
+                    )
+
+                }},
         verticalAlignment = Alignment.valueOf(shape.textVerticalAlignment)
     ) {
         // Перебираем текстовые блоки внутри фигуры
