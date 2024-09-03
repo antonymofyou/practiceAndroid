@@ -66,6 +66,7 @@ import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewMod
 @Composable
 fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsViewModel: LessonsViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean, lastIndex: Int) {
 
+    // Получение параметров для отображения информации о занятии
     val statusText = lesson["status"]?.let {
         lessonsRoadViewModel.setLessonStatusNameById(it)
     } ?: "Готово"
@@ -74,6 +75,7 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
         Color(lessonsRoadViewModel.getLessonsStatusColorById(it))
     } ?: Color(0xFF4CAF50)
 
+    // Настройка смещения влево/вправо, вверх/вниз и высоты
     var boxModifier = Modifier.fillMaxWidth()
     var paddingTop = 0.dp
     var paddingBottom = 0.dp
@@ -108,6 +110,8 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
         modifier = boxModifier
     ) {
         val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
+
+        // Верхняя линия
         if (isFirstLessonInChapter && position != 0) {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
@@ -137,10 +141,12 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
             }
         }
 
+        // Высота кружка и подписей под ним
         var columnHeight by remember {
             mutableStateOf(0.dp)
         }
 
+        // Кружок и подписи под ним
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
@@ -152,6 +158,7 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
                     columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
                 }
         ) {
+            // Загрузка изображения для кружка
             val lessonAddress = lesson["lesson_img_adr"]
             if (lessonAddress != null) {
                 AsyncImage(
@@ -187,6 +194,7 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
                 )
             }
 
+            // Текст о состоянии занятия
             Box(
                 modifier = Modifier
                     .offset(0.dp, (-10).dp)
@@ -213,6 +221,8 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
                     )
                 }
             }
+
+            // Название занятия
             Text(
                 text = "${lesson["lesson_number"]}." + "\u00A0" + "${lesson["lesson_short_name"]}",
                 textAlign = TextAlign.Center,
@@ -230,6 +240,7 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
             )
         }
 
+        // Нижняя линия
         if (position != lastIndex) {
             if (isLastLessonInChapter) {
                 val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -239,8 +250,8 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
                 val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
                     path = circlePath,
                     paint = paint,
-                    width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
-                    height = lessonsViewModel.dpToPx(117)
+                    width = lessonsViewModel.dpToPx(110 * (screenWidthDp / 2 - 105) / 96),
+                    height = lessonsViewModel.dpToPx(110)
                 )
                 Box (
                     contentAlignment = Alignment.BottomEnd,
@@ -279,6 +290,7 @@ fun LessonCardLeftCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVie
 @Composable
 fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsViewModel: LessonsViewModel, lesson: Map<String, String>, position: Int, isFirstLessonInChapter: Boolean, isLastLessonInChapter: Boolean, lastIndex: Int) {
 
+    // Получение параметров для отображения информации о занятии
     val statusText = lesson["status"]?.let {
         lessonsRoadViewModel.setLessonStatusNameById(it)
     } ?: "Готово"
@@ -287,6 +299,7 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
         Color(lessonsRoadViewModel.getLessonsStatusColorById(it))
     } ?: Color(0xFF4CAF50)
 
+    // Настройка смещения влево/вправо, вверх/вниз и высоты
     var boxModifier = Modifier.fillMaxWidth()
     var paddingTop = 0.dp
     var paddingBottom = 0.dp
@@ -321,6 +334,8 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
         modifier = boxModifier
     ) {
         val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
+
+        // Верхняя линия
         if (isFirstLessonInChapter && position != 0) {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
@@ -329,8 +344,8 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
             val lineToLeft = lessonsRoadViewModel.createLineBitmapRightToLeft(
                 path = circlePath,
                 paint = paint,
-                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
-                height = lessonsViewModel.dpToPx(100)
+                width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 105),
+                height = lessonsViewModel.dpToPx(96)
             )
             Box (
                 contentAlignment = Alignment.TopStart,
@@ -346,10 +361,12 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
             }
         }
 
+        // Высота кружка и подписей под ним
         var columnHeight by remember {
             mutableStateOf(0.dp)
         }
 
+        // Кружок и подписи под ним
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
@@ -361,6 +378,8 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                     columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
                 }
         ) {
+
+            // Загрузка изображения для кружка
             val lessonAddress = lesson["lesson_img_adr"]
             if (lessonAddress != null) {
                 AsyncImage(
@@ -396,6 +415,7 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                 )
             }
 
+            // Текст о состоянии занятия
             Box(
                 modifier = Modifier
                     .offset(0.dp, (-10).dp)
@@ -422,6 +442,8 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                     )
                 }
             }
+
+            // Название занятия
             Text(
                 text = "${lesson["lesson_number"]}." + "\u00A0" + "${lesson["lesson_short_name"]}",
                 textAlign = TextAlign.Center,
@@ -439,6 +461,7 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
             )
         }
 
+        // Нижняя линия
         if (position != lastIndex) {
             if (isLastLessonInChapter) {
                 val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -448,7 +471,7 @@ fun LessonCardRightCompose(lessonsRoadViewModel: LessonsRoadViewModel, lessonsVi
                 val lineToRight = lessonsRoadViewModel.createLineBitmapRightToLeft(
                     path = circlePath,
                     paint = paint,
-                    width = lessonsViewModel.dpToPx(screenWidthDp / 2 - 90),
+                    width = lessonsViewModel.dpToPx(105 * (screenWidthDp / 2 - 90) / 110),
                     height = lessonsViewModel.dpToPx(105)
                 )
                 Box (

@@ -54,6 +54,7 @@ fun LessonsChapterCompose(
     lastIndex: Int
 ) {
 
+    // Задание цвета заднего фона раздела
     val chapterName = chapter[0]["lesson_chapter"] ?: "Неизвестный раздел"
     val lessonsViewModel = viewModel<LessonsViewModel>()
     Box(
@@ -68,9 +69,12 @@ fun LessonsChapterCompose(
             )
     ) {
 
+        // Высота столбца, содержащего кружки с уроками
         var columnHeight by remember {
             mutableStateOf(0.dp)
         }
+
+        // Столбец с кружками уроков
         Column (
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,6 +83,7 @@ fun LessonsChapterCompose(
                     columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
                 }
         ) {
+            // порядковый номер первого урока раздела в списке всех уроков
             var position = index
             chapter.forEachIndexed { index, lesson ->
                 if (viewType == VIEW_TYPE_LEFT) {
@@ -97,12 +102,15 @@ fun LessonsChapterCompose(
                 ++position
             }
         }
+
+        // Отображение плашек с названием раздела
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(columnHeight)
         ) {
+            // Верхняя
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,6 +132,7 @@ fun LessonsChapterCompose(
                 )
             }
 
+            // Нижняя
             Box (
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier.fillMaxSize()

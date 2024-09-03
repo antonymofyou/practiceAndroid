@@ -80,6 +80,7 @@ fun LessonsRoadCompose(viewType: Int) {
                     translationY = .2f * scrollState.value
                 }
         )
+        // Столбец для отображения всех разделов
         Column (
             modifier = Modifier
                 .fillMaxSize()
