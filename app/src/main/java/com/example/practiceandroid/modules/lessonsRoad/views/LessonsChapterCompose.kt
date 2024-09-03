@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -83,20 +84,24 @@ fun LessonsChapterCompose(
                     columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
                 }
         ) {
+            val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
+            // Объект, отвечающий за представление кружков
+            val lessonCardView = LessonCardView(lessonsRoadViewModel, lessonsViewModel, screenWidthDp)
+
             // порядковый номер первого урока раздела в списке всех уроков
             var position = index
             chapter.forEachIndexed { index, lesson ->
                 if (viewType == VIEW_TYPE_LEFT) {
                     if (position % 2 == 0) {
-                        LessonCardLeftCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
+                        lessonCardView.LessonCardLeftCompose(lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     } else {
-                        LessonCardRightCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
+                        lessonCardView.LessonCardRightCompose(lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     }
                 } else {
                     if (position % 2 == 0) {
-                        LessonCardRightCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
+                        lessonCardView.LessonCardRightCompose(lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     } else {
-                        LessonCardLeftCompose(lessonsRoadViewModel, lessonsViewModel, lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
+                        lessonCardView.LessonCardLeftCompose(lesson, position, index == 0, index == chapter.lastIndex, lastIndex)
                     }
                 }
                 ++position
