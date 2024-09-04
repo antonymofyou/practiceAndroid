@@ -46,6 +46,8 @@ fun DrawImage(
 
     var offset by remember { mutableStateOf(Offset(shape.x, shape.y)) }
 
+    var rotate by remember { mutableStateOf(shape.rotation ?: 0f)}
+
     // Границы элемента
     var top by remember { mutableFloatStateOf(0f) }
     var left by remember { mutableFloatStateOf(0f) }
@@ -62,7 +64,7 @@ fun DrawImage(
         contentDescription = null,
         modifier = Modifier
             .graphicsLayer(
-                rotationZ = shape.rotation ?: 0f,
+                rotationZ = rotate,
                 scaleX = scale,
                 scaleY = scale,
                 translationX = offset.x,
@@ -74,12 +76,15 @@ fun DrawImage(
             .clip(shape = RoundedCornerShape(shape.cornerRadius?.dp ?: 0.dp))
             .clickable { focusManager.clearFocus() }
             .pointerInput(Unit) {
-                detectTransformGestures { _, offsetChange, scaleChange, _ ->
+                detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
                     // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
                     scale = (scale * scaleChange).coerceIn(0.85f, 3f)
 
+                    // Обновляем поворот
+                    rotate += rotateChange
+
                     // Рассчитываем косинус и синус угла вращения в радианах
-                    val rotationRadians = Math.toRadians((shape.rotation?.toDouble() ?: 0.0))
+                    val rotationRadians = Math.toRadians(rotate.toDouble())
                     val cosRotation = cos(rotationRadians).toFloat()
                     val sinRotation = sin(rotationRadians).toFloat()
 
