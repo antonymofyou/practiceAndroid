@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,10 +47,13 @@ fun DrawImage(
     var offset by remember { mutableStateOf(Offset(shape.x, shape.y)) }
 
     // Границы элемента
-    var top = offset.x
-    var left = offset.y
-    var right = left + shape.width.dp.value
-    var bottom = top + shape.height.dp.value
+    var top by remember { mutableFloatStateOf(0f) }
+    var left by remember { mutableFloatStateOf(0f) }
+    var right by remember { mutableFloatStateOf(0f) }
+    var bottom by remember { mutableFloatStateOf(0f) }
+
+    // Вспомогательная переменная для рекомпозиции
+    var recomposition = 0f
 
     val localDensity = LocalDensity.current
 
@@ -113,6 +117,7 @@ fun DrawImage(
                     )
                 }}
             .onGloballyPositioned { layoutCoordinates ->
+                recomposition
                 val rect = layoutCoordinates.boundsInParent()
                 left = with(localDensity) { rect.left.toDp().value }
                 top = with(localDensity) { rect.top.toDp().value }
