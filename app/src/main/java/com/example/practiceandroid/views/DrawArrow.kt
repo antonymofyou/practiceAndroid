@@ -3,6 +3,7 @@ package com.example.practiceandroid.views
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
@@ -137,6 +139,49 @@ fun DrawArrow(shape: ResponseShapes.Shape, focusManager: FocusManager, maxWidth:
             )
             .zIndex(shape.zIndex)
             .clickable { focusManager.clearFocus() }
+            .pointerInput(Unit) {
+                detectTransformGestures { _, offsetChange, scaleChange, _ ->
+                    // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
+                    scale = (scale * scaleChange).coerceIn(0.85f, 3f)
+
+                    // Рассчитываем косинус и синус угла вращения в радианах
+                    val rotationRadians = Math.toRadians(shape.startRotation?.toDouble() ?: 0.0)
+                    val cosRotation = cos(rotationRadians).toFloat()
+                    val sinRotation = sin(rotationRadians).toFloat()
+
+                    // MinMax значения для смещения
+                    val minOffsetX = -left
+                    val minOffsetY = -top
+                    val maxOffsetX = maxWidth - right
+                    val maxOffsetY = maxHeight - bottom
+
+                    var rotatedOffsetY = offsetChange.y * scale
+                    var rotatedOffsetX = offsetChange.x * scale
+
+                    // Применение вращения к смещению
+                    var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
+                    var transformedOffsetY = rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+
+                    // Ограничение смещения по оси X
+                    transformedOffsetX = if (minOffsetX > maxOffsetX) {
+                        transformedOffsetX.coerceIn(maxOffsetX, minOffsetX)
+                    } else {
+                        transformedOffsetX.coerceIn(minOffsetX, maxOffsetX)
+                    }
+
+                    // Ограничение смещения по оси Y
+                    transformedOffsetY = if (minOffsetY > maxOffsetY) {
+                        transformedOffsetY.coerceIn(maxOffsetY, minOffsetY)
+                    } else {
+                        transformedOffsetY.coerceIn(minOffsetY, maxOffsetY)
+                    }
+
+                    // Обновление значения смещения
+                    offset = Offset(
+                        x = offset.x + transformedOffsetX,
+                        y = offset.y + transformedOffsetY
+                    )
+                }}
             .onGloballyPositioned { layoutCoordinates ->
                 val rect = layoutCoordinates.boundsInParent()
                 left = with(localDensity) { rect.left.toDp().value }
@@ -144,7 +189,6 @@ fun DrawArrow(shape: ResponseShapes.Shape, focusManager: FocusManager, maxWidth:
                 right = with(localDensity) { rect.right.toDp().value }
                 bottom = with(localDensity) { rect.bottom.toDp().value }
             }
-            .transformable(state)
             .height(with(localDensity) {shape.height.toDp()})
             .width(with(localDensity) {shape.width.toDp()})
     ) {

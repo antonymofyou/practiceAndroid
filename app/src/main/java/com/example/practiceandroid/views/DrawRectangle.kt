@@ -51,7 +51,6 @@ fun DrawRectangle(
     focusManager: FocusManager,
     maxWidth: Float,
     maxHeight: Float,
-    helper: MutableState<Boolean>,
 ) {
     var scale by remember { mutableStateOf(1f) }
 
@@ -95,7 +94,6 @@ fun DrawRectangle(
             .clickable { focusManager.clearFocus() }
             .pointerInput(Unit) {
                 detectTransformGestures { _, offsetChange, scaleChange, _ ->
-                    helper.value = true
                     // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
                     scale = (scale * scaleChange).coerceIn(0.85f, 3f)
 
