@@ -30,8 +30,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.ext.decodeBase64ToBitmap
 import com.example.practiceandroid.models.ResponseShapes
+import com.example.practiceandroid.viewModels.RectangleViewModel
+import com.example.practiceandroid.viewModels.RectangleViewModelFactory
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlin.math.cos
@@ -94,7 +97,14 @@ fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
             responseShapes.shapes.forEach { shape ->
                     // Определяем тип фигуры и вызываем соответствующую функцию для ее отрисовки
                     when (shape.type) {
-                        "rectangle" -> DrawRectangle(shape, focusManager, maxWidth.value, maxHeight.value)
+                        "rectangle" -> {
+                            val rectangleViewModel: RectangleViewModel = viewModel(
+                                factory = RectangleViewModelFactory(shape)
+                            )
+                            DrawRectangle(
+                                rectangleViewModel, focusManager, maxWidth.value, maxHeight.value
+                            )
+                        }
                         "circle" -> DrawCircle(shape, focusManager, maxWidth.value, maxHeight.value)
                         "arrow" -> DrawArrow(shape, focusManager, maxWidth.value, maxHeight.value)
                         "image" -> DrawImage(

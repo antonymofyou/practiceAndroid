@@ -1,24 +1,34 @@
 package com.example.practiceandroid.views
 
+import MainViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +45,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.ext.valueOf
 import com.example.practiceandroid.models.ResponseShapes
+import com.example.practiceandroid.viewModels.RectangleViewModel
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -47,22 +60,25 @@ import kotlin.math.sin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawRectangle(
-    shape: ResponseShapes.Shape,
+    rectangleViewModel: RectangleViewModel,
     focusManager: FocusManager,
     maxWidth: Float,
     maxHeight: Float,
 ) {
+
     var scale by remember { mutableStateOf(1f) }
-
-    var offset by remember { mutableStateOf(Offset(shape.x, shape.y)) }
-
-    var rotate by remember { mutableStateOf(shape.rotation ?: 0f)}
+    var offset by remember { mutableStateOf(rectangleViewModel.offset) }
+    var rotate by remember { mutableStateOf(rectangleViewModel.rotation)}
 
     // Границы элемента
     var top by remember { mutableFloatStateOf(0f) }
     var left by remember { mutableFloatStateOf(0f) }
     var right by remember { mutableFloatStateOf(0f) }
     var bottom by remember { mutableFloatStateOf(0f) }
+
+    var showContextMenu = remember { mutableStateOf(false) }// Контекстное меню
+    var showDeleteDialog = remember  { mutableStateOf(false) }// Окно подтверждения удаления
+    var showResizeDialog = remember  { mutableStateOf(false) }// Окно изменения размеров
 
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
@@ -81,18 +97,18 @@ fun DrawRectangle(
             )
             // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
             .background(
-                color = Color(android.graphics.Color.parseColor(shape.color)),
-                shape = RoundedCornerShape(shape.cornerRadius?.dp ?: 0.dp)
+                color = Color(android.graphics.Color.parseColor(rectangleViewModel.color)),
+                shape = RoundedCornerShape(rectangleViewModel.cornerRadius)
             )
             // Устанавливаем границу для прямоугольника
             .border(
-                width = shape.borderWidth?.dp ?: 0.dp,
-                color = Color(android.graphics.Color.parseColor(shape.borderColor)),
-                shape = RoundedCornerShape(shape.cornerRadius?.dp ?: 0.dp)
+                width = rectangleViewModel.borderWidth,
+                color = Color(android.graphics.Color.parseColor(rectangleViewModel.color)),
+                shape = RoundedCornerShape(rectangleViewModel.cornerRadius)
             )
-            .width(shape.width.dp)
-            .height(shape.height.dp)
-            .zIndex(shape.zIndex)
+            .width(rectangleViewModel.width.value)
+            .height(rectangleViewModel.height.value)
+            .zIndex(rectangleViewModel.zIndex.value)
             .clickable { focusManager.clearFocus() }
             .pointerInput(Unit) {
                 detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
@@ -140,6 +156,13 @@ fun DrawRectangle(
                         y = offset.y + transformedOffsetY
                     )
                 }}
+            .pointerInput(Unit){
+                detectTapGestures(
+                    onLongPress = {
+                        showContextMenu.value = true
+                    }
+                )
+            }
             .onGloballyPositioned { layoutCoordinates  ->
                 recomposition
                 val rect = layoutCoordinates.boundsInParent()
@@ -148,10 +171,10 @@ fun DrawRectangle(
                 right = with(localDensity) { rect.right.toDp().value }
                 bottom = with(localDensity) { rect.bottom.toDp().value }
             },
-        verticalAlignment = Alignment.valueOf(shape.textVerticalAlignment)
+        verticalAlignment = Alignment.valueOf(rectangleViewModel.textVerticalAlignment)
     ) {
         // Перебираем текстовые блоки внутри фигуры
-        shape.text?.forEach { textBlock ->
+        rectangleViewModel.text?.forEach { textBlock ->
             textBlock.text.forEachIndexed { index, textSegment ->
                 val text = remember{mutableStateOf( textSegment.text)}
                 BasicTextField(
@@ -181,4 +204,113 @@ fun DrawRectangle(
             }
         }
     }
+
+
+    if (showContextMenu.value) {
+        ContextMenu(showContextMenu, showResizeDialog, showDeleteDialog )
+    }
+
+    if (showDeleteDialog.value) {
+        DeleteDialog(showDeleteDialog)
+    }
+
+    if (showResizeDialog.value) {
+        ResizeDialog(showResizeDialog, rectangleViewModel.width, rectangleViewModel.height, rectangleViewModel.zIndex)
+    }
 }
+
+@Composable
+fun ResizeDialog(
+    showResizeDialog: MutableState<Boolean>,
+    width: MutableState<Dp>,
+    height: MutableState<Dp>,
+    zIndex: MutableState<Float>
+) {
+    AlertDialog(
+        onDismissRequest = { showResizeDialog.value = false },
+        confirmButton = {
+            TextButton(onClick = {
+                //onUpdateShape(newWidth, newHeight, newZIndex)
+                showResizeDialog.value = false
+            }) {
+                Text("ОК")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { showResizeDialog.value = false }) {
+                Text("Отмена")
+            }
+        },
+        title = { Text("Изменить размеры и слой") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = width.value.toString(),
+                    onValueChange = { width.value = it.toFloat().dp},
+                    label = { Text("Ширина") }
+                )
+                OutlinedTextField(
+                    value = height.value.toString(),
+                    onValueChange = { height.value = it.toFloat().dp},
+                    label = { Text("Высота") }
+                )
+                OutlinedTextField(
+                    value = zIndex.value.toString(),
+                    onValueChange = { zIndex.value = it.toFloat()},
+                    label = { Text("Слой (zIndex)") }
+                )
+            }
+        }
+    )
+}
+
+
+@Composable
+fun DeleteDialog(showDeleteDialog: MutableState<Boolean>) {
+    AlertDialog(
+        onDismissRequest = { showDeleteDialog.value = false },
+        confirmButton = {
+            TextButton(onClick = {
+                //onDelete()
+                showDeleteDialog.value = false
+            }) {
+                Text("Да")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { showDeleteDialog.value = false }) {
+                Text("Нет")
+            }
+        },
+        title = { Text("Подтверждение удаления") },
+        text = { Text("Вы уверены, что хотите удалить эту фигуру?") }
+    )
+}
+
+
+@Composable
+fun ContextMenu(showContextMenu: MutableState<Boolean>,
+                showResizeDialog: MutableState<Boolean>,
+                showDeleteDialog: MutableState<Boolean>
+                ) {
+    DropdownMenu(
+        expanded = showContextMenu.value,
+        onDismissRequest = { showContextMenu.value = false }
+    ) {
+        DropdownMenuItem(
+            text = { Text("Удалить") },
+            onClick = {
+                showDeleteDialog.value = true
+                showContextMenu.value = false
+            }
+        )
+        DropdownMenuItem(
+            text = { Text("Изменить размер") },
+            onClick = {
+                showResizeDialog.value = true
+                showContextMenu.value = false
+            }
+        )
+    }
+}
+
