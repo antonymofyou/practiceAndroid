@@ -75,8 +75,8 @@ fun LessonsChapterCompose(
             mutableStateOf(0.dp)
         }
 
-        // Столбец с кружками уроков
-        Column (
+        // Блок с кружками уроков
+        Box (
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()

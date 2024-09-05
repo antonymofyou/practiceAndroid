@@ -60,6 +60,10 @@ class LessonCardView(
     private val screenWidthDp: Int
     ) {
 
+    // Показывает, насколько нужно сдвинуть вниз блок с карточкой
+    // относительно верхней линии начала раздела
+    private var verticalOffset = 0.dp
+
     // Параметры соединяющих линий
     private val leftUpperLineHeight = 110
     private val rightUpperLineHeight = 96
@@ -113,19 +117,24 @@ class LessonCardView(
                 .wrapContentHeight()
                 .padding(50.dp, 0.dp, 0.dp, 0.dp)
             paddingTop = 98.dp
-        } else if (position % 2 == 0) {
+        } else {
             boxModifier = boxModifier
                 .wrapContentHeight()
                 .padding(50.dp, 0.dp, 0.dp, 0.dp)
-        } else {
-            boxModifier = boxModifier
-                .height(240.dp)
-                .padding(50.dp, 0.dp, 0.dp, 0.dp)
+        }
+
+        // Высота всего блока под кружок
+        var boxHeight by remember {
+            mutableStateOf(0.dp)
         }
 
         Box(
             contentAlignment = Alignment.TopStart,
             modifier = boxModifier
+                .padding(0.dp, verticalOffset, 0.dp, 0.dp)
+                .onGloballyPositioned { coordinates ->
+                    boxHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
+                }
         ) {
 
             // Верхняя линия
@@ -290,6 +299,21 @@ class LessonCardView(
 //            }
             }
         }
+
+        // Сдвиг увеличивается на высоту текущего блока
+        verticalOffset += if (position % 2 != 0) {
+            boxHeight
+        } else {
+            if (isFirstLessonInChapter && isLastLessonInChapter) {
+                boxHeight
+            } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
+                boxHeight
+            } else {
+                // В данном случае следующий блок будет наложен на текущий.
+                // Реализован negative top margin
+                if (boxHeight - 50.dp > 0.dp) boxHeight - 50.dp else boxHeight
+            }
+        }
     }
 
     /**
@@ -334,19 +358,24 @@ class LessonCardView(
                 .wrapContentHeight()
                 .padding(0.dp, 0.dp, 50.dp, 0.dp)
             paddingTop = 98.dp
-        } else if (position % 2 == 0) {
+        } else {
             boxModifier = boxModifier
                 .wrapContentHeight()
                 .padding(0.dp, 0.dp, 50.dp, 0.dp)
-        } else {
-            boxModifier = boxModifier
-                .height(240.dp)
-                .padding(0.dp, 0.dp, 50.dp, 0.dp)
+        }
+
+        // Высота всего блока под кружок
+        var boxHeight by remember {
+            mutableStateOf(0.dp)
         }
 
         Box(
             contentAlignment = Alignment.TopEnd,
             modifier = boxModifier
+                .padding(0.dp, verticalOffset, 0.dp, 0.dp)
+                .onGloballyPositioned { coordinates ->
+                    boxHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
+                }
         ) {
 
             // Верхняя линия
@@ -510,6 +539,21 @@ class LessonCardView(
 //            else {
 //                TODO("Side line")
 //            }
+            }
+        }
+
+        // Сдвиг увеличивается на высоту текущего блока
+        verticalOffset += if (position % 2 != 0) {
+            boxHeight
+        } else {
+            if (isFirstLessonInChapter && isLastLessonInChapter) {
+                boxHeight
+            } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
+                boxHeight
+            } else {
+                // В данном случае следующий блок будет наложен на текущий.
+                // Реализован negative top margin
+                if (boxHeight - 50.dp > 0.dp) boxHeight - 50.dp else boxHeight
             }
         }
     }
