@@ -1,6 +1,8 @@
 package com.example.practiceandroid.views
 
 import MainViewModel
+import android.app.AlertDialog
+import android.view.ContextMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -42,6 +45,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -65,11 +69,6 @@ fun DrawRectangle(
     maxWidth: Float,
     maxHeight: Float,
 ) {
-
-    var scale by remember { mutableStateOf(1f) }
-    var offset by remember { mutableStateOf(rectangleViewModel.offset) }
-    var rotate by remember { mutableStateOf(rectangleViewModel.rotation)}
-
     // Границы элемента
     var top by remember { mutableFloatStateOf(0f) }
     var left by remember { mutableFloatStateOf(0f) }
@@ -86,213 +85,162 @@ fun DrawRectangle(
     val localDensity = LocalDensity.current
 
     // Контейнер Row для размещения текста внутри прямоугольника
-    Row(
-        modifier = Modifier
-            .graphicsLayer(
-                rotationZ = rotate,
-                scaleX = scale,
-                scaleY = scale,
-                translationX = offset.x,
-                translationY = offset.y,
-            )
-            // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
-            .background(
-                color = Color(android.graphics.Color.parseColor(rectangleViewModel.color)),
-                shape = RoundedCornerShape(rectangleViewModel.cornerRadius)
-            )
-            // Устанавливаем границу для прямоугольника
-            .border(
-                width = rectangleViewModel.borderWidth,
-                color = Color(android.graphics.Color.parseColor(rectangleViewModel.color)),
-                shape = RoundedCornerShape(rectangleViewModel.cornerRadius)
-            )
-            .width(rectangleViewModel.width.value)
-            .height(rectangleViewModel.height.value)
-            .zIndex(rectangleViewModel.zIndex.value)
-            .clickable { focusManager.clearFocus() }
-            .pointerInput(Unit) {
-                detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
-                    // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
-                    scale = (scale * scaleChange).coerceIn(0.85f, 3f)
+    if (rectangleViewModel.visibility.value) {
+        Row(
 
-                    // Обновляем поворот
-                    rotate += rotateChange
+            modifier = Modifier
+                .graphicsLayer(
+                    rotationZ = rectangleViewModel.rotation.value,
+                    scaleX = rectangleViewModel.scale.value,
+                    scaleY = rectangleViewModel.scale.value,
+                    translationX = rectangleViewModel.offset.value.x,
+                    translationY = rectangleViewModel.offset.value.y,
+                )
+                // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
+                .background(
+                    color = Color(android.graphics.Color.parseColor(rectangleViewModel.color)),
+                    shape = RoundedCornerShape(rectangleViewModel.cornerRadius)
+                )
+                // Устанавливаем границу для прямоугольника
+                .border(
+                    width = rectangleViewModel.borderWidth,
+                    color = Color(android.graphics.Color.parseColor(rectangleViewModel.color)),
+                    shape = RoundedCornerShape(rectangleViewModel.cornerRadius)
+                )
+                .width(rectangleViewModel.width.value)
+                .height(rectangleViewModel.height.value)
+                .zIndex(rectangleViewModel.zIndex.value)
+                .clickable { focusManager.clearFocus() }
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
+                        // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
+                        rectangleViewModel.scale.value =
+                            (rectangleViewModel.scale.value * scaleChange).coerceIn(0.85f, 3f)
 
-                    // Рассчитываем косинус и синус угла вращения в радианах
-                    val rotationRadians = Math.toRadians(rotate.toDouble())
-                    val cosRotation = cos(rotationRadians).toFloat()
-                    val sinRotation = sin(rotationRadians).toFloat()
+                        // Обновляем поворот
+                        rectangleViewModel.rotation.value += rotateChange
 
-                    // MinMax значения для смещения
-                    val minOffsetX = -left
-                    val minOffsetY = -top
-                    val maxOffsetX = maxWidth - right
-                    val maxOffsetY = maxHeight - bottom
+                        // Рассчитываем косинус и синус угла вращения в радианах
+                        val rotationRadians =
+                            Math.toRadians(rectangleViewModel.rotation.value.toDouble())
+                        val cosRotation = cos(rotationRadians).toFloat()
+                        val sinRotation = sin(rotationRadians).toFloat()
 
-                    var rotatedOffsetY = offsetChange.y * scale
-                    var rotatedOffsetX = offsetChange.x * scale
+                        // MinMax значения для смещения
+                        val minOffsetX = -left
+                        val minOffsetY = -top
+                        val maxOffsetX = maxWidth - right
+                        val maxOffsetY = maxHeight - bottom
 
-                    // Применение вращения к смещению
-                    var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
-                    var transformedOffsetY = rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+                        var rotatedOffsetY = offsetChange.y * rectangleViewModel.scale.value
+                        var rotatedOffsetX = offsetChange.x * rectangleViewModel.scale.value
 
-                    // Ограничение смещения по оси X
-                    transformedOffsetX = if (minOffsetX > maxOffsetX) {
-                        transformedOffsetX.coerceIn(maxOffsetX, minOffsetX)
-                    } else {
-                        transformedOffsetX.coerceIn(minOffsetX, maxOffsetX)
+                        // Применение вращения к смещению
+                        var transformedOffsetX =
+                            rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
+                        var transformedOffsetY =
+                            rotatedOffsetX * sinRotation + rotatedOffsetY * cosRotation
+
+                        // Ограничение смещения по оси X
+                        transformedOffsetX = if (minOffsetX > maxOffsetX) {
+                            transformedOffsetX.coerceIn(maxOffsetX, minOffsetX)
+                        } else {
+                            transformedOffsetX.coerceIn(minOffsetX, maxOffsetX)
+                        }
+
+                        // Ограничение смещения по оси Y
+                        transformedOffsetY = if (minOffsetY > maxOffsetY) {
+                            transformedOffsetY.coerceIn(maxOffsetY, minOffsetY)
+                        } else {
+                            transformedOffsetY.coerceIn(minOffsetY, maxOffsetY)
+                        }
+
+                        // Обновление значения смещения
+                        rectangleViewModel.offset.value = Offset(
+                            x = rectangleViewModel.offset.value.x + transformedOffsetX,
+                            y = rectangleViewModel.offset.value.y + transformedOffsetY
+                        )
                     }
-
-                    // Ограничение смещения по оси Y
-                    transformedOffsetY = if (minOffsetY > maxOffsetY) {
-                        transformedOffsetY.coerceIn(maxOffsetY, minOffsetY)
-                    } else {
-                        transformedOffsetY.coerceIn(minOffsetY, maxOffsetY)
-                    }
-
-                    // Обновление значения смещения
-                    offset = Offset(
-                        x = offset.x + transformedOffsetX,
-                        y = offset.y + transformedOffsetY
+                }
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            showContextMenu.value = true
+                        }
                     )
-                }}
-            .pointerInput(Unit){
-                detectTapGestures(
-                    onLongPress = {
-                        showContextMenu.value = true
-                    }
-                )
-            }
-            .onGloballyPositioned { layoutCoordinates  ->
-                recomposition
-                val rect = layoutCoordinates.boundsInParent()
-                left = with(localDensity) { rect.left.toDp().value }
-                top = with(localDensity) { rect.top.toDp().value }
-                right = with(localDensity) { rect.right.toDp().value }
-                bottom = with(localDensity) { rect.bottom.toDp().value }
-            },
-        verticalAlignment = Alignment.valueOf(rectangleViewModel.textVerticalAlignment)
-    ) {
-        // Перебираем текстовые блоки внутри фигуры
-        rectangleViewModel.text?.forEach { textBlock ->
-            textBlock.text.forEachIndexed { index, textSegment ->
-                val text = remember{mutableStateOf( textSegment.text)}
-                BasicTextField(
-                    value = text.value,
-                    {text.value = it},
-                    textStyle = TextStyle(textAlign = TextAlign.valueOf(textBlock.alignment),
-                        color = Color(android.graphics.Color.parseColor(textSegment.fontColor)),
-                        fontSize = textSegment.fontSize.sp,
-                        fontWeight = if (textSegment.type == "bold") FontWeight.Bold else FontWeight.Normal,
-                        textDecoration = if (textSegment.textDecoration == "underline") TextDecoration.Underline else null),
-                    modifier = Modifier.width(IntrinsicSize.Min),
-                    singleLine = false,
-                    enabled = true,
-                )
-                {
-                    val interactionSource = remember { MutableInteractionSource() }
-                    OutlinedTextFieldDefaults.DecorationBox(
+                }
+                .onGloballyPositioned { layoutCoordinates ->
+                    recomposition
+                    val rect = layoutCoordinates.boundsInParent()
+                    left = with(localDensity) { rect.left.toDp().value }
+                    top = with(localDensity) { rect.top.toDp().value }
+                    right = with(localDensity) { rect.right.toDp().value }
+                    bottom = with(localDensity) { rect.bottom.toDp().value }
+                },
+            verticalAlignment = Alignment.valueOf(rectangleViewModel.textVerticalAlignment)
+        ) {
+            // Перебираем текстовые блоки внутри фигуры
+            rectangleViewModel.text?.forEach { textBlock ->
+                textBlock.text.forEachIndexed { index, textSegment ->
+                    val text = remember { mutableStateOf(textSegment.text) }
+                    BasicTextField(
                         value = text.value,
-                        visualTransformation = VisualTransformation.None,
-                        innerTextField = it,
+                        { text.value = it },
+                        textStyle = TextStyle(
+                            textAlign = TextAlign.valueOf(textBlock.alignment),
+                            color = Color(android.graphics.Color.parseColor(textSegment.fontColor)),
+                            fontSize = textSegment.fontSize.sp,
+                            fontWeight = if (textSegment.type == "bold") FontWeight.Bold else FontWeight.Normal,
+                            textDecoration = if (textSegment.textDecoration == "underline") TextDecoration.Underline else null
+                        ),
+                        modifier = Modifier.width(IntrinsicSize.Min),
                         singleLine = false,
                         enabled = true,
-                        interactionSource = interactionSource,
                     )
+                    {
+                        val interactionSource = remember { MutableInteractionSource() }
+                        OutlinedTextFieldDefaults.DecorationBox(
+                            value = text.value,
+                            visualTransformation = VisualTransformation.None,
+                            innerTextField = it,
+                            singleLine = false,
+                            enabled = true,
+                            interactionSource = interactionSource,
+                        )
 
+                    }
                 }
             }
         }
     }
-
 
     if (showContextMenu.value) {
         ContextMenu(showContextMenu, showResizeDialog, showDeleteDialog )
     }
 
     if (showDeleteDialog.value) {
-        DeleteDialog(showDeleteDialog)
+        DeleteDialog(showDeleteDialog){
+            rectangleViewModel.deleteShape()
+        }
     }
 
     if (showResizeDialog.value) {
-        ResizeDialog(showResizeDialog, rectangleViewModel.width, rectangleViewModel.height, rectangleViewModel.zIndex)
+        ResizeDialog(
+            showResizeDialog,
+            rectangleViewModel.width,
+            rectangleViewModel.height,
+            rectangleViewModel.zIndex
+        ) { newWidth, newHeight, newZIndex ->
+            rectangleViewModel.updateShape(newWidth, newHeight, newZIndex)
+        }
     }
 }
-
-@Composable
-fun ResizeDialog(
-    showResizeDialog: MutableState<Boolean>,
-    width: MutableState<Dp>,
-    height: MutableState<Dp>,
-    zIndex: MutableState<Float>
-) {
-    AlertDialog(
-        onDismissRequest = { showResizeDialog.value = false },
-        confirmButton = {
-            TextButton(onClick = {
-                //onUpdateShape(newWidth, newHeight, newZIndex)
-                showResizeDialog.value = false
-            }) {
-                Text("ОК")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { showResizeDialog.value = false }) {
-                Text("Отмена")
-            }
-        },
-        title = { Text("Изменить размеры и слой") },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = width.value.toString(),
-                    onValueChange = { width.value = it.toFloat().dp},
-                    label = { Text("Ширина") }
-                )
-                OutlinedTextField(
-                    value = height.value.toString(),
-                    onValueChange = { height.value = it.toFloat().dp},
-                    label = { Text("Высота") }
-                )
-                OutlinedTextField(
-                    value = zIndex.value.toString(),
-                    onValueChange = { zIndex.value = it.toFloat()},
-                    label = { Text("Слой (zIndex)") }
-                )
-            }
-        }
-    )
-}
-
-
-@Composable
-fun DeleteDialog(showDeleteDialog: MutableState<Boolean>) {
-    AlertDialog(
-        onDismissRequest = { showDeleteDialog.value = false },
-        confirmButton = {
-            TextButton(onClick = {
-                //onDelete()
-                showDeleteDialog.value = false
-            }) {
-                Text("Да")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { showDeleteDialog.value = false }) {
-                Text("Нет")
-            }
-        },
-        title = { Text("Подтверждение удаления") },
-        text = { Text("Вы уверены, что хотите удалить эту фигуру?") }
-    )
-}
-
 
 @Composable
 fun ContextMenu(showContextMenu: MutableState<Boolean>,
                 showResizeDialog: MutableState<Boolean>,
                 showDeleteDialog: MutableState<Boolean>
-                ) {
+) {
     DropdownMenu(
         expanded = showContextMenu.value,
         onDismissRequest = { showContextMenu.value = false }
@@ -313,4 +261,85 @@ fun ContextMenu(showContextMenu: MutableState<Boolean>,
         )
     }
 }
+
+@Composable
+fun ResizeDialog(
+    showResizeDialog: MutableState<Boolean>,
+    width: MutableState<Dp>,
+    height: MutableState<Dp>,
+    zIndex: MutableState<Float>,
+    onUpdateShape: (Dp, Dp, Float) -> Unit
+) {
+    var newWidth by remember { mutableStateOf(width.value) }
+    var newHeight by remember { mutableStateOf(height.value) }
+    var newZIndex by remember { mutableStateOf(zIndex.value) }
+
+    AlertDialog(
+        onDismissRequest = { showResizeDialog.value = false },
+        confirmButton = {
+            TextButton(onClick = {
+                onUpdateShape(newWidth, newHeight, newZIndex)
+                showResizeDialog.value = false
+            }) {
+                Text("ОК")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { showResizeDialog.value = false }) {
+                Text("Отмена")
+            }
+        },
+        title = { Text("Изменить размеры и слой") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = newWidth.value.toString(),
+                    onValueChange = { newWidth = it.toFloat().dp},
+                    label = { Text("Ширина") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+                OutlinedTextField(
+                    value = newHeight.value.toString(),
+                    onValueChange = { newHeight = it.toFloat().dp},
+                    label = { Text("Высота") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+                OutlinedTextField(
+                    value = newZIndex.toString(),
+                    onValueChange = { newZIndex = it.toFloat()},
+                    label = { Text("Слой (zIndex)") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+            }
+        }
+    )
+}
+
+
+@Composable
+fun DeleteDialog(
+    showDeleteDialog: MutableState<Boolean>,
+    onDelete: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { showDeleteDialog.value = false },
+        confirmButton = {
+            TextButton(onClick = {
+                onDelete()
+                showDeleteDialog.value = false
+            }) {
+                Text("Да")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { showDeleteDialog.value = false }) {
+                Text("Нет")
+            }
+        },
+        title = { Text("Подтверждение удаления") },
+        text = { Text("Вы уверены, что хотите удалить эту фигуру?") }
+    )
+}
+
+
 

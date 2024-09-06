@@ -99,6 +99,7 @@ fun DrawShapes(responseShapes: ResponseShapes, focusManager: FocusManager) {
                     when (shape.type) {
                         "rectangle" -> {
                             val rectangleViewModel: RectangleViewModel = viewModel(
+                                key = shape.id.toString(),
                                 factory = RectangleViewModelFactory(shape)
                             )
                             DrawRectangle(
