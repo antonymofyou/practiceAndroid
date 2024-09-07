@@ -64,16 +64,24 @@ class LessonCardView(
     // относительно верхней линии начала раздела
     private var verticalOffset = 0.dp
 
+    // Параметры наложения блоков
+    private val largeOverlapShift = 50.dp
+    private val smallOverlapShift = 20.dp
+
     // Параметры соединяющих линий
     private val leftUpperLineHeight = 110
     private val rightUpperLineHeight = 96
     private val leftLowerLineHeight = 110
     private val rightLowerLineHeight = 105
+    private val shortSideLineHeight = 100
+    private val longSideLineHeight = 100
 
     private val leftUpperLineWidth = screenWidthDp / 2 - 90
     private val rightUpperLineWidth = screenWidthDp / 2 - 105
     private val leftLowerLineWidth = leftLowerLineHeight * rightUpperLineWidth / rightUpperLineHeight
     private val rightLowerLineWidth = rightLowerLineHeight * leftUpperLineWidth / leftUpperLineHeight
+    private val shortSideLineWidth = screenWidthDp - 330
+    private val longSideLineWidth = screenWidthDp - 320
 
     /**
      * Функция, отвечающая за отображение кружка урока,
@@ -157,7 +165,7 @@ class LessonCardView(
                 ) {
                     Image(
                         bitmap = lineToRight.asImageBitmap(),
-                        contentDescription = "Right line",
+                        contentDescription = "Top left to right line",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .graphicsLayer {
@@ -287,22 +295,75 @@ class LessonCardView(
                     ) {
                         Image(
                             bitmap = lineToRight.asImageBitmap(),
-                            contentDescription = "Right line",
+                            contentDescription = "Bottom left to right line",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .rotate(180f)
                         )
                     }
                 }
-//            else {
-//                TODO("Side line")
-//            }
+                // Боковая линия
+                else {
+                    // Линия до поднятого блока с largeOverlapShift
+                    if (position % 2 == 0) {
+                        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+                        }
+                        val circlePath = Path()
+                        val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                            path = circlePath,
+                            paint = paint,
+                            width = lessonsViewModel.dpToPx(shortSideLineWidth),
+                            height = lessonsViewModel.dpToPx(shortSideLineHeight)
+                        )
+                        Box(
+                            contentAlignment = Alignment.TopStart,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(boxHeight)
+                                .padding(125.dp, if (boxHeight > 90.dp) boxHeight - 90.dp else 0.dp, 0.dp, 0.dp)
+                        ) {
+                            Image(
+                                bitmap = lineToRight.asImageBitmap(),
+                                contentDescription = "Short side left to right line",
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                    // Линия до поднятого блока с smallOverlapShift
+                    } else {
+                        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+                        }
+                        val circlePath = Path()
+                        val lineToRight = lessonsRoadViewModel.createLineBitmapRightToLeft(
+                            path = circlePath,
+                            paint = paint,
+                            width = lessonsViewModel.dpToPx(longSideLineWidth),
+                            height = lessonsViewModel.dpToPx(longSideLineHeight)
+                        )
+                        Box(
+                            contentAlignment = Alignment.TopStart,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(boxHeight)
+                                .padding(125.dp, if (boxHeight > 90.dp) boxHeight - 90.dp else 0.dp, 0.dp, 0.dp)
+                        ) {
+                            Image(
+                                bitmap = lineToRight.asImageBitmap(),
+                                contentDescription = "Long side left to right line",
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                    }
+                }
             }
         }
 
         // Сдвиг увеличивается на высоту текущего блока
         verticalOffset += if (position % 2 != 0) {
-            boxHeight
+            // В данном случае следующий блок будет наложен на текущий.
+            // Реализован negative top margin
+            if (boxHeight - smallOverlapShift > 0.dp) boxHeight - smallOverlapShift else boxHeight
         } else {
             if (isFirstLessonInChapter && isLastLessonInChapter) {
                 boxHeight
@@ -311,7 +372,7 @@ class LessonCardView(
             } else {
                 // В данном случае следующий блок будет наложен на текущий.
                 // Реализован negative top margin
-                if (boxHeight - 50.dp > 0.dp) boxHeight - 50.dp else boxHeight
+                if (boxHeight - largeOverlapShift > 0.dp) boxHeight - largeOverlapShift else boxHeight
             }
         }
     }
@@ -398,7 +459,7 @@ class LessonCardView(
                 ) {
                     Image(
                         bitmap = lineToLeft.asImageBitmap(),
-                        contentDescription = "Right line",
+                        contentDescription = "Top right to left line",
                         contentScale = ContentScale.Fit
                     )
                 }
@@ -527,7 +588,7 @@ class LessonCardView(
                     ) {
                         Image(
                             bitmap = lineToRight.asImageBitmap(),
-                            contentDescription = "Right line",
+                            contentDescription = "Bottom right to left line",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .graphicsLayer {
@@ -536,15 +597,76 @@ class LessonCardView(
                         )
                     }
                 }
-//            else {
-//                TODO("Side line")
-//            }
+                // Боковая линия
+                else {
+                    // Линия до поднятого блока с largeOverlapShift
+                    if (position % 2 == 0) {
+                        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+                        }
+                        val circlePath = Path()
+                        val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                            path = circlePath,
+                            paint = paint,
+                            width = lessonsViewModel.dpToPx(shortSideLineWidth),
+                            height = lessonsViewModel.dpToPx(shortSideLineHeight)
+                        )
+                        Box(
+                            contentAlignment = Alignment.TopEnd,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(boxHeight)
+                                .padding(0.dp, if (boxHeight > 90.dp) boxHeight - 90.dp else 0.dp, 125.dp, 0.dp)
+                        ) {
+                            Image(
+                                bitmap = lineToRight.asImageBitmap(),
+                                contentDescription = "Short side right to left line",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        rotationY = 180f
+                                    }
+                            )
+                        }
+                        // Линия до поднятого блока с smallOverlapShift
+                    } else {
+                        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
+                        }
+                        val circlePath = Path()
+                        val lineToRight = lessonsRoadViewModel.createLineBitmapRightToLeft(
+                            path = circlePath,
+                            paint = paint,
+                            width = lessonsViewModel.dpToPx(longSideLineWidth),
+                            height = lessonsViewModel.dpToPx(longSideLineHeight)
+                        )
+                        Box(
+                            contentAlignment = Alignment.TopEnd,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(boxHeight)
+                                .padding(0.dp, if (boxHeight > 90.dp) boxHeight - 90.dp else 0.dp, 125.dp, 0.dp)
+                        ) {
+                            Image(
+                                bitmap = lineToRight.asImageBitmap(),
+                                contentDescription = "Long side right to left line",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        rotationY = 180f
+                                    }
+                            )
+                        }
+                    }
+                }
             }
         }
 
         // Сдвиг увеличивается на высоту текущего блока
         verticalOffset += if (position % 2 != 0) {
-            boxHeight
+            // В данном случае следующий блок будет наложен на текущий.
+            // Реализован negative top margin
+            if (boxHeight - smallOverlapShift > 0.dp) boxHeight - smallOverlapShift else boxHeight
         } else {
             if (isFirstLessonInChapter && isLastLessonInChapter) {
                 boxHeight
@@ -553,7 +675,7 @@ class LessonCardView(
             } else {
                 // В данном случае следующий блок будет наложен на текущий.
                 // Реализован negative top margin
-                if (boxHeight - 50.dp > 0.dp) boxHeight - 50.dp else boxHeight
+                if (boxHeight - largeOverlapShift > 0.dp) boxHeight - largeOverlapShift else boxHeight
             }
         }
     }
