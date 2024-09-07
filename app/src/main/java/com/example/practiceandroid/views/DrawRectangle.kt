@@ -1,8 +1,5 @@
 package com.example.practiceandroid.views
 
-import MainViewModel
-import android.app.AlertDialog
-import android.view.ContextMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,10 +14,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -31,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,12 +51,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.ext.valueOf
-import com.example.practiceandroid.models.ResponseShapes
 import com.example.practiceandroid.viewModels.RectangleViewModel
 import kotlin.math.cos
 import kotlin.math.sin
@@ -75,19 +75,20 @@ fun DrawRectangle(
     var right by remember { mutableFloatStateOf(0f) }
     var bottom by remember { mutableFloatStateOf(0f) }
 
-    var showContextMenu = remember { mutableStateOf(false) }// Контекстное меню
-    var showDeleteDialog = remember  { mutableStateOf(false) }// Окно подтверждения удаления
-    var showResizeDialog = remember  { mutableStateOf(false) }// Окно изменения размеров
+    // Глобальный оффсет элемента
+    var rectangleOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
 
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
+
+    // Отслеживание позиции нажатия
+    val touchOffset = remember { mutableStateOf(Offset.Zero) }
 
     val localDensity = LocalDensity.current
 
     // Контейнер Row для размещения текста внутри прямоугольника
     if (rectangleViewModel.visibility.value) {
         Row(
-
             modifier = Modifier
                 .graphicsLayer(
                     rotationZ = rectangleViewModel.rotation.value,
@@ -164,18 +165,41 @@ fun DrawRectangle(
                 }
                 .pointerInput(Unit) {
                     detectTapGestures(
-                        onLongPress = {
-                            showContextMenu.value = true
+                        onLongPress = { offset ->
+                            val rotationRadians = Math.toRadians(rectangleViewModel.rotation.value.toDouble())
+                            val cosRotation = cos(rotationRadians).toFloat()
+                            val sinRotation = sin(rotationRadians).toFloat()
+
+                            // Рассчет локального оффсета на фигуре
+                            var x = with(localDensity) { offset.x.toDp().value} * rectangleViewModel.scale.value
+                            val y = with(localDensity) { offset.y.toDp().value} * rectangleViewModel.scale.value
+
+                            // Применение вращения к смещению
+                            var transformedOffsetX = x * cosRotation - y * sinRotation
+                            var transformedOffsetY = x * sinRotation + y * cosRotation
+
+                            touchOffset.value = Offset(
+                                (transformedOffsetX +  rectangleOffsetInWindow.value.x) ,
+                                (transformedOffsetY +  rectangleOffsetInWindow.value.y),
+                                )
+                            // Показываем контекстное меню
+                            rectangleViewModel.showContextMenu.value = true
                         }
                     )
                 }
                 .onGloballyPositioned { layoutCoordinates ->
                     recomposition
-                    val rect = layoutCoordinates.boundsInParent()
-                    left = with(localDensity) { rect.left.toDp().value }
-                    top = with(localDensity) { rect.top.toDp().value }
-                    right = with(localDensity) { rect.right.toDp().value }
-                    bottom = with(localDensity) { rect.bottom.toDp().value }
+                    val rect1 = layoutCoordinates.boundsInParent()
+                    left = with(localDensity) { rect1.left.toDp().value }
+                    top = with(localDensity) { rect1.top.toDp().value }
+                    right = with(localDensity) { rect1.right.toDp().value }
+                    bottom = with(localDensity) { rect1.bottom.toDp().value }
+
+                    val rect2 = layoutCoordinates.positionInWindow()
+                    val x = with(localDensity) { rect2.x.toDp().value}
+                    val y = with(localDensity) { rect2.y.toDp().value}
+                    rectangleOffsetInWindow.value = Offset(x, y)
+
                 },
             verticalAlignment = Alignment.valueOf(rectangleViewModel.textVerticalAlignment)
         ) {
@@ -214,22 +238,28 @@ fun DrawRectangle(
         }
     }
 
-    if (showContextMenu.value) {
-        ContextMenu(showContextMenu, showResizeDialog, showDeleteDialog )
+    if (rectangleViewModel.showContextMenu.value) {
+        ContextMenu(
+            rectangleViewModel.showContextMenu,
+            rectangleViewModel.showResizeDialog,
+            rectangleViewModel.showDeleteDialog,
+            touchOffset.value,
+        )
     }
 
-    if (showDeleteDialog.value) {
-        DeleteDialog(showDeleteDialog){
+    if (rectangleViewModel.showDeleteDialog.value) {
+        DeleteDialog(rectangleViewModel.showDeleteDialog){
             rectangleViewModel.deleteShape()
         }
     }
 
-    if (showResizeDialog.value) {
+    if (rectangleViewModel.showResizeDialog.value) {
         ResizeDialog(
-            showResizeDialog,
+            rectangleViewModel.showResizeDialog,
             rectangleViewModel.width,
             rectangleViewModel.height,
-            rectangleViewModel.zIndex
+            rectangleViewModel.zIndex,
+            rectangleViewModel.scale,
         ) { newWidth, newHeight, newZIndex ->
             rectangleViewModel.updateShape(newWidth, newHeight, newZIndex)
         }
@@ -237,29 +267,43 @@ fun DrawRectangle(
 }
 
 @Composable
-fun ContextMenu(showContextMenu: MutableState<Boolean>,
-                showResizeDialog: MutableState<Boolean>,
-                showDeleteDialog: MutableState<Boolean>
+fun ContextMenu(
+    showContextMenu: MutableState<Boolean>,
+    showResizeDialog: MutableState<Boolean>,
+    showDeleteDialog: MutableState<Boolean>,
+    offset: Offset,
 ) {
-    DropdownMenu(
-        expanded = showContextMenu.value,
-        onDismissRequest = { showContextMenu.value = false }
-    ) {
-        DropdownMenuItem(
-            text = { Text("Удалить") },
-            onClick = {
-                showDeleteDialog.value = true
-                showContextMenu.value = false
-            }
-        )
-        DropdownMenuItem(
-            text = { Text("Изменить размер") },
-            onClick = {
-                showResizeDialog.value = true
-                showContextMenu.value = false
-            }
-        )
-    }
+        DropdownMenu(
+            expanded = showContextMenu.value,
+            onDismissRequest = { showContextMenu.value = false },
+            offset = DpOffset(offset.x.dp, offset.y.dp)
+        ) {
+            DropdownMenuItem(
+                text = { Text("Удалить") },
+                onClick = {
+                    showDeleteDialog.value = true
+                    showContextMenu.value = false
+                },
+                leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Удалить") }
+            )
+            DropdownMenuItem(
+                text = { Text("Изменить размер") },
+                onClick = {
+                    showResizeDialog.value = true
+                    showContextMenu.value = false
+                },
+                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Удалить") }
+            )
+            DropdownMenuItem(
+                text = { Text("Изменить фон") },
+                onClick = {
+                    showResizeDialog.value = true
+                    showContextMenu.value = false
+                },
+                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Удалить") }
+            )
+        }
+
 }
 
 @Composable
@@ -268,19 +312,24 @@ fun ResizeDialog(
     width: MutableState<Dp>,
     height: MutableState<Dp>,
     zIndex: MutableState<Float>,
+    scale: MutableState<Float>,
     onUpdateShape: (Dp, Dp, Float) -> Unit
 ) {
-    var newWidth by remember { mutableStateOf(width.value) }
-    var newHeight by remember { mutableStateOf(height.value) }
-    var newZIndex by remember { mutableStateOf(zIndex.value) }
+    var newWidth by remember { mutableStateOf((width.value.value * scale.value).toString()) }
+    var newHeight by remember { mutableStateOf((height.value.value * scale.value).toString()) }
+    var newZIndex by remember { mutableStateOf((zIndex.value * scale.value).toString()) }
+
+    val isConfirmButtonEnabled = newWidth.isNotEmpty() && newHeight.isNotEmpty() && newZIndex.isNotEmpty()
 
     AlertDialog(
-        onDismissRequest = { showResizeDialog.value = false },
+        onDismissRequest = {
+            showResizeDialog.value = false },
         confirmButton = {
             TextButton(onClick = {
-                onUpdateShape(newWidth, newHeight, newZIndex)
+                onUpdateShape(newWidth.toFloat().dp, newHeight.toFloat().dp, newZIndex.toFloat())
                 showResizeDialog.value = false
-            }) {
+            },
+                enabled = isConfirmButtonEnabled) {
                 Text("ОК")
             }
         },
@@ -293,20 +342,24 @@ fun ResizeDialog(
         text = {
             Column {
                 OutlinedTextField(
-                    value = newWidth.value.toString(),
-                    onValueChange = { newWidth = it.toFloat().dp},
+                    value = newWidth,
+                    onValueChange = {
+                        val filteredText = it.filter { it.isDigit() || it == '.'}
+                        newWidth = filteredText},
                     label = { Text("Ширина") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 )
                 OutlinedTextField(
-                    value = newHeight.value.toString(),
-                    onValueChange = { newHeight = it.toFloat().dp},
+                    value = newHeight,
+                    onValueChange = {
+                        val filteredText = it.filter { it.isDigit() || it == '.'}
+                        newHeight = filteredText },
                     label = { Text("Высота") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
                 OutlinedTextField(
-                    value = newZIndex.toString(),
-                    onValueChange = { newZIndex = it.toFloat()},
+                    value = newZIndex,
+                    onValueChange = { newZIndex = it},
                     label = { Text("Слой (zIndex)") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
