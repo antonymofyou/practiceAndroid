@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
 import androidx.compose.ui.graphics.ShaderBrush
@@ -110,10 +111,16 @@ fun LessonsRoadCompose(viewType: Int) {
 
             // Добавочная высота для прогрузки всей дорожки.
             // Без неё часть дорожки обрезается.
+            val chapterName = lessonsRoadViewModel.groupedLessons.last()[0]["lesson_chapter"] ?: "Неизвестный раздел"
             Box (
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(columnHeight * .175f)
+                    .background(
+                        Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)).copy(
+                            alpha = 0.5f
+                        )
+                    )
             )
         }
     }

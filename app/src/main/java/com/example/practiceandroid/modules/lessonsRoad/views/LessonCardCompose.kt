@@ -64,6 +64,12 @@ class LessonCardView(
     // относительно верхней линии начала раздела
     private var verticalOffset = 0.dp
 
+    // Величина отступа между левым и правым кружками
+    private val cardPadding = 50
+
+    // Отступ между левым и правом краями
+    private val paddingLeftRight = (screenWidthDp - 130 * 2 - cardPadding) / 2
+
     // Параметры наложения блоков
     private val largeOverlapShift = 50.dp
     private val smallOverlapShift = 20.dp
@@ -112,23 +118,23 @@ class LessonCardView(
         if (isFirstLessonInChapter && isLastLessonInChapter) {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(50.dp, 0.dp, 0.dp, 0.dp)
+                .padding(paddingLeftRight.dp, 0.dp, 0.dp, 0.dp)
             paddingTop = 98.dp
             paddingBottom = 98.dp
         } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(50.dp, 0.dp, 0.dp, 0.dp)
+                .padding(paddingLeftRight.dp, 0.dp, 0.dp, 0.dp)
             paddingBottom = 98.dp
         } else if (isFirstLessonInChapter && !isLastLessonInChapter) {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(50.dp, 0.dp, 0.dp, 0.dp)
+                .padding(paddingLeftRight.dp, 0.dp, 0.dp, 0.dp)
             paddingTop = 98.dp
         } else {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(50.dp, 0.dp, 0.dp, 0.dp)
+                .padding(paddingLeftRight.dp, 0.dp, 0.dp, 0.dp)
         }
 
         // Высота всего блока под кружок
@@ -160,7 +166,7 @@ class LessonCardView(
                 Box (
                     contentAlignment = Alignment.TopEnd,
                     modifier = Modifier
-                        .width((screenWidthDp / 2 - 50).dp)
+                        .width((screenWidthDp / 2 - paddingLeftRight).dp)
                         .height(110.dp)
                 ) {
                     Image(
@@ -290,7 +296,7 @@ class LessonCardView(
                     Box (
                         contentAlignment = Alignment.BottomEnd,
                         modifier = Modifier
-                            .width((screenWidthDp / 2 - 50).dp)
+                            .width((screenWidthDp / 2 - paddingLeftRight).dp)
                             .height(columnHeight + 98.dp + if (isFirstLessonInChapter && position != 0) 98.dp else 0.dp)
                     ) {
                         Image(
@@ -406,23 +412,23 @@ class LessonCardView(
         if (isFirstLessonInChapter && isLastLessonInChapter) {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(0.dp, 0.dp, 50.dp, 0.dp)
+                .padding(0.dp, 0.dp, paddingLeftRight.dp, 0.dp)
             paddingTop = 98.dp
             paddingBottom = 98.dp
         } else if (!isFirstLessonInChapter && isLastLessonInChapter) {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(0.dp, 0.dp, 50.dp, 0.dp)
+                .padding(0.dp, 0.dp, paddingLeftRight.dp, 0.dp)
             paddingBottom = 98.dp
         } else if (isFirstLessonInChapter && !isLastLessonInChapter) {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(0.dp, 0.dp, 50.dp, 0.dp)
+                .padding(0.dp, 0.dp, paddingLeftRight.dp, 0.dp)
             paddingTop = 98.dp
         } else {
             boxModifier = boxModifier
                 .wrapContentHeight()
-                .padding(0.dp, 0.dp, 50.dp, 0.dp)
+                .padding(0.dp, 0.dp, paddingLeftRight.dp, 0.dp)
         }
 
         // Высота всего блока под кружок
@@ -454,7 +460,7 @@ class LessonCardView(
                 Box (
                     contentAlignment = Alignment.TopStart,
                     modifier = Modifier
-                        .width((screenWidthDp / 2 - 50).dp)
+                        .width((screenWidthDp / 2 - paddingLeftRight).dp)
                         .height(100.dp)
                 ) {
                     Image(
@@ -581,7 +587,7 @@ class LessonCardView(
                     Box (
                         contentAlignment = Alignment.BottomStart,
                         modifier = Modifier
-                            .width((screenWidthDp / 2 - 50).dp)
+                            .width((screenWidthDp / 2 - paddingLeftRight).dp)
                             .height(
                                 columnHeight + 98.dp + if (isFirstLessonInChapter && position != 0) 98.dp else 0.dp
                             )
