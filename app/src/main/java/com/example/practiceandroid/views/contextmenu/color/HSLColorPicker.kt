@@ -1,4 +1,4 @@
-package com.example.practiceandroid.views
+package com.example.practiceandroid.views.contextmenu.color
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +23,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+// Валидация для Hue (допустимый диапазон 0-360)
+fun validateHue(hue: String): Boolean {
+    val hueFloat = hue.toFloatOrNull()
+    return hueFloat != null && hueFloat in 0f..360f
+}
+
+// Валидация для Saturation (допустимый диапазон 0-100)
+fun validateSaturation(saturation: String): Boolean {
+    val hueFloat = saturation.toFloatOrNull()
+    return hueFloat != null && hueFloat in 0f..100f
+}
+
+// Валидация для Lightness (допустимый диапазон 0-100)
+fun validateLightness(value: String): Boolean {
+    val lightnessFloat = value.toFloatOrNull()
+    return lightnessFloat != null && lightnessFloat in 0f..100f
+}
+
+fun getHexColorFromRGB(displayColor: Int): String {
+    val red = android.graphics.Color.red(displayColor)
+    val green = android.graphics.Color.green(displayColor)
+    val blue = android.graphics.Color.blue(displayColor)
+    return String.format("#%02X%02X%02X", red, green, blue)
+}
+
 @Composable
 fun HSLColorPicker(
     initialColor: Int,
@@ -34,19 +59,18 @@ fun HSLColorPicker(
 
     var hue = rememberSaveable { mutableStateOf(hsv[0]) }
     var saturation = rememberSaveable { mutableStateOf(hsv[1] * 100) }
-    var value = rememberSaveable { mutableStateOf(hsv[2] * 100) }
+    var lightness = rememberSaveable { mutableStateOf(hsv[2] * 100) }
 
-    val displayColor = android.graphics.Color.HSVToColor(
-        floatArrayOf(hue.value, saturation.value / 100f, value.value / 100f)
+    var displayColor = android.graphics.Color.HSVToColor(
+        floatArrayOf(hue.value, saturation.value / 100f, lightness.value / 100f)
     )
 
-    LaunchedEffect(hue, saturation, value) {
-        val red = android.graphics.Color.red(displayColor)
-        val green = android.graphics.Color.green(displayColor)
-        val blue = android.graphics.Color.blue(displayColor)
-        val hexColor = String.format("#%02X%02X%02X", red, green, blue)
+    var isHueFieldsInitiator = rememberSaveable { mutableStateOf(false) }
+    var isSaturationFieldsInitiator = rememberSaveable { mutableStateOf(false) }
+    var isLightnessFieldsInitiator = rememberSaveable { mutableStateOf(false) }
 
-        onColorChange(hexColor)
+    LaunchedEffect(hue.value, saturation.value, lightness.value) {
+        onColorChange(getHexColorFromRGB(displayColor))
     }
 
     val scrollState = rememberScrollState()
@@ -71,13 +95,16 @@ fun HSLColorPicker(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
+
             ColorCircle(
                 hue = hue.value,
                 saturation = saturation.value,
                 onColorChange = { newHue, newSaturation ->
                     hue.value = newHue
                     saturation.value = newSaturation
-                }
+                },
+                isHueFieldsInitiator,
+                isSaturationFieldsInitiator
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -85,11 +112,13 @@ fun HSLColorPicker(
             ValueSlider(
                 hue = hue.value,
                 saturation = saturation.value,
-                value = value.value,
-                onValueChange = { newValue ->
-                    value.value = newValue
-                }
+                lightness = lightness.value,
+                onLightnessChange = { newValue ->
+                    lightness.value = newValue
+                },
+                isLightnessFieldsInitiator
             )
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -98,8 +127,11 @@ fun HSLColorPicker(
         HSLInputFields(
             hue = hue,
             saturation = saturation,
-            value = value,
-            isConfirmButtonEnabled
+            lightness = lightness,
+            isConfirmButtonEnabled,
+            isHueFieldsInitiator,
+            isSaturationFieldsInitiator,
+            isLightnessFieldsInitiator
         )
     }
 }

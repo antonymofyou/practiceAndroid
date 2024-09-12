@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.theme.PracticeAndroidTheme
-import com.example.practiceandroid.views.DrawShapes
+import com.example.practiceandroid.views.shapes.DrawShapes
 
 
 class MainActivity : ComponentActivity() {

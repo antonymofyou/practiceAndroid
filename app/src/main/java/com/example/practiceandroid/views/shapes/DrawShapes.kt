@@ -1,4 +1,4 @@
-package com.example.practiceandroid.views
+package com.example.practiceandroid.views.shapes
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,16 +21,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.practiceandroid.ext.decodeBase64ToBitmap
 import com.example.practiceandroid.models.ResponseShapes
-import com.example.practiceandroid.viewModels.DrawShapesViewModel
-import com.example.practiceandroid.viewModels.RectangleViewModel
-import com.example.practiceandroid.viewModels.RectangleViewModelFactory
+import com.example.practiceandroid.viewModels.shapesmodel.ArrowViewModel
+import com.example.practiceandroid.viewModels.shapesmodel.ArrowViewModelFactory
+import com.example.practiceandroid.viewModels.shapesmodel.CircleViewModel
+import com.example.practiceandroid.viewModels.shapesmodel.CircleViewModelFactory
+import com.example.practiceandroid.viewModels.shapesmodel.DrawShapesViewModel
+import com.example.practiceandroid.viewModels.shapesmodel.ImageViewModel
+import com.example.practiceandroid.viewModels.shapesmodel.ImageViewModelFactory
+import com.example.practiceandroid.viewModels.shapesmodel.RectangleViewModel
+import com.example.practiceandroid.viewModels.shapesmodel.RectangleViewModelFactory
 
 //Компонент для отрисовки фигур, focusManager - для сброса фокуса ввода текста
 @OptIn(ExperimentalComposeUiApi::class)
@@ -45,8 +47,6 @@ fun DrawShapes(
 
     // Переменная, используемая для фильтрации первого ложного срабатывания при жестах масштабирования
     var firstFalsePositiveScale = true
-
-    val localDensity = LocalDensity.current
 
     BoxWithConstraints (
         modifier = Modifier
@@ -96,20 +96,34 @@ fun DrawShapes(
                                 key = shape.id.toString(),
                                 factory = RectangleViewModelFactory(shape)
                             )
-                            DrawRectangle(
-                                rectangleViewModel,
-                                focusManager,
-                                maxWidth.value,
-                                maxHeight.value,
+                            DrawRectangle(rectangleViewModel, focusManager, maxWidth.value, maxHeight.value)
+                        }
+                        "circle" -> {
+                            val circleViewModel: CircleViewModel = viewModel(
+                                key = shape.id.toString(),
+                                factory = CircleViewModelFactory(shape)
+                            )
+                            DrawCircle(circleViewModel, focusManager, maxWidth.value, maxHeight.value)
+                        }
+                        "arrow" -> {
+                            val arrowViewModel: ArrowViewModel = viewModel(
+                                key = shape.id.toString(),
+                                factory = ArrowViewModelFactory(shape)
+                            )
+
+                            DrawArrow(arrowViewModel, focusManager, maxWidth.value, maxHeight.value)
+                        }
+                        "image" -> {
+                            val image = (responseShapes.imageDictionary[shape.imageId]!!)
+                            val imageViewModel: ImageViewModel = viewModel(
+                                key = shape.id.toString(),
+                                factory = ImageViewModelFactory(shape, image)
+                            )
+
+                            DrawImage(
+                                imageViewModel, focusManager, maxWidth.value, maxHeight.value
                             )
                         }
-                        "circle" -> DrawCircle(shape, focusManager, maxWidth.value, maxHeight.value)
-                        "arrow" -> DrawArrow(shape, focusManager, maxWidth.value, maxHeight.value)
-                        "image" -> DrawImage(
-                            shape,
-                            image = (responseShapes.imageDictionary[shape.imageId]!!).decodeBase64ToBitmap(),
-                            focusManager, maxWidth.value, maxHeight.value
-                        )
                     }
             }
         }

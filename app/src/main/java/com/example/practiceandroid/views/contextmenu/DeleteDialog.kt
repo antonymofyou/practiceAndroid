@@ -1,4 +1,4 @@
-package com.example.practiceandroid.views
+package com.example.practiceandroid.views.contextmenu
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

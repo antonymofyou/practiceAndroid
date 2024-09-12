@@ -1,4 +1,4 @@
-package com.example.practiceandroid.views
+package com.example.practiceandroid.views.contextmenu.color
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,6 +11,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,42 +24,59 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
-// Валидация для Hue (допустимый диапазон 0-360)
-fun validateHue(hue: String): Boolean {
-    val hueValue = hue.toFloatOrNull()
-    return hueValue != null && hueValue in 0f..360f
-}
-
-// Валидация для Saturation (допустимый диапазон 0-100)
-fun validateSaturation(saturation: String): Boolean {
-    val saturationValue = saturation.toFloatOrNull()
-    return saturationValue != null && saturationValue in 0f..100f
-}
-
-// Валидация для Value (допустимый диапазон 0-100)
-fun validateValue(value: String): Boolean {
-    val valueValue = value.toFloatOrNull()
-    return valueValue != null && valueValue in 0f..100f
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HSLInputFields(
     hue: MutableState<Float>,
     saturation: MutableState<Float>,
-    value: MutableState<Float>,
-    isConfirmButtonEnabled: MutableState<Boolean>
+    lightness: MutableState<Float>,
+    isConfirmButtonEnabled: MutableState<Boolean>,
+    isHueFieldsInitiator: MutableState<Boolean>,
+    isSaturationFieldsInitiator: MutableState<Boolean>,
+    isLightnessFieldsInitiator: MutableState<Boolean>,
 ) {
     // Состояния для ошибок
     var hueError by rememberSaveable { mutableStateOf(false) }
     var saturationError by rememberSaveable { mutableStateOf(false) }
-    var valueError by rememberSaveable { mutableStateOf(false) }
+    var lightnessError by rememberSaveable { mutableStateOf(false) }
 
-    var hueString = hue.value.roundToInt().toString()
-    var saturationString = saturation.value.roundToInt().toString()
-    var valueString = value.value.roundToInt().toString()
+    var hueString by rememberSaveable { mutableStateOf(hue.value.roundToInt().toString()) }
+    var saturationString by rememberSaveable { mutableStateOf(saturation.value.roundToInt().toString()) }
+    var lightnessString by rememberSaveable { mutableStateOf(lightness.value.roundToInt().toString()) }
 
-    isConfirmButtonEnabled.value = validateHue(hueString) && validateSaturation(saturationString) && validateValue(valueString)
+    LaunchedEffect(hue.value) {
+        if (hueString.isNotEmpty()){
+            hueString = hue.value.roundToInt().toString()
+            hueError = false
+        }
+        else if (hueString.isEmpty() && !isHueFieldsInitiator.value){
+            hueString = hue.value.roundToInt().toString()
+        }
+    }
+
+    LaunchedEffect(saturation.value) {
+        if (saturationString.isNotEmpty()){
+            saturationString = saturation.value.roundToInt().toString()
+            saturationError = false
+        }
+        else if (saturationString.isEmpty() && !isSaturationFieldsInitiator.value){
+            saturationString = saturation.value.roundToInt().toString()
+        }
+    }
+
+    LaunchedEffect(lightness.value) {
+        if (lightnessString.isNotEmpty()){
+            lightnessString = lightness.value.roundToInt().toString()
+            lightnessError = false
+        }
+        else if (lightnessString.isEmpty() && !isLightnessFieldsInitiator.value){
+            lightnessString = lightness.value.roundToInt().toString()
+        }
+    }
+
+    isConfirmButtonEnabled.value = validateHue(hueString)
+            && validateSaturation(saturationString)
+            && validateLightness(lightnessString)
 
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -70,9 +88,13 @@ fun HSLInputFields(
             value = hueString,
             onValueChange = {
                 hueString = it.filter { char -> char.isDigit() || char == '.' }
-                hueError = !validateHue(hueString)
-                if (!hueError) {
+                if (validateHue(hueString)){
                     hue.value = hueString.toFloat()
+                    hueError = false
+                }
+                else {
+                    isHueFieldsInitiator.value = true
+                    hueError = true
                 }
             },
             label = { Text("H (0-360)") },
@@ -93,9 +115,13 @@ fun HSLInputFields(
             value = saturationString,
             onValueChange = {
                 saturationString = it.filter { char -> char.isDigit() || char == '.' }
-                saturationError = !validateSaturation(saturationString)
-                if (!saturationError) {
+                if (validateSaturation(saturationString)){
                     saturation.value = saturationString.toFloat()
+                    saturationError = false
+                }
+                else {
+                    isSaturationFieldsInitiator.value = true
+                    saturationError = true
                 }
             },
             label = { Text("S (0-100)") },
@@ -113,16 +139,20 @@ fun HSLInputFields(
 
         // Поле для ввода Value
         OutlinedTextField(
-            value = valueString,
+            value = lightnessString,
             onValueChange = {
-                valueString = it.filter { char -> char.isDigit() || char == '.' }
-                valueError = !validateValue(valueString)
-                if (!valueError) {
-                    value.value = valueString.toFloat()
+                lightnessString = it.filter { char -> char.isDigit() || char == '.' }
+                if (validateLightness(lightnessString)){
+                    lightness.value = lightnessString.toFloat()
+                    lightnessError = false
+                }
+                else {
+                    isLightnessFieldsInitiator.value = true
+                    lightnessError = true
                 }
             },
             label = { Text("L (0-100)") },
-            isError = valueError,
+            isError = lightnessError,
             modifier = Modifier
                 .weight(1f),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),

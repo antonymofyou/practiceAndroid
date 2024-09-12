@@ -1,27 +1,24 @@
-package com.example.practiceandroid.views
+package com.example.practiceandroid.views.contextmenu.color
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.practiceandroid.ext.drawSelectionCircle
 import kotlin.math.PI
@@ -32,7 +29,13 @@ import kotlin.math.sqrt
 
 // Компонент для цветового круга
 @Composable
-fun ColorCircle(hue: Float, saturation: Float, onColorChange: (Float, Float) -> Unit) {
+fun ColorCircle(
+    hue: Float,
+    saturation: Float,
+    onColorChange: (Float, Float) -> Unit,
+    isHueFieldsInitiator: MutableState<Boolean>,
+    isSaturationFieldsInitiator: MutableState<Boolean>
+) {
 
     var circleRadius by rememberSaveable { mutableStateOf(0f) }
 
@@ -63,6 +66,9 @@ fun ColorCircle(hue: Float, saturation: Float, onColorChange: (Float, Float) -> 
                     val limitedDistance = distance.coerceAtMost(circleRadius)
                     val newHue = ((atan2(y, x) * 180 / PI).toFloat() + 360) % 360
                     val newSaturation = (limitedDistance / circleRadius) * 100f
+
+                    isHueFieldsInitiator.value = false
+                    isSaturationFieldsInitiator.value = false
                     onColorChange(newHue, newSaturation)
                 }
             }
@@ -75,6 +81,9 @@ fun ColorCircle(hue: Float, saturation: Float, onColorChange: (Float, Float) -> 
                     val limitedDistance = distance.coerceAtMost(circleRadius)
                     val newHue = ((atan2(y, x) * 180 / PI).toFloat() + 360) % 360
                     val newSaturation = (limitedDistance / circleRadius) * 100f
+
+                    isHueFieldsInitiator.value = false
+                    isSaturationFieldsInitiator.value = false
                     onColorChange(newHue, newSaturation)
                 }
             }

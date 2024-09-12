@@ -1,5 +1,6 @@
-package com.example.practiceandroid.views
+package com.example.practiceandroid.views.contextmenu.color
 
+import android.graphics.Color
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,7 +44,7 @@ fun ChangeColorDialog(
         text = {
             // Передаем в HSLColorPicker функцию для обновления выбранного цвета
             HSLColorPicker(selectedColor, isConfirmButtonEnabled) { color ->
-                selectedColor = android.graphics.Color.parseColor(color)
+                selectedColor = Color.parseColor(color)
             }
         }
     )
