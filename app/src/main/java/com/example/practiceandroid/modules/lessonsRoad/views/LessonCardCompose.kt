@@ -64,8 +64,11 @@ class LessonCardView(
     // относительно верхней линии начала раздела
     private var verticalOffset = 0.dp
 
+    // Ширина кружка
+    private val cardWidth = 130
+
     // Величина отступа между левым и правым кружками
-    private val cardPadding = 40
+    private val cardPadding = 55
 
     // Отступ между левым и правом краями
     private val paddingLeftRight = (screenWidthDp - 130 * 2 - cardPadding) / 2
@@ -75,19 +78,24 @@ class LessonCardView(
     private val smallOverlapShift = 20
 
     // Параметры соединяющих линий
+
+    private val sideLineBottomPadding = 85
+    private val longSideLineLeftRightPadding = 125
+    private val shortSideLineLeftRightPadding = 120
+    private val shortSideLineWidth = cardPadding + (cardWidth / 8) + (cardWidth - shortSideLineLeftRightPadding)
+    private val shortSideLineHeight = sideLineBottomPadding - largeOverlapShift + (cardWidth / 4)
+    private val longSideLineHeight = sideLineBottomPadding + smallOverlapShift
+    private val longSideLineWidth = cardPadding + cardWidth / 3
+
     private val leftUpperLineHeight = 110
     private val rightUpperLineHeight = 96
     private val leftLowerLineHeight = 110
     private val rightLowerLineHeight = 105
-    private val shortSideLineHeight = cardPadding + 35
-    private val longSideLineHeight = 110
 
     private val leftUpperLineWidth = screenWidthDp / 2 - 90
     private val rightUpperLineWidth = screenWidthDp / 2 - 105
     private val leftLowerLineWidth = leftLowerLineHeight * rightUpperLineWidth / rightUpperLineHeight
     private val rightLowerLineWidth = rightLowerLineHeight * leftUpperLineWidth / leftUpperLineHeight
-    private val shortSideLineWidth = cardPadding + 35
-    private val longSideLineWidth = 95
 
     /**
      * Функция, отвечающая за отображение кружка урока,
@@ -279,7 +287,7 @@ class LessonCardView(
                         .offset(0.dp, (-6).dp)
                 )
 
-                if (position != lastIndex && position % 2 != 0) {
+                if (!isLastLessonInChapter && position % 2 != 0) {
                     Box (
                         modifier = Modifier
                             .height(smallOverlapShift.dp)
@@ -323,7 +331,7 @@ class LessonCardView(
                             color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
                         }
                         val circlePath = Path()
-                        val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                        val lineToRight = lessonsRoadViewModel.createLineBitmapRightToLeft(
                             path = circlePath,
                             paint = paint,
                             width = lessonsViewModel.dpToPx(shortSideLineWidth),
@@ -334,7 +342,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(125.dp, if (boxHeight > 90.dp) boxHeight - 90.dp else 0.dp, 0.dp, 0.dp)
+                                .padding(shortSideLineLeftRightPadding.dp, if (boxHeight > sideLineBottomPadding.dp) boxHeight - sideLineBottomPadding.dp else 0.dp, 0.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -359,7 +367,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(126.dp, if (boxHeight > 120.dp) boxHeight - 120.dp else 0.dp, 0.dp, 0.dp)
+                                .padding(longSideLineLeftRightPadding.dp, if (boxHeight > (longSideLineHeight + 10).dp) boxHeight - (longSideLineHeight + 10).dp else 0.dp, 0.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -577,7 +585,7 @@ class LessonCardView(
                         .offset(0.dp, (-6).dp)
                 )
 
-                if (position != lastIndex && position % 2 != 0) {
+                if (!isLastLessonInChapter && position % 2 != 0) {
                     Box (
                         modifier = Modifier
                             .height(smallOverlapShift.dp)
@@ -625,7 +633,7 @@ class LessonCardView(
                             color = lessonsRoadViewModel.getLineColorForChapter(lesson["lesson_chapter"]!!)
                         }
                         val circlePath = Path()
-                        val lineToRight = lessonsRoadViewModel.createLineBitmapLeftToRight(
+                        val lineToRight = lessonsRoadViewModel.createLineBitmapRightToLeft(
                             path = circlePath,
                             paint = paint,
                             width = lessonsViewModel.dpToPx(shortSideLineWidth),
@@ -636,7 +644,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(0.dp, if (boxHeight > 90.dp) boxHeight - 90.dp else 0.dp, 125.dp, 0.dp)
+                                .padding(0.dp, if (boxHeight > sideLineBottomPadding.dp) boxHeight - sideLineBottomPadding.dp else 0.dp, shortSideLineLeftRightPadding.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -665,7 +673,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(0.dp, if (boxHeight > 120.dp) boxHeight - 120.dp else 0.dp, 126.dp, 0.dp)
+                                .padding(0.dp, if (boxHeight > (longSideLineHeight + 10).dp) boxHeight - (longSideLineHeight + 10).dp else 0.dp, longSideLineLeftRightPadding.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
