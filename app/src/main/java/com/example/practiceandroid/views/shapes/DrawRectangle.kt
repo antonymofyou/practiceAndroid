@@ -94,7 +94,7 @@ fun DrawRectangle(
                 )
                 // Устанавливаем границу для прямоугольника
                 .border(
-                    width = rectangleViewModel.borderWidth.value,
+                    width = rectangleViewModel.borderWidth.value / rectangleViewModel.scale.value,
                     color = Color(android.graphics.Color.parseColor(rectangleViewModel.borderColor.value)),
                     shape = RoundedCornerShape(rectangleViewModel.cornerRadius.value)
                 )
@@ -105,8 +105,8 @@ fun DrawRectangle(
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
                         // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
-                        rectangleViewModel.scale.value =
-                            (rectangleViewModel.scale.value * scaleChange).coerceIn(0.85f, 3f)
+                        rectangleViewModel.scale.value = (rectangleViewModel.scale.value * scaleChange)
+                                .coerceIn(rectangleViewModel.minScale.value, rectangleViewModel.maxScale.value)
 
                         // Обновляем поворот
                         rectangleViewModel.rotation.value += rotateChange
@@ -252,6 +252,12 @@ fun DrawRectangle(
             rectangleViewModel.height,
             rectangleViewModel.zIndex,
             rectangleViewModel.scale,
+//            rectangleViewModel.minHeight.value,
+//            rectangleViewModel.maxHeight.value,
+//            rectangleViewModel.minWidth.value,
+//            rectangleViewModel.maxWidth.value,
+//            rectangleViewModel.minScale,
+//            rectangleViewModel.maxScale
         )
     }
 
