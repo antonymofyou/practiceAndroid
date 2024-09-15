@@ -67,6 +67,9 @@ class LessonCardView(
     // Ширина кружка
     private val cardWidth = 130
 
+    // Высота кружка
+    private val circleHeight = 120
+
     // Величина отступа между левым и правым кружками
     private val cardPadding = 55
 
@@ -79,12 +82,12 @@ class LessonCardView(
 
     // Параметры соединяющих линий
 
-    private val sideLineBottomPadding = 85
+    private val sideLineTopPadding = 85
     private val longSideLineLeftRightPadding = 125
     private val shortSideLineLeftRightPadding = 120
     private val shortSideLineWidth = cardPadding + (cardWidth / 8) + (cardWidth - shortSideLineLeftRightPadding)
-    private val shortSideLineHeight = sideLineBottomPadding - largeOverlapShift + (cardWidth / 4)
-    private val longSideLineHeight = sideLineBottomPadding + smallOverlapShift
+    private val shortSideLineHeight = sideLineTopPadding - largeOverlapShift + (cardWidth / 4)
+    private val longSideLineHeight = sideLineTopPadding + smallOverlapShift
     private val longSideLineWidth = cardPadding + cardWidth / 3
 
     private val leftUpperLineHeight = 110
@@ -342,7 +345,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(shortSideLineLeftRightPadding.dp, if (boxHeight > sideLineBottomPadding.dp) boxHeight - sideLineBottomPadding.dp else 0.dp, 0.dp, 0.dp)
+                                .padding(shortSideLineLeftRightPadding.dp, paddingTop + sideLineTopPadding.dp, 0.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -367,7 +370,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(longSideLineLeftRightPadding.dp, if (boxHeight > (longSideLineHeight + 10).dp) boxHeight - (longSideLineHeight + 10).dp else 0.dp, 0.dp, 0.dp)
+                                .padding(longSideLineLeftRightPadding.dp, sideLineTopPadding.dp, 0.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -384,7 +387,7 @@ class LessonCardView(
         verticalOffset += if (position % 2 != 0) {
             // В данном случае следующий блок будет наложен на текущий.
             // Реализован negative top margin
-            if (boxHeight - smallOverlapShift.dp > 0.dp) boxHeight - smallOverlapShift.dp else boxHeight
+            circleHeight.dp + paddingTop + 50.dp
         } else {
             if (isFirstLessonInChapter && isLastLessonInChapter) {
                 boxHeight
@@ -393,7 +396,7 @@ class LessonCardView(
             } else {
                 // В данном случае следующий блок будет наложен на текущий.
                 // Реализован negative top margin
-                if (boxHeight - largeOverlapShift.dp > 0.dp) boxHeight - largeOverlapShift.dp else boxHeight
+                circleHeight.dp + paddingTop
             }
         }
     }
@@ -644,7 +647,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(0.dp, if (boxHeight > sideLineBottomPadding.dp) boxHeight - sideLineBottomPadding.dp else 0.dp, shortSideLineLeftRightPadding.dp, 0.dp)
+                                .padding(0.dp, paddingTop + sideLineTopPadding.dp, shortSideLineLeftRightPadding.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -673,7 +676,7 @@ class LessonCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(boxHeight)
-                                .padding(0.dp, if (boxHeight > (longSideLineHeight + 10).dp) boxHeight - (longSideLineHeight + 10).dp else 0.dp, longSideLineLeftRightPadding.dp, 0.dp)
+                                .padding(0.dp, sideLineTopPadding.dp, longSideLineLeftRightPadding.dp, 0.dp)
                         ) {
                             Image(
                                 bitmap = lineToRight.asImageBitmap(),
@@ -694,7 +697,7 @@ class LessonCardView(
         verticalOffset += if (position % 2 != 0) {
             // В данном случае следующий блок будет наложен на текущий.
             // Реализован negative top margin
-            if (boxHeight - smallOverlapShift.dp > 0.dp) boxHeight - smallOverlapShift.dp else boxHeight
+            circleHeight.dp + paddingTop + 10.dp
         } else {
             if (isFirstLessonInChapter && isLastLessonInChapter) {
                 boxHeight
@@ -703,7 +706,7 @@ class LessonCardView(
             } else {
                 // В данном случае следующий блок будет наложен на текущий.
                 // Реализован negative top margin
-                if (boxHeight - largeOverlapShift.dp > 0.dp) boxHeight - largeOverlapShift.dp else boxHeight
+                circleHeight.dp + paddingTop
             }
         }
     }
