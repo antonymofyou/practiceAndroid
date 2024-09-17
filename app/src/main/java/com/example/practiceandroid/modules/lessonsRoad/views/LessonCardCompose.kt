@@ -76,18 +76,17 @@ class LessonCardView(
     // Отступ между левым и правом краями
     private val paddingLeftRight = (screenWidthDp - 130 * 2 - cardPadding) / 2
 
-    // Параметры наложения блоков
-    private val largeOverlapShift = 50
-    private val smallOverlapShift = 20
+    // Смещение вниз для уменьшения степени наложения блоков
+    private val smallOverlapShift = 60
 
     // Параметры соединяющих линий
 
     private val sideLineTopPadding = 85
-    private val longSideLineLeftRightPadding = 125
+    private val longSideLineLeftRightPadding = 120
     private val shortSideLineLeftRightPadding = 120
     private val shortSideLineWidth = cardPadding + (cardWidth / 8) + (cardWidth - shortSideLineLeftRightPadding)
-    private val shortSideLineHeight = sideLineTopPadding - largeOverlapShift + (cardWidth / 4)
-    private val longSideLineHeight = sideLineTopPadding + smallOverlapShift
+    private val shortSideLineHeight = circleHeight - sideLineTopPadding + circleHeight / 3
+    private val longSideLineHeight = circleHeight + smallOverlapShift - sideLineTopPadding + 10
     private val longSideLineWidth = cardPadding + cardWidth / 3
 
     private val leftUpperLineHeight = 110
@@ -386,8 +385,9 @@ class LessonCardView(
         // Сдвиг увеличивается на высоту текущего блока
         verticalOffset += if (position % 2 != 0) {
             // В данном случае следующий блок будет наложен на текущий.
+            // Small overlap shift
             // Реализован negative top margin
-            circleHeight.dp + paddingTop + 50.dp
+            circleHeight.dp + paddingTop + smallOverlapShift.dp
         } else {
             if (isFirstLessonInChapter && isLastLessonInChapter) {
                 boxHeight
@@ -395,6 +395,7 @@ class LessonCardView(
                 boxHeight
             } else {
                 // В данном случае следующий блок будет наложен на текущий.
+                // Large overlap shift
                 // Реализован negative top margin
                 circleHeight.dp + paddingTop
             }
@@ -696,8 +697,9 @@ class LessonCardView(
         // Сдвиг увеличивается на высоту текущего блока
         verticalOffset += if (position % 2 != 0) {
             // В данном случае следующий блок будет наложен на текущий.
+            // Small overlap shift
             // Реализован negative top margin
-            circleHeight.dp + paddingTop + 10.dp
+            circleHeight.dp + paddingTop + smallOverlapShift.dp
         } else {
             if (isFirstLessonInChapter && isLastLessonInChapter) {
                 boxHeight
@@ -705,6 +707,7 @@ class LessonCardView(
                 boxHeight
             } else {
                 // В данном случае следующий блок будет наложен на текущий.
+                // Large overlap shift
                 // Реализован negative top margin
                 circleHeight.dp + paddingTop
             }
