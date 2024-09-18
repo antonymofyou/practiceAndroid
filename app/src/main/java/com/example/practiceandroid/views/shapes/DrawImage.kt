@@ -51,6 +51,10 @@ fun DrawImage(
     var right by remember { mutableFloatStateOf(0f) }
     var bottom by remember { mutableFloatStateOf(0f) }
 
+    // Дополнительные состояния для максимальных размеров
+    var resizeMaxWidth by remember { mutableStateOf(maxWidth) }
+    var resizeMaxHeight by remember { mutableStateOf(maxHeight) }
+
     // Глобальный оффсет элемента
     var imageOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
 
@@ -76,7 +80,7 @@ fun DrawImage(
                 )
                 // Устанавливаем границу для прямоугольника
                 .border(
-                    width = imageViewModel.borderWidth.value,
+                    width = imageViewModel.borderWidth.value / imageViewModel.scale.value,
                     color = Color(android.graphics.Color.parseColor(imageViewModel.borderColor.value)),
                     shape = RoundedCornerShape(imageViewModel.cornerRadius.value)
                 )
@@ -196,6 +200,8 @@ fun DrawImage(
                 imageViewModel.height,
                 imageViewModel.zIndex,
                 imageViewModel.scale,
+                resizeMaxWidth,
+                resizeMaxHeight,
             )
         }
 

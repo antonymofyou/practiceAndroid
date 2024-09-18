@@ -97,6 +97,12 @@ fun DrawShapes(
                                 factory = RectangleViewModelFactory(shape)
                             )
                             DrawRectangle(rectangleViewModel, focusManager, maxWidth.value, maxHeight.value)
+
+                            val rectangleViewModel1: RectangleViewModel = viewModel(
+                                key = shape.id.toString() + "12",
+                                factory = RectangleViewModelFactory(shape)
+                            )
+                            DrawRectangle(rectangleViewModel1, focusManager, maxWidth.value, maxHeight.value)
                         }
                         "circle" -> {
                             val circleViewModel: CircleViewModel = viewModel(

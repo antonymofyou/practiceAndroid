@@ -36,6 +36,8 @@ import com.example.practiceandroid.views.contextmenu.ResizeDialog
 import kotlin.math.cos
 import kotlin.math.sin
 
+const val WIDTH_CORRECTION_FACTOR = 2f
+
 // Компонент для отрисовки стрелки на основе данных, переданных в объекте shape
 @Composable
 fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWidth: Float, maxHeight: Float) {
@@ -53,6 +55,10 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
     var left by remember { mutableFloatStateOf(0f) }
     var right by remember { mutableFloatStateOf(0f) }
     var bottom by remember { mutableFloatStateOf(0f) }
+
+    // Дополнительные состояния для максимальных размеров
+    var resizeMaxWidth by remember { mutableStateOf(maxWidth) }
+    var resizeMaxHeight by remember { mutableStateOf(maxHeight) }
 
     // Глобальный оффсет элемента
     var arrowOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
@@ -180,7 +186,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             drawPath(
                 path = arrowPath,
                 color = Color(android.graphics.Color.parseColor(arrowViewModel.borderColor.value)),
-                style = Stroke(width = arrowViewModel.borderWidth.value.value)
+                style = Stroke(width = arrowViewModel.borderWidth.value.toPx() / arrowViewModel.scale.value * WIDTH_CORRECTION_FACTOR)
             )
 
             // Нарисовать заливку
@@ -215,6 +221,8 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             arrowViewModel.height,
             arrowViewModel.zIndex,
             arrowViewModel.scale,
+            resizeMaxWidth,
+            resizeMaxHeight,
         )
     }
 

@@ -54,6 +54,10 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
     var right by remember { mutableFloatStateOf(0f) }
     var bottom by remember { mutableFloatStateOf(0f) }
 
+    // Дополнительные состояния для максимальных размеров
+    var resizeMaxWidth by remember { mutableStateOf(maxWidth) }
+    var resizeMaxHeight by remember { mutableStateOf(maxHeight) }
+
     // Глобальный оффсет элемента
     var circleOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
 
@@ -79,7 +83,7 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                     shape = RoundedCornerShape(circleViewModel.cornerRadius.value)
                 )
                 .border(
-                    width = circleViewModel.borderWidth.value,
+                    width = circleViewModel.borderWidth.value / circleViewModel.scale.value,
                     color = Color(android.graphics.Color.parseColor(circleViewModel.borderColor.value)),
                     shape = RoundedCornerShape(circleViewModel.cornerRadius.value)
                 )
@@ -223,6 +227,8 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 circleViewModel.height,
                 circleViewModel.zIndex,
                 circleViewModel.scale,
+                resizeMaxWidth,
+                resizeMaxHeight,
             )
         }
 
