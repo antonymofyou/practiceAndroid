@@ -73,14 +73,14 @@ fun DrawImage(
             modifier = Modifier
                 .graphicsLayer(
                     rotationZ = imageViewModel.rotation.value,
-                    scaleX = imageViewModel.scale.value,
-                    scaleY = imageViewModel.scale.value,
+                    scaleX = imageViewModel.scaleX.value,
+                    scaleY = imageViewModel.scaleY.value,
                     translationX = imageViewModel.offset.value.x,
                     translationY = imageViewModel.offset.value.y,
                 )
                 // Устанавливаем границу для прямоугольника
                 .border(
-                    width = imageViewModel.borderWidth.value / imageViewModel.scale.value,
+                    width = imageViewModel.borderWidth.value,
                     color = Color(android.graphics.Color.parseColor(imageViewModel.borderColor.value)),
                     shape = RoundedCornerShape(imageViewModel.cornerRadius.value)
                 )
@@ -91,9 +91,9 @@ fun DrawImage(
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
-                        // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
-                        imageViewModel.scale.value =
-                            (imageViewModel.scale.value * scaleChange).coerceIn(0.85f, 3f)
+                        // Обновляем масштаб в ViewModel
+                        imageViewModel.scaleX.value = (imageViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
+                        imageViewModel.scaleY.value = (imageViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
 
                         // Обновляем поворот
                         imageViewModel.rotation.value += rotateChange
@@ -110,8 +110,8 @@ fun DrawImage(
                         val maxOffsetX = maxWidth - right
                         val maxOffsetY = maxHeight - bottom
 
-                        var rotatedOffsetY = offsetChange.y * imageViewModel.scale.value
-                        var rotatedOffsetX = offsetChange.x * imageViewModel.scale.value
+                        var rotatedOffsetY = offsetChange.y * imageViewModel.scaleY.value
+                        var rotatedOffsetX = offsetChange.x * imageViewModel.scaleX.value
 
                         // Применение вращения к смещению
                         var transformedOffsetX =
@@ -150,9 +150,9 @@ fun DrawImage(
 
                             // Рассчет локального оффсета на фигуре
                             var x =
-                                with(localDensity) { offset.x.toDp().value } * imageViewModel.scale.value
+                                with(localDensity) { offset.x.toDp().value } * imageViewModel.scaleX.value
                             val y =
-                                with(localDensity) { offset.y.toDp().value } * imageViewModel.scale.value
+                                with(localDensity) { offset.y.toDp().value } * imageViewModel.scaleY.value
 
                             // Применение вращения к смещению
                             var transformedOffsetX = x * cosRotation - y * sinRotation
@@ -199,9 +199,8 @@ fun DrawImage(
                 imageViewModel.width,
                 imageViewModel.height,
                 imageViewModel.zIndex,
-                imageViewModel.scale,
-                resizeMaxWidth,
-                resizeMaxHeight,
+                imageViewModel.scaleX,
+                imageViewModel.scaleY,
             )
         }
 

@@ -68,8 +68,6 @@ fun DrawRectangle(
 ) {
     // Границы элемента
     var top by remember { mutableFloatStateOf(0f) }
-    var topR by remember { mutableFloatStateOf(0f) }
-    var leftR by remember { mutableFloatStateOf(0f) }
     var left by remember { mutableFloatStateOf(0f) }
     var right by remember { mutableFloatStateOf(0f) }
     var bottom by remember { mutableFloatStateOf(0f) }
@@ -92,26 +90,24 @@ fun DrawRectangle(
     // Контейнер Row для размещения текста внутри прямоугольника
     if (rectangleViewModel.visibility.value) {
         Box(
-            modifier = Modifier
-                .fillMaxSize() // Занимаем все пространство контейнера
+
         ) {
             Row(
                 modifier = Modifier
                     .graphicsLayer(
                         rotationZ = rectangleViewModel.rotation.value,
-                        scaleX = rectangleViewModel.scale.value,
-                        scaleY = rectangleViewModel.scale.value,
                         translationX = rectangleViewModel.offset.value.x,
                         translationY = rectangleViewModel.offset.value.y,
+                        scaleX = rectangleViewModel.scaleX.value,
+                        scaleY = rectangleViewModel.scaleY.value
                     )
+                    .border(
+                        width = rectangleViewModel.borderWidth.value,
+                        color = Color(android.graphics.Color.parseColor(rectangleViewModel.borderColor.value)),
+                        shape = RoundedCornerShape(rectangleViewModel.cornerRadius.value))
                     // Устанавливаем фоновый цвет и закругленные углы для прямоугольника
                     .background(
                         color = Color(android.graphics.Color.parseColor(rectangleViewModel.color.value)),
-                        shape = RoundedCornerShape(rectangleViewModel.cornerRadius.value)
-                    )
-                    .border(
-                        width = rectangleViewModel.borderWidth.value / rectangleViewModel.scale.value,
-                        color = Color(android.graphics.Color.parseColor(rectangleViewModel.borderColor.value)),
                         shape = RoundedCornerShape(rectangleViewModel.cornerRadius.value)
                     )
                     .width(rectangleViewModel.width.value)
@@ -121,22 +117,9 @@ fun DrawRectangle(
                     .pointerInput(Unit) {
                         detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
 
-                            // Текущий масштаб
-                            val currentScale = rectangleViewModel.scale.value
-
-                            // Предполагаемый новый масштаб
-                            val proposedScale = currentScale * scaleChange
-
-                            // Вычисляем минимальный масштаб на основе текущих размеров фигуры
-                            val minScaleWidth = 70f / rectangleViewModel.width.value.value
-                            val minScaleHeight = 70f / rectangleViewModel.height.value.value
-                            val minScale = maxOf(0.85f, minScaleWidth, minScaleHeight)
-
-                            // Ограничиваем масштаб между minScale и 3f
-                            val finalScale = proposedScale.coerceIn(minScale, 3f)
-
                             // Обновляем масштаб в ViewModel
-                            rectangleViewModel.scale.value = finalScale
+                            rectangleViewModel.scaleX.value = (rectangleViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
+                            rectangleViewModel.scaleY.value = (rectangleViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
 
                             rectangleViewModel.rotation.value = (rectangleViewModel.rotation.value + rotateChange) % 360
 
@@ -152,8 +135,8 @@ fun DrawRectangle(
                             val maxOffsetX = maxWidth - right
                             val maxOffsetY = maxHeight - bottom
 
-                            var rotatedOffsetY = offsetChange.y * rectangleViewModel.scale.value
-                            var rotatedOffsetX = offsetChange.x * rectangleViewModel.scale.value
+                            var rotatedOffsetY = offsetChange.y * rectangleViewModel.scaleX.value
+                            var rotatedOffsetX = offsetChange.x * rectangleViewModel.scaleY.value
 
                             // Применение вращения к смещению
                             var transformedOffsetX =
@@ -192,9 +175,9 @@ fun DrawRectangle(
 
                                 // Рассчет локального оффсета на фигуре
                                 var x =
-                                    with(localDensity) { offset.x.toDp().value } * rectangleViewModel.scale.value
+                                    with(localDensity) { offset.x.toDp().value } * rectangleViewModel.scaleX.value
                                 val y =
-                                    with(localDensity) { offset.y.toDp().value } * rectangleViewModel.scale.value
+                                    with(localDensity) { offset.y.toDp().value } * rectangleViewModel.scaleY.value
 
                                 // Применение вращения к смещению
                                 var transformedOffsetX = x * cosRotation - y * sinRotation
@@ -216,25 +199,7 @@ fun DrawRectangle(
                         top = with(localDensity) { rect1.top.toDp().value }
                         right = with(localDensity) { rect1.right.toDp().value }
                         bottom = with(localDensity) { rect1.bottom.toDp().value }
-                        Log.e("DEBUG", "left: $left, right: $right, top: $top, bottom: $bottom")
 
-                        // Рассчитываем косинус и синус угла вращения в радианах
-                        val rotationRadians =
-                            Math.toRadians(rectangleViewModel.rotation.value.toDouble())
-                        val cosRotation = cos(rotationRadians).toFloat()
-                        Log.e("COS", cosRotation.toString())
-                        var w = with(localDensity) { layoutCoordinates.size.width.toDp().value}
-                        var h = with(localDensity) { layoutCoordinates.size.height.toDp().value}
-                        var maxL = left / cosRotation
-                        var maxT = (maxHeight - bottom) / cosRotation
-                        var maxR = (maxWidth - right) / cosRotation
-                        var maxB = bottom / cosRotation
-
-                        resizeMaxWidth = maxL + w + maxR
-                        resizeMaxHeight = maxT + h + maxB
-                        Log.e("DEBUG", "maxL: $maxL, maxR: $maxR, width: $w ${rectangleViewModel.rotation.value.toDouble()}")
-                        Log.e("DEBUG", "resizeMaxWidth: $resizeMaxWidth")
-//
                         val rect2 = layoutCoordinates.positionInWindow()
                         val x = with(localDensity) { rect2.x.toDp().value }
                         val y = with(localDensity) { rect2.y.toDp().value }
@@ -301,9 +266,8 @@ fun DrawRectangle(
             rectangleViewModel.width,
             rectangleViewModel.height,
             rectangleViewModel.zIndex,
-            rectangleViewModel.scale,
-            resizeMaxWidth,
-            resizeMaxHeight
+            rectangleViewModel.scaleX,
+            rectangleViewModel.scaleY,
         )
     }
 

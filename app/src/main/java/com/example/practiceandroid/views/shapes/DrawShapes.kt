@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,8 +51,9 @@ fun DrawShapes(
 
     BoxWithConstraints (
         modifier = Modifier
-            .clipToBounds()
             .clickable { focusManager.clearFocus() }
+            .fillMaxSize()
+            .clipToBounds()
     ){
 
         BoxWithConstraints(
@@ -63,9 +65,9 @@ fun DrawShapes(
                     translationY = offset.y
                 }
                 .fillMaxSize()
+                .clipToBounds()
                 // Добавил для отладки
                 .border(4.dp, Color.Gray)
-                .clipToBounds()
                 .pointerInput(Unit) {
                     awaitEachGesture {
                         // Устанавливаем начальное значение переменной перед началом жеста
@@ -135,4 +137,6 @@ fun DrawShapes(
         }
     }
 }
+
+
 

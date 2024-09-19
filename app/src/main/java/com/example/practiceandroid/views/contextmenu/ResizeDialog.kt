@@ -25,21 +25,21 @@ import androidx.compose.ui.unit.dp
 
 
 
-// Функция для проверки ширины
-fun validateWidth(width: String, maxW: Float): Boolean {
-    val widthValue = width.toFloatOrNull()
-    return (widthValue != null) && (widthValue in 70f..maxW)
-}
-
-// Функция для проверки ширины
-fun validateHeight(height: String, maxH: Float): Boolean {
-    val heightValue = height.toFloatOrNull()
-    return (heightValue != null) && (heightValue in 70f..maxH)
-}
 
 // Функция для проверки zIndex
 fun validateZIndex(zIndex: String): Boolean {
     return zIndex.toFloatOrNull() != null
+}
+
+// Функция для проверки ширины
+fun validateWidth(width: String, minW: Float, maxW: Float): Boolean {
+    val widthValue = width.toFloatOrNull()
+    return (widthValue != null) && (widthValue in minW..maxW)
+}
+// Функция для проверки ширины
+fun validateHeight(height: String, minH: Float, maxH: Float): Boolean {
+    val heightValue = height.toFloatOrNull()
+    return (heightValue != null) && (heightValue in minH..maxH)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,31 +49,29 @@ fun ResizeDialog(
     width: MutableState<Dp>,
     height: MutableState<Dp>,
     zIndex: MutableState<Float>,
-    scale: MutableState<Float>,
-    resizeMaxWidth: Float,
-    resizeMaxHeight: Float,
+    scaleX: MutableState<Float>,
+    scaleY: MutableState<Float>,
 ) {
-    var newWidth by rememberSaveable { mutableStateOf((width.value.value * scale.value).toString()) }
-    var newHeight by rememberSaveable { mutableStateOf((height.value.value * scale.value).toString()) }
+    var minW = width.value.value * 0.85f
+    var maxW = width.value.value * 3f
+    var minH = height.value.value * 0.85f
+    var maxH = height.value.value * 3f
+    var newWidth by rememberSaveable { mutableStateOf((width.value.value * scaleX.value).toString()) }
+    var newHeight by rememberSaveable { mutableStateOf((height.value.value * scaleY.value).toString()) }
     var newZIndex by rememberSaveable { mutableStateOf((zIndex.value).toString()) }
-
     // Состояния для ошибок
     var widthError by rememberSaveable { mutableStateOf(false) }
     var heightError by rememberSaveable { mutableStateOf(false) }
     var zIndexError by rememberSaveable { mutableStateOf(false) }
-
     // Проверка активации кнопки: кнопка активна, когда нет ошибок
     val isConfirmButtonEnabled = !widthError && !heightError && !zIndexError
-
     AlertDialog(
         onDismissRequest = { showResizeDialog.value = false },
         confirmButton = {
             TextButton(onClick = {
-                width.value = newWidth.toFloat().dp
-                height.value = newHeight.toFloat().dp
-                scale.value = 1f
+                scaleX.value = newWidth.toFloat() / width.value.value
+                scaleY.value = newHeight.toFloat() / height.value.value
                 zIndex.value = newZIndex.toFloat()
-
                 showResizeDialog.value = false
             },
                 enabled = isConfirmButtonEnabled) {
@@ -88,7 +86,6 @@ fun ResizeDialog(
         title = { Text("Изменить размеры и слой") },
         text = {
             val scrollState = rememberScrollState()
-
             Column(
                 modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)
             ) {
@@ -97,9 +94,9 @@ fun ResizeDialog(
                     onValueChange = {
                         val filteredText = it.filter { it.isDigit() || it == '.' }
                         newWidth = filteredText
-                        widthError = !validateWidth(newWidth, resizeMaxWidth)
+                        widthError = !validateWidth(newWidth, minW, maxW)
                     },
-                    label = { Text("Ширина (70-${resizeMaxWidth})") },
+                    label = { Text("Ширина (${minW}-${maxW})") },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     isError = widthError,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -112,9 +109,9 @@ fun ResizeDialog(
                     onValueChange = {
                         val filteredText = it.filter { it.isDigit() || it == '.' }
                         newHeight = filteredText
-                        heightError = !validateHeight(newHeight, resizeMaxHeight)
+                        heightError = !validateHeight(newHeight, minH, maxH)
                     },
-                    label = { Text("Высота (70-${resizeMaxHeight})") },
+                    label = { Text("Высота (${minH}-${maxH})") },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     isError = heightError,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -140,3 +137,4 @@ fun ResizeDialog(
         }
     )
 }
+

@@ -22,17 +22,12 @@ class RectangleViewModel(shape: ResponseShapes.Shape): ViewModel() {
     var showChangeBorderSettingDialog = mutableStateOf(false)
 
     var width: MutableState<Dp> = mutableStateOf(0.dp)
-    var minWidth: Dp
-    var maxWidth: Dp
     var height: MutableState<Dp> = mutableStateOf(0.dp)
-    var minHeight: Dp
-    var maxHeight: Dp
     var zIndex: MutableState<Float> = mutableStateOf(0f)
 
     var offset: MutableState<Offset> = mutableStateOf(Offset.Zero)
-    var scale: MutableState<Float> = mutableStateOf(1f)
-    var maxScale: MutableState<Float> = mutableStateOf(3f)
-    var minScale: MutableState<Float> = mutableStateOf(0.85f)
+    var scaleX: MutableState<Float> = mutableStateOf(1f)
+    var scaleY: MutableState<Float> = mutableStateOf(1f)
     var rotation: MutableState<Float> = mutableStateOf(0f)
 
     var cornerRadius: MutableState<Dp> = mutableStateOf(0.dp)
@@ -47,12 +42,7 @@ class RectangleViewModel(shape: ResponseShapes.Shape): ViewModel() {
 
     init {
         width.value = shape.width.dp
-        minWidth = shape.width.dp * 0.85f
-        maxWidth = shape.width.dp * 3f
-        
         height.value = shape.height.dp
-        minHeight = shape.width.dp * 0.85f
-        maxHeight = shape.height.dp * 3f
 
         zIndex.value = shape.zIndex
 

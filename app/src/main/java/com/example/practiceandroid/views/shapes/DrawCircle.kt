@@ -73,8 +73,8 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
             modifier = Modifier
                 .graphicsLayer(
                     rotationZ = circleViewModel.rotation.value,
-                    scaleX = circleViewModel.scale.value,
-                    scaleY = circleViewModel.scale.value,
+                    scaleX = circleViewModel.scaleX.value,
+                    scaleY = circleViewModel.scaleY.value,
                     translationX = circleViewModel.offset.value.x,
                     translationY = circleViewModel.offset.value.y
                 )
@@ -83,7 +83,7 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                     shape = RoundedCornerShape(circleViewModel.cornerRadius.value)
                 )
                 .border(
-                    width = circleViewModel.borderWidth.value / circleViewModel.scale.value,
+                    width = circleViewModel.borderWidth.value,
                     color = Color(android.graphics.Color.parseColor(circleViewModel.borderColor.value)),
                     shape = RoundedCornerShape(circleViewModel.cornerRadius.value)
                 )
@@ -93,9 +93,9 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
-                        circleViewModel.scale.value =
-                            (circleViewModel.scale.value * scaleChange).coerceIn(0.85f, 3f)
-
+                        // Обновляем масштаб в ViewModel
+                        circleViewModel.scaleX.value = (circleViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
+                        circleViewModel.scaleY.value = (circleViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
                         // Обновляем поворот
                         circleViewModel.rotation.value += rotateChange
 
@@ -111,8 +111,8 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                         val maxOffsetX = maxWidth - right
                         val maxOffsetY = maxHeight - bottom
 
-                        var rotatedOffsetY = offsetChange.y * circleViewModel.scale.value
-                        var rotatedOffsetX = offsetChange.x * circleViewModel.scale.value
+                        var rotatedOffsetY = offsetChange.y * circleViewModel.scaleY.value
+                        var rotatedOffsetX = offsetChange.x * circleViewModel.scaleX.value
 
                         // Применение вращения к смещению
                         var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
@@ -146,8 +146,8 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                             val sinRotation = sin(rotationRadians).toFloat()
 
                             // Рассчет локального оффсета на фигуре
-                            var x = with(localDensity) { offset.x.toDp().value} * circleViewModel.scale.value
-                            val y = with(localDensity) { offset.y.toDp().value} * circleViewModel.scale.value
+                            var x = with(localDensity) { offset.x.toDp().value} * circleViewModel.scaleX.value
+                            val y = with(localDensity) { offset.y.toDp().value} * circleViewModel.scaleY.value
 
                             // Применение вращения к смещению
                             var transformedOffsetX = x * cosRotation - y * sinRotation
@@ -226,9 +226,8 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 circleViewModel.width,
                 circleViewModel.height,
                 circleViewModel.zIndex,
-                circleViewModel.scale,
-                resizeMaxWidth,
-                resizeMaxHeight,
+                circleViewModel.scaleX,
+                circleViewModel.scaleY,
             )
         }
 

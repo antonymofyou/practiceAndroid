@@ -76,19 +76,18 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             modifier = Modifier
                 .graphicsLayer(
                     rotationZ = arrowViewModel.rotation.value,
-                    scaleX = arrowViewModel.scale.value,
-                    scaleY = arrowViewModel.scale.value,
                     translationX = arrowViewModel.offset.value.x,
                     translationY = arrowViewModel.offset.value.y,
+                    scaleX = arrowViewModel.scaleX.value,
+                    scaleY = arrowViewModel.scaleY.value
                 )
                 .zIndex(arrowViewModel.zIndex.value)
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
-                        // Обновляем масштаб с ограничением в пределах от 0.85f до 3f
-                        arrowViewModel.scale.value =
-                            (arrowViewModel.scale.value * scaleChange).coerceIn(0.85f, 3f)
-
+                        // Обновляем масштаб в ViewModel
+                        arrowViewModel.scaleX.value = (arrowViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
+                        arrowViewModel.scaleY.value = (arrowViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
                         // Обновляем поворот
                         arrowViewModel.rotation.value += rotateChange
 
@@ -104,8 +103,8 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                         val maxOffsetX = maxWidth - right
                         val maxOffsetY = maxHeight - bottom
 
-                        var rotatedOffsetY = offsetChange.y * arrowViewModel.scale.value
-                        var rotatedOffsetX = offsetChange.x * arrowViewModel.scale.value
+                        var rotatedOffsetY = offsetChange.y * arrowViewModel.scaleY.value
+                        var rotatedOffsetX = offsetChange.x * arrowViewModel.scaleX.value
 
                         // Применение вращения к смещению
                         var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
@@ -139,8 +138,8 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                             val sinRotation = sin(rotationRadians).toFloat()
 
                             // Рассчет локального оффсета на фигуре
-                            var x = with(localDensity) { offset.x.toDp().value} * arrowViewModel.scale.value
-                            val y = with(localDensity) { offset.y.toDp().value} * arrowViewModel.scale.value
+                            var x = with(localDensity) { offset.x.toDp().value} * arrowViewModel.scaleX.value
+                            val y = with(localDensity) { offset.y.toDp().value} * arrowViewModel.scaleY.value
 
                             // Применение вращения к смещению
                             var transformedOffsetX = x * cosRotation - y * sinRotation
@@ -186,7 +185,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             drawPath(
                 path = arrowPath,
                 color = Color(android.graphics.Color.parseColor(arrowViewModel.borderColor.value)),
-                style = Stroke(width = arrowViewModel.borderWidth.value.toPx() / arrowViewModel.scale.value * WIDTH_CORRECTION_FACTOR)
+                style = Stroke(width = arrowViewModel.borderWidth.value.toPx()  * WIDTH_CORRECTION_FACTOR)
             )
 
             // Нарисовать заливку
@@ -220,9 +219,8 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             arrowViewModel.width,
             arrowViewModel.height,
             arrowViewModel.zIndex,
-            arrowViewModel.scale,
-            resizeMaxWidth,
-            resizeMaxHeight,
+            arrowViewModel.scaleX,
+            arrowViewModel.scaleY,
         )
     }
 

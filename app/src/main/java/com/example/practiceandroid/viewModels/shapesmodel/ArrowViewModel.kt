@@ -26,7 +26,8 @@ class ArrowViewModel(shape: ResponseShapes.Shape): ViewModel() {
     var zIndex: MutableState<Float> = mutableStateOf(0f)
 
     var offset: MutableState<Offset> = mutableStateOf(Offset.Zero)
-    var scale: MutableState<Float> = mutableStateOf(1f)
+    var scaleX: MutableState<Float> = mutableStateOf(1f)
+    var scaleY: MutableState<Float> = mutableStateOf(1f)
     var rotation: MutableState<Float> = mutableStateOf(0f)
 
     var borderWidth: MutableState<Dp> = mutableStateOf(0.dp)
