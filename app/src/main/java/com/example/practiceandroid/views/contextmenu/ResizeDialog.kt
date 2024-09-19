@@ -56,15 +56,19 @@ fun ResizeDialog(
     var maxW = width.value.value * 3f
     var minH = height.value.value * 0.85f
     var maxH = height.value.value * 3f
+
     var newWidth by rememberSaveable { mutableStateOf((width.value.value * scaleX.value).toString()) }
     var newHeight by rememberSaveable { mutableStateOf((height.value.value * scaleY.value).toString()) }
     var newZIndex by rememberSaveable { mutableStateOf((zIndex.value).toString()) }
+
     // Состояния для ошибок
     var widthError by rememberSaveable { mutableStateOf(false) }
     var heightError by rememberSaveable { mutableStateOf(false) }
     var zIndexError by rememberSaveable { mutableStateOf(false) }
     // Проверка активации кнопки: кнопка активна, когда нет ошибок
+
     val isConfirmButtonEnabled = !widthError && !heightError && !zIndexError
+
     AlertDialog(
         onDismissRequest = { showResizeDialog.value = false },
         confirmButton = {
