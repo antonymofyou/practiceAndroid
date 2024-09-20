@@ -48,18 +48,6 @@ import kotlin.math.sin
 // Компонент для отрисовки круга на основе данных, переданных в объекте shape
 @Composable
 fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, maxWidth: Float, maxHeight: Float) {
-    // Границы элемента
-    var top by remember { mutableFloatStateOf(0f) }
-    var left by remember { mutableFloatStateOf(0f) }
-    var right by remember { mutableFloatStateOf(0f) }
-    var bottom by remember { mutableFloatStateOf(0f) }
-
-    // Дополнительные состояния для максимальных размеров
-    var resizeMaxWidth by remember { mutableStateOf(maxWidth) }
-    var resizeMaxHeight by remember { mutableStateOf(maxHeight) }
-
-    // Глобальный оффсет элемента
-    var circleOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
 
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
@@ -73,8 +61,6 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
             modifier = Modifier
                 .graphicsLayer(
                     rotationZ = circleViewModel.rotation.value,
-                    scaleX = circleViewModel.scaleX.value,
-                    scaleY = circleViewModel.scaleY.value,
                     translationX = circleViewModel.offset.value.x,
                     translationY = circleViewModel.offset.value.y
                 )
@@ -93,9 +79,14 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
+                        circleViewModel.isInitialUserSize.value = false
+
                         // Обновляем масштаб в ViewModel
-                        circleViewModel.scaleX.value = (circleViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
-                        circleViewModel.scaleY.value = (circleViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
+                        circleViewModel.height.value = (circleViewModel.height.value * scaleChange)
+                            .coerceIn(circleViewModel.minH.value, circleViewModel.maxH.value)
+                        circleViewModel.width.value = (circleViewModel.width.value * scaleChange)
+                            .coerceIn(circleViewModel.minW.value, circleViewModel.maxW.value)
+
                         // Обновляем поворот
                         circleViewModel.rotation.value += rotateChange
 
@@ -106,13 +97,13 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                         val sinRotation = sin(rotationRadians).toFloat()
 
                         // MinMax значения для смещения
-                        val minOffsetX = -left
-                        val minOffsetY = -top
-                        val maxOffsetX = maxWidth - right
-                        val maxOffsetY = maxHeight - bottom
+                        val minOffsetX = -circleViewModel.left.value
+                        val minOffsetY = -circleViewModel.top.value
+                        val maxOffsetX = maxWidth - circleViewModel.right.value
+                        val maxOffsetY = maxHeight - circleViewModel.bottom.value
 
-                        var rotatedOffsetY = offsetChange.y * circleViewModel.scaleY.value
-                        var rotatedOffsetX = offsetChange.x * circleViewModel.scaleX.value
+                        var rotatedOffsetY = offsetChange.y
+                        var rotatedOffsetX = offsetChange.x
 
                         // Применение вращения к смещению
                         var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
@@ -146,16 +137,16 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                             val sinRotation = sin(rotationRadians).toFloat()
 
                             // Рассчет локального оффсета на фигуре
-                            var x = with(localDensity) { offset.x.toDp().value} * circleViewModel.scaleX.value
-                            val y = with(localDensity) { offset.y.toDp().value} * circleViewModel.scaleY.value
+                            var x = with(localDensity) { offset.x.toDp().value}
+                            val y = with(localDensity) { offset.y.toDp().value}
 
                             // Применение вращения к смещению
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
                             touchOffset.value = Offset(
-                                (transformedOffsetX +  circleOffsetInWindow.value.x) ,
-                                (transformedOffsetY +  circleOffsetInWindow.value.y),
+                                (transformedOffsetX + circleViewModel.circleOffsetInWindow.value.x) ,
+                                (transformedOffsetY + circleViewModel.circleOffsetInWindow.value.y),
                             )
                             // Показываем контекстное меню
                             circleViewModel.showContextMenu.value = true
@@ -164,16 +155,47 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 }
                 .onGloballyPositioned { layoutCoordinates ->
                     recomposition
-                    val rect1 = layoutCoordinates.boundsInParent()
-                    left = with(localDensity) { rect1.left.toDp().value }
-                    top = with(localDensity) { rect1.top.toDp().value }
-                    right = with(localDensity) { rect1.right.toDp().value }
-                    bottom = with(localDensity) { rect1.bottom.toDp().value }
 
-                    val rect2 = layoutCoordinates.positionInWindow()
-                    val x = with(localDensity) { rect2.x.toDp().value}
-                    val y = with(localDensity) { rect2.y.toDp().value}
-                    circleOffsetInWindow.value = Offset(x, y)
+                    val bounds = layoutCoordinates.boundsInParent()
+                    val leftBound = with(localDensity) { bounds.left.toDp().value }
+                    val topBound = with(localDensity) { bounds.top.toDp().value }
+                    val rightBound = with(localDensity) { bounds.right.toDp().value }
+                    val bottomBound = with(localDensity) { bounds.bottom.toDp().value }
+
+                    if(circleViewModel.isInitialUserSize.value) {
+                        var offsetX = circleViewModel.offset.value.x
+                        var offsetY = circleViewModel.offset.value.y
+
+                        // Проверка и обновление смещения по оси X
+                        if (leftBound < 0) {
+                            offsetX += -leftBound
+                        }
+                        if (rightBound > maxWidth) {
+                            offsetX -= (rightBound - maxWidth)
+                        }
+
+                        // Проверка и обновление смещения по оси Y
+                        if (topBound < 0) {
+                            offsetY += -topBound
+                        }
+                        if (bottomBound > maxHeight) {
+                            offsetY -= (bottomBound - maxHeight)
+                        }
+
+                        // Присваиваем новое смещение
+                        circleViewModel.offset.value = Offset(offsetX, offsetY)
+                    }
+
+                    // Обновление границ
+                    val newBounds = layoutCoordinates.boundsInParent()
+                    circleViewModel.left.value = with(localDensity) { newBounds.left.toDp().value }
+                    circleViewModel.top.value = with(localDensity) { newBounds.top.toDp().value }
+                    circleViewModel.right.value = with(localDensity) { newBounds.right.toDp().value }
+                    circleViewModel.bottom.value = with(localDensity) { newBounds.bottom.toDp().value }
+
+                    // Обновление позиции в окне
+                    val windowPos = layoutCoordinates.positionInWindow()
+                    circleViewModel.circleOffsetInWindow.value = with(localDensity) { Offset(windowPos.x.toDp().value, windowPos.y.toDp().value) }
                 },
             verticalAlignment = Alignment.valueOf(circleViewModel.textVerticalAlignment)
         ){
@@ -226,8 +248,11 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 circleViewModel.width,
                 circleViewModel.height,
                 circleViewModel.zIndex,
-                circleViewModel.scaleX,
-                circleViewModel.scaleY,
+                circleViewModel.minW,
+                circleViewModel.maxW,
+                circleViewModel.minH,
+                circleViewModel.maxH,
+                circleViewModel.isInitialUserSize
             )
         }
 

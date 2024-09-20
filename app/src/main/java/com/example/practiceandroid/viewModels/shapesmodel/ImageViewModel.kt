@@ -1,6 +1,7 @@
 package com.example.practiceandroid.viewModels.shapesmodel
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -16,9 +17,17 @@ import com.example.practiceandroid.views.contextmenu.color.getHexColorFromRGB
 
 class ImageViewModel(shape: ResponseShapes.Shape, image: String): ViewModel() {
 
+    // Границы элемента
+    var top = mutableFloatStateOf(0f)
+    var left = mutableFloatStateOf(0f)
+    var right = mutableFloatStateOf(0f)
+    var bottom = mutableFloatStateOf(0f)
+
+    // Глобальный оффсет элемента
+    var imageOffsetInWindow = mutableStateOf(Offset.Zero)
+
     var showContextMenu = mutableStateOf(false)// Контекстное меню
     var showDeleteDialog = mutableStateOf(false)// Окно подтверждения удаления
-    var showResizeDialog = mutableStateOf(false)// Окно изменения размеров
     var showChangeBorderColorDialog = mutableStateOf(false)
     var showChangeBorderSettingDialog = mutableStateOf(false)
 
@@ -27,8 +36,6 @@ class ImageViewModel(shape: ResponseShapes.Shape, image: String): ViewModel() {
     var zIndex: MutableState<Float> = mutableStateOf(0f)
 
     var offset: MutableState<Offset> = mutableStateOf(Offset.Zero)
-    var scaleX: MutableState<Float> = mutableStateOf(1f)
-    var scaleY: MutableState<Float> = mutableStateOf(1f)
     var rotation: MutableState<Float> = mutableStateOf(0f)
 
     var cornerRadius: MutableState<Dp> = mutableStateOf(0.dp)

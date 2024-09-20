@@ -1,18 +1,14 @@
 package com.example.practiceandroid.views.shapes
 
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
@@ -50,19 +46,6 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
     // Коэффициент, на который будет увеличена ширина стрелки для создания наконечника
     val arrowHeadWidthExtra = 1.25f
 
-    // Границы элемента
-    var top by remember { mutableFloatStateOf(0f) }
-    var left by remember { mutableFloatStateOf(0f) }
-    var right by remember { mutableFloatStateOf(0f) }
-    var bottom by remember { mutableFloatStateOf(0f) }
-
-    // Дополнительные состояния для максимальных размеров
-    var resizeMaxWidth by remember { mutableStateOf(maxWidth) }
-    var resizeMaxHeight by remember { mutableStateOf(maxHeight) }
-
-    // Глобальный оффсет элемента
-    var arrowOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
-
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
 
@@ -78,16 +61,19 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                     rotationZ = arrowViewModel.rotation.value,
                     translationX = arrowViewModel.offset.value.x,
                     translationY = arrowViewModel.offset.value.y,
-                    scaleX = arrowViewModel.scaleX.value,
-                    scaleY = arrowViewModel.scaleY.value
                 )
                 .zIndex(arrowViewModel.zIndex.value)
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
+                        arrowViewModel.isInitialUserSize.value = false
+
                         // Обновляем масштаб в ViewModel
-                        arrowViewModel.scaleX.value = (arrowViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
-                        arrowViewModel.scaleY.value = (arrowViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
+                        arrowViewModel.height.value = (arrowViewModel.height.value * scaleChange)
+                            .coerceIn(arrowViewModel.minH.value, arrowViewModel.maxH.value)
+                        arrowViewModel.width.value = (arrowViewModel.width.value * scaleChange)
+                            .coerceIn(arrowViewModel.minW.value, arrowViewModel.maxW.value)
+
                         // Обновляем поворот
                         arrowViewModel.rotation.value += rotateChange
 
@@ -98,13 +84,13 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                         val sinRotation = sin(rotationRadians).toFloat()
 
                         // MinMax значения для смещения
-                        val minOffsetX = -left
-                        val minOffsetY = -top
-                        val maxOffsetX = maxWidth - right
-                        val maxOffsetY = maxHeight - bottom
+                        val minOffsetX = -arrowViewModel.left.value
+                        val minOffsetY = -arrowViewModel.top.value
+                        val maxOffsetX = maxWidth - arrowViewModel.right.value
+                        val maxOffsetY = maxHeight - arrowViewModel.bottom.value
 
-                        var rotatedOffsetY = offsetChange.y * arrowViewModel.scaleY.value
-                        var rotatedOffsetX = offsetChange.x * arrowViewModel.scaleX.value
+                        var rotatedOffsetY = offsetChange.y
+                        var rotatedOffsetX = offsetChange.x
 
                         // Применение вращения к смещению
                         var transformedOffsetX = rotatedOffsetX * cosRotation - rotatedOffsetY * sinRotation
@@ -138,16 +124,16 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                             val sinRotation = sin(rotationRadians).toFloat()
 
                             // Рассчет локального оффсета на фигуре
-                            var x = with(localDensity) { offset.x.toDp().value} * arrowViewModel.scaleX.value
-                            val y = with(localDensity) { offset.y.toDp().value} * arrowViewModel.scaleY.value
+                            var x = with(localDensity) { offset.x.toDp().value}
+                            val y = with(localDensity) { offset.y.toDp().value}
 
                             // Применение вращения к смещению
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
                             touchOffset.value = Offset(
-                                (transformedOffsetX +  arrowOffsetInWindow.value.x) ,
-                                (transformedOffsetY +  arrowOffsetInWindow.value.y),
+                                (transformedOffsetX +  arrowViewModel.arrowOffsetInWindow.value.x) ,
+                                (transformedOffsetY +  arrowViewModel.arrowOffsetInWindow.value.y),
                             )
                             // Показываем контекстное меню
                             arrowViewModel.showContextMenu.value = true
@@ -156,19 +142,51 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                 }
                 .onGloballyPositioned { layoutCoordinates ->
                     recomposition
-                    val rect = layoutCoordinates.boundsInParent()
-                    left = with(localDensity) { rect.left.toDp().value }
-                    top = with(localDensity) { rect.top.toDp().value }
-                    right = with(localDensity) { rect.right.toDp().value }
-                    bottom = with(localDensity) { rect.bottom.toDp().value }
 
-                    val rect2 = layoutCoordinates.positionInWindow()
-                    val x = with(localDensity) { rect2.x.toDp().value}
-                    val y = with(localDensity) { rect2.y.toDp().value}
-                    arrowOffsetInWindow.value = Offset(x, y)
+                    val bounds = layoutCoordinates.boundsInParent()
+                    val leftBound = with(localDensity) { bounds.left.toDp().value }
+                    val topBound = with(localDensity) { bounds.top.toDp().value }
+                    val rightBound = with(localDensity) { bounds.right.toDp().value }
+                    val bottomBound = with(localDensity) { bounds.bottom.toDp().value }
+
+                    if(arrowViewModel.isInitialUserSize.value) {
+                        var offsetX = arrowViewModel.offset.value.x
+                        var offsetY = arrowViewModel.offset.value.y
+
+                        // Проверка и обновление смещения по оси X
+                        if (leftBound < 0) {
+                            offsetX += -leftBound
+                        }
+                        if (rightBound > maxWidth) {
+                            offsetX -= (rightBound - maxWidth)
+                        }
+
+                        // Проверка и обновление смещения по оси Y
+                        if (topBound < 0) {
+                            offsetY += -topBound
+                        }
+                        if (bottomBound > maxHeight) {
+                            offsetY -= (bottomBound - maxHeight)
+                        }
+
+                        // Присваиваем новое смещение
+                        arrowViewModel.offset.value = Offset(offsetX, offsetY)
+                    }
+
+                    // Обновление границ
+                    val newBounds = layoutCoordinates.boundsInParent()
+                    arrowViewModel.left.value = with(localDensity) { newBounds.left.toDp().value }
+                    arrowViewModel.top.value = with(localDensity) { newBounds.top.toDp().value }
+                    arrowViewModel.right.value = with(localDensity) { newBounds.right.toDp().value }
+                    arrowViewModel.bottom.value = with(localDensity) { newBounds.bottom.toDp().value }
+
+                    // Обновление позиции в окне
+                    val windowPos = layoutCoordinates.positionInWindow()
+                    arrowViewModel.arrowOffsetInWindow.value = with(localDensity) { Offset(windowPos.x.toDp().value, windowPos.y.toDp().value) }
+
                 }
-                .height(with(localDensity) {arrowViewModel.height.value.value.toDp()})
-                .width(with(localDensity) {arrowViewModel.width.value.value.toDp()})
+                .requiredHeight(with(localDensity) {arrowViewModel.height.value.value.toDp()})
+                .requiredWidth(with(localDensity) {arrowViewModel.width.value.value.toDp()})
         ) {
             val arrowPath = Path().apply {
                 moveTo(0f, 0f)
@@ -219,8 +237,11 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             arrowViewModel.width,
             arrowViewModel.height,
             arrowViewModel.zIndex,
-            arrowViewModel.scaleX,
-            arrowViewModel.scaleY,
+            arrowViewModel.minW,
+            arrowViewModel.maxW,
+            arrowViewModel.minH,
+            arrowViewModel.maxH,
+            arrowViewModel.isInitialUserSize
         )
     }
 

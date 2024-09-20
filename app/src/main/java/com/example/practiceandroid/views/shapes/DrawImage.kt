@@ -5,15 +5,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
@@ -23,6 +20,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.zIndex
 import com.example.practiceandroid.viewModels.shapesmodel.ImageViewModel
@@ -45,19 +43,6 @@ fun DrawImage(
     maxWidth: Float,
     maxHeight: Float
 ) {
-    // Границы элемента
-    var top by remember { mutableFloatStateOf(0f) }
-    var left by remember { mutableFloatStateOf(0f) }
-    var right by remember { mutableFloatStateOf(0f) }
-    var bottom by remember { mutableFloatStateOf(0f) }
-
-    // Дополнительные состояния для максимальных размеров
-    var resizeMaxWidth by remember { mutableStateOf(maxWidth) }
-    var resizeMaxHeight by remember { mutableStateOf(maxHeight) }
-
-    // Глобальный оффсет элемента
-    var imageOffsetInWindow = remember { mutableStateOf(Offset.Zero) }
-
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
 
@@ -73,8 +58,6 @@ fun DrawImage(
             modifier = Modifier
                 .graphicsLayer(
                     rotationZ = imageViewModel.rotation.value,
-                    scaleX = imageViewModel.scaleX.value,
-                    scaleY = imageViewModel.scaleY.value,
                     translationX = imageViewModel.offset.value.x,
                     translationY = imageViewModel.offset.value.y,
                 )
@@ -84,17 +67,13 @@ fun DrawImage(
                     color = Color(android.graphics.Color.parseColor(imageViewModel.borderColor.value)),
                     shape = RoundedCornerShape(imageViewModel.cornerRadius.value)
                 )
-                .width(imageViewModel.width.value)
-                .height(imageViewModel.height.value)
+                .requiredWidth(imageViewModel.width.value)
+                .requiredHeight(imageViewModel.height.value)
                 .zIndex(imageViewModel.zIndex.value)
                 .clip(shape = RoundedCornerShape(imageViewModel.cornerRadius.value))
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
-                    detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
-                        // Обновляем масштаб в ViewModel
-                        imageViewModel.scaleX.value = (imageViewModel.scaleX.value * scaleChange).coerceIn(0.85f, 3f)
-                        imageViewModel.scaleY.value = (imageViewModel.scaleY.value * scaleChange).coerceIn(0.85f, 3f)
-
+                    detectTransformGestures { _, offsetChange, _, rotateChange ->
                         // Обновляем поворот
                         imageViewModel.rotation.value += rotateChange
 
@@ -105,13 +84,13 @@ fun DrawImage(
                         val sinRotation = sin(rotationRadians).toFloat()
 
                         // MinMax значения для смещения
-                        val minOffsetX = -left
-                        val minOffsetY = -top
-                        val maxOffsetX = maxWidth - right
-                        val maxOffsetY = maxHeight - bottom
+                        val minOffsetX = -imageViewModel.left.value
+                        val minOffsetY = -imageViewModel.top.value
+                        val maxOffsetX = maxWidth - imageViewModel.right.value
+                        val maxOffsetY = maxHeight - imageViewModel.bottom.value
 
-                        var rotatedOffsetY = offsetChange.y * imageViewModel.scaleY.value
-                        var rotatedOffsetX = offsetChange.x * imageViewModel.scaleX.value
+                        var rotatedOffsetY = offsetChange.y
+                        var rotatedOffsetX = offsetChange.x
 
                         // Применение вращения к смещению
                         var transformedOffsetX =
@@ -150,17 +129,17 @@ fun DrawImage(
 
                             // Рассчет локального оффсета на фигуре
                             var x =
-                                with(localDensity) { offset.x.toDp().value } * imageViewModel.scaleX.value
+                                with(localDensity) { offset.x.toDp().value }
                             val y =
-                                with(localDensity) { offset.y.toDp().value } * imageViewModel.scaleY.value
+                                with(localDensity) { offset.y.toDp().value }
 
                             // Применение вращения к смещению
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
                             touchOffset.value = Offset(
-                                (transformedOffsetX + imageOffsetInWindow.value.x),
-                                (transformedOffsetY + imageOffsetInWindow.value.y),
+                                (transformedOffsetX + imageViewModel.imageOffsetInWindow.value.x),
+                                (transformedOffsetY + imageViewModel.imageOffsetInWindow.value.y),
                             )
                             // Показываем контекстное меню
                             imageViewModel.showContextMenu.value = true
@@ -169,18 +148,24 @@ fun DrawImage(
                 }
                 .onGloballyPositioned { layoutCoordinates ->
                     recomposition
-                    val rect = layoutCoordinates.boundsInParent()
-                    left = with(localDensity) { rect.left.toDp().value }
-                    top = with(localDensity) { rect.top.toDp().value }
-                    right = with(localDensity) { rect.right.toDp().value }
-                    bottom = with(localDensity) { rect.bottom.toDp().value }
+
+                    // Обновление границ
+                    val newBounds = layoutCoordinates.boundsInParent()
+                    imageViewModel.left.value = with(localDensity) { newBounds.left.toDp().value }
+                    imageViewModel.top.value = with(localDensity) { newBounds.top.toDp().value }
+                    imageViewModel.right.value = with(localDensity) { newBounds.right.toDp().value }
+                    imageViewModel.bottom.value = with(localDensity) { newBounds.bottom.toDp().value }
+
+                    // Обновление позиции в окне
+                    val windowPos = layoutCoordinates.positionInWindow()
+                    imageViewModel.imageOffsetInWindow.value = with(localDensity) { Offset(windowPos.x.toDp().value, windowPos.y.toDp().value) }
+
                 }
         )
 
         if (imageViewModel.showContextMenu.value) {
             ContextMenu(
                 imageViewModel.showContextMenu,
-                imageViewModel.showResizeDialog,
                 imageViewModel.showDeleteDialog,
                 imageViewModel.showChangeBorderSettingDialog,
                 touchOffset.value,
@@ -191,17 +176,6 @@ fun DrawImage(
             DeleteDialog(imageViewModel.showDeleteDialog) {
                 imageViewModel.deleteShape()
             }
-        }
-
-        if (imageViewModel.showResizeDialog.value) {
-            ResizeDialog(
-                imageViewModel.showResizeDialog,
-                imageViewModel.width,
-                imageViewModel.height,
-                imageViewModel.zIndex,
-                imageViewModel.scaleX,
-                imageViewModel.scaleY,
-            )
         }
 
         if (imageViewModel.showChangeBorderSettingDialog.value) {

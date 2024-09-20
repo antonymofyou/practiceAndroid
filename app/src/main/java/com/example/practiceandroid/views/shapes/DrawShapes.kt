@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
@@ -55,7 +56,6 @@ fun DrawShapes(
             .fillMaxSize()
             .clipToBounds()
     ){
-
         BoxWithConstraints(
             modifier = Modifier
                 .graphicsLayer {
@@ -98,13 +98,8 @@ fun DrawShapes(
                                 key = shape.id.toString(),
                                 factory = RectangleViewModelFactory(shape)
                             )
-                            DrawRectangle(rectangleViewModel, focusManager, maxWidth.value, maxHeight.value)
 
-                            val rectangleViewModel1: RectangleViewModel = viewModel(
-                                key = shape.id.toString() + "12",
-                                factory = RectangleViewModelFactory(shape)
-                            )
-                            DrawRectangle(rectangleViewModel1, focusManager, maxWidth.value, maxHeight.value)
+                            DrawRectangle(rectangleViewModel, focusManager, maxWidth.value, maxHeight.value)
                         }
                         "circle" -> {
                             val circleViewModel: CircleViewModel = viewModel(
