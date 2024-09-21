@@ -248,7 +248,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             // Нарисовать границу
             drawPath(
                 path = arrowPath,
-                color = Color.Blue,//Color(android.graphics.Color.parseColor(arrowViewModel.borderColor.value)),
+                color = Color(android.graphics.Color.parseColor(arrowViewModel.borderColor.value)),
                 style = Stroke(width = arrowViewModel.borderWidth.value.toPx()  * WIDTH_CORRECTION_FACTOR)
             )
 
