@@ -51,35 +51,8 @@ fun BorderAndCornerRadiusInputFields(
             selectedCornerRadius.value = it.filter { char -> char.isDigit() || char == '.' }
             cornerRadiusError = !validateCornerRadius(selectedCornerRadius.value)
         },
-        label = { Text("Радиус угла (0-70)") },
+        label = { Text("Радиус угла (0-50)") },
         isError = cornerRadiusError,
-        modifier = Modifier
-            .fillMaxWidth(),
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            errorBorderColor = Color.Red
-        ),
-        singleLine = true
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BorderAndCornerRadiusInputFields(
-    selectedBorderWidth: MutableState<String>
-) {
-    // Состояния для ошибок
-    var borderWidthError by rememberSaveable { mutableStateOf(false) }
-
-    // Поле для ввода BorderWidth
-    OutlinedTextField(
-        value = selectedBorderWidth.value,
-        onValueChange = {
-            selectedBorderWidth.value = it.filter { char -> char.isDigit() || char == '.' }
-            borderWidthError = !validateBorderWidth(selectedBorderWidth.value)
-        },
-        label = { Text("Ширина (0-10)") },
-        isError = borderWidthError,
         modifier = Modifier
             .fillMaxWidth(),
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),

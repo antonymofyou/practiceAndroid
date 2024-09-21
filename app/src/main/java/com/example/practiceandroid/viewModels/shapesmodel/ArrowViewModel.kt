@@ -46,6 +46,7 @@ class ArrowViewModel(shape: ResponseShapes.Shape): ViewModel() {
     var offset: MutableState<Offset> = mutableStateOf(Offset.Zero)
     var rotation: MutableState<Float> = mutableStateOf(0f)
 
+    var cornerRadius: MutableState<Dp> = mutableStateOf(0.dp)
     var borderWidth: MutableState<Dp> = mutableStateOf(0.dp)
     var fill: MutableState<String> = mutableStateOf("")
     var borderColor: MutableState<String> = mutableStateOf("")

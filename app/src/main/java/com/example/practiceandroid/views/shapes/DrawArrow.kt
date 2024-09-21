@@ -1,19 +1,23 @@
 package com.example.practiceandroid.views.shapes
 
+import android.graphics.RectF
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.vector.PathNode
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -31,6 +35,7 @@ import com.example.practiceandroid.views.contextmenu.DeleteDialog
 import com.example.practiceandroid.views.contextmenu.ResizeDialog
 import kotlin.math.cos
 import kotlin.math.sin
+import androidx.compose.ui.graphics.Path
 
 const val WIDTH_CORRECTION_FACTOR = 2f
 
@@ -42,7 +47,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
     var heightFloat = arrowViewModel.height.value.value
 
     // Дополнительная высота наконечника стрелки, которая добавляется к общей высоте стрелки
-    val arrowHeadHeightExtra = 16.dp
+    val arrowHeadHeightExtra = 50
     // Коэффициент, на который будет увеличена ширина стрелки для создания наконечника
     val arrowHeadWidthExtra = 1.25f
 
@@ -188,21 +193,62 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                 .requiredHeight(with(localDensity) {arrowViewModel.height.value.value.toDp()})
                 .requiredWidth(with(localDensity) {arrowViewModel.width.value.value.toDp()})
         ) {
+
+            val cornerRadius = arrowViewModel.cornerRadius.value.value
+
             val arrowPath = Path().apply {
-                moveTo(0f, 0f)
-                lineTo(widthFloat, 0f)
-                lineTo(widthFloat, 0f - arrowHeadHeightExtra.value)
-                lineTo(widthFloat * arrowHeadWidthExtra, heightFloat / 2f)
-                lineTo(widthFloat, heightFloat + arrowHeadHeightExtra.value)
-                lineTo(widthFloat, heightFloat)
-                lineTo(0f, heightFloat)
+                // Начинаем рисовать путь с верхнего левого угла с учетом дополнительной высоты для вершины стрелки
+                moveTo(0f + arrowHeadHeightExtra, 0f)
+
+                // Рисуем верхнюю горизонтальную линию от левого угла до правого с учетом радиуса скругления
+                lineTo(widthFloat - cornerRadius, 0f)
+
+                // Скругление верхнего правого угла, используя квадратичную кривую Безье
+                quadraticBezierTo(widthFloat, 0f, widthFloat, 0f - cornerRadius)
+
+                // Линия к месту, где начинается вершина стрелки
+                lineTo(widthFloat, 0f - arrowHeadHeightExtra)
+
+                // Линия от правого верхнего края к середине фигуры, создавая вершину стрелки
+                lineTo(widthFloat * arrowHeadWidthExtra - (cornerRadius / 1.25f / 2f), heightFloat / 2f - cornerRadius)
+
+                // Скругление верхней части стрелки, используя квадратичную кривую Безье
+                quadraticBezierTo(
+                    widthFloat * arrowHeadWidthExtra,  // Контрольная точка кривой
+                    heightFloat / 2f,                  // Контрольная точка по вертикали
+                    widthFloat * arrowHeadWidthExtra - (cornerRadius / 1.25f / 2f),  // Точка завершения
+                    heightFloat / 2f + cornerRadius    // Точка завершения по вертикали
+                )
+
+                // Рисуем линию вниз от середины к нижнему правому углу с учетом высоты стрелки
+                lineTo(widthFloat, heightFloat + arrowHeadHeightExtra)
+
+                // Линия к нижнему краю
+                lineTo(widthFloat, heightFloat + cornerRadius)
+
+                // Скругление нижнего правого угла
+                quadraticBezierTo(widthFloat, heightFloat, widthFloat - cornerRadius, heightFloat)
+
+                // Рисуем линию влево к нижнему левому углу
+                lineTo(0f + cornerRadius, heightFloat)
+
+                // Скругление нижнего левого угла
+                quadraticBezierTo(0f, heightFloat, 0f, heightFloat - cornerRadius)
+
+                // Линия вверх вдоль левого края
+                lineTo(0f, 0f + cornerRadius)
+
+                // Скругление верхнего левого угла
+                quadraticBezierTo(0f, 0f, 0f + cornerRadius, 0f)
+
+                // Замыкаем путь, возвращаясь к начальной точке
                 close()
             }
 
             // Нарисовать границу
             drawPath(
                 path = arrowPath,
-                color = Color(android.graphics.Color.parseColor(arrowViewModel.borderColor.value)),
+                color = Color.Blue,//Color(android.graphics.Color.parseColor(arrowViewModel.borderColor.value)),
                 style = Stroke(width = arrowViewModel.borderWidth.value.toPx()  * WIDTH_CORRECTION_FACTOR)
             )
 
@@ -259,6 +305,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             arrowViewModel.showChangeBorderColorDialog,
             arrowViewModel.borderColor,
             arrowViewModel.borderWidth,
+            arrowViewModel.cornerRadius
         )
     }
 
