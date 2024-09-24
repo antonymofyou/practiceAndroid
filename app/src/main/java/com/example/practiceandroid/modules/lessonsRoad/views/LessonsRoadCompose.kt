@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageShader
@@ -58,13 +60,6 @@ fun LessonsRoadCompose(viewType: Int) {
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
-    // Условие для отображения кнопки поднятия
-    val showButton by remember {
-        derivedStateOf {
-            scrollState.value > 0
-        }
-    }
-
     // Получение сгруппированных по разделам уроков
     val lessonsRoadViewModel = viewModel<LessonsRoadViewModel>()
     val roadList = arrayListOf<Map<String, String>>()
@@ -75,6 +70,18 @@ fun LessonsRoadCompose(viewType: Int) {
         }
         lessonsRoadViewModel.groupedLessons =
             lessonsRoadViewModel.getLessonsByChapter(roadList)
+    }
+
+    val lessonsViewModel = viewModel<LessonsViewModel>()
+
+    // Приближенное значение высоты первого раздела
+    val firstChapterHeight = 98 + 180 * lessonsRoadViewModel.groupedLessons[0].size + 98
+
+    // Условие для отображения кнопки поднятия
+    val showButton by remember {
+        derivedStateOf {
+            scrollState.value > lessonsViewModel.dpToPx(firstChapterHeight)
+        }
     }
 
     // Скейлим изображение по ширине
@@ -105,17 +112,10 @@ fun LessonsRoadCompose(viewType: Int) {
         mutableStateOf(0.dp)
     }
 
-    val lessonsViewModel = viewModel<LessonsViewModel>()
-
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-
-        if (showButton) {
-            GoToTop(coroutineScope, scrollState)
-        }
-
         // Столбец для отображения всех разделов
         Column (
             modifier = Modifier
@@ -150,6 +150,10 @@ fun LessonsRoadCompose(viewType: Int) {
                     )
             )
         }
+
+        if (showButton) {
+            GoToTop(coroutineScope, scrollState)
+        }
     }
 
     // Прокручивание вниз при загрузке дорожки
@@ -170,7 +174,9 @@ fun GoToTop(coroutineScope: CoroutineScope,  scrollState: ScrollState) {
         FloatingActionButton(
             modifier = Modifier
                 .padding(30.dp)
-                .size(50.dp),
+                .size(50.dp)
+                .clip(CircleShape)
+                .background(Color.White),
             onClick = {
                 coroutineScope.launch {
                     scrollState.animateScrollTo(0)

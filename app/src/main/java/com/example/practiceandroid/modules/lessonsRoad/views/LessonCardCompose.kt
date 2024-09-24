@@ -62,7 +62,8 @@ class LessonCardView(
 
     // Показывает, насколько нужно сдвинуть вниз блок с карточкой
     // относительно верхней линии начала раздела
-    private var verticalOffset = 0.dp
+    var verticalOffset = 0.dp
+        private set
 
     // Ширина кружка
     private val cardWidth = 130
