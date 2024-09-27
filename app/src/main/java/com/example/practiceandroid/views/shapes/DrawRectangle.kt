@@ -46,7 +46,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.coerceAtLeast
+import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.practiceandroid.ext.valueOf
@@ -106,11 +110,50 @@ fun DrawRectangle(
 
                         rectangleViewModel.isInitialUserSize.value = false
 
-                        // Обновляем масштаб в ViewModel
-                        rectangleViewModel.height.value = (rectangleViewModel.height.value * scaleChange)
-                            .coerceIn(rectangleViewModel.minH.value, rectangleViewModel.maxH.value)
-                        rectangleViewModel.width.value = (rectangleViewModel.width.value * scaleChange)
-                            .coerceIn(rectangleViewModel.minW.value, rectangleViewModel.maxW.value)
+                        // Текущие значения высоты и ширины
+                        val currentHeight = rectangleViewModel.height.value
+                        val currentWidth = rectangleViewModel.width.value
+
+                        // Вычисляем предполагаемые новые значения высоты и ширины
+                        val newHeight = currentHeight * scaleChange
+                        val newWidth = currentWidth * scaleChange
+
+                        // Флаги для проверки, достигнуты ли пределы высоты или ширины
+                        val isHeightMaxed = currentHeight >= rectangleViewModel.maxH.value
+                        val isHeightMinimized = currentHeight <= rectangleViewModel.minH.value
+                        val isWidthMaxed = currentWidth >= rectangleViewModel.maxW.value
+                        val isWidthMinimized = currentWidth <= rectangleViewModel.minW.value
+
+                        // Обновляем высоту, только если ширина не достигла предела
+                        var adjustedHeight = when {
+                            isWidthMaxed && scaleChange > 1f -> currentHeight // Если ширина на максимуме, не увеличиваем высоту
+                            isWidthMinimized && scaleChange < 1f -> currentHeight // Если ширина на минимуме, не уменьшаем высоту
+                            else -> newHeight.coerceIn(rectangleViewModel.minH.value, rectangleViewModel.maxH.value)
+                        }
+
+                        // Обновляем ширину, только если высота не достигла предела
+                        var adjustedWidth = when {
+                            isHeightMaxed && scaleChange > 1f -> currentWidth // Если высота на максимуме, не увеличиваем ширину
+                            isHeightMinimized && scaleChange < 1f -> currentWidth // Если высота на минимуме, не уменьшаем ширину
+                             // Если высота на минимуме, не уменьшаем ширину
+                            else -> newWidth.coerceIn(rectangleViewModel.minW.value, rectangleViewModel.maxW.value)
+                        }
+
+                        // Если высота и ширина равны, устанавливаем максимальные/минимальные значения
+                        if (newHeight == newWidth) {
+                            adjustedWidth = adjustedHeight.coerceIn(
+                                max(rectangleViewModel.minW.value, rectangleViewModel.minH.value),
+                                min(rectangleViewModel.maxW.value, rectangleViewModel.maxH.value)
+                            )
+                            adjustedHeight = adjustedHeight.coerceIn(
+                                max(rectangleViewModel.minW.value, rectangleViewModel.minH.value),
+                                min(rectangleViewModel.maxW.value, rectangleViewModel.maxH.value)
+                            )
+                        }
+
+                        // Обновляем значения в ViewModel
+                        rectangleViewModel.height.value = adjustedHeight
+                        rectangleViewModel.width.value = adjustedWidth
 
                         rectangleViewModel.rotation.value = (rectangleViewModel.rotation.value + rotateChange) % 360
 

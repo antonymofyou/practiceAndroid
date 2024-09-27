@@ -36,6 +36,9 @@ import com.example.practiceandroid.views.contextmenu.ResizeDialog
 import kotlin.math.cos
 import kotlin.math.sin
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.unit.coerceIn
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 
 const val WIDTH_CORRECTION_FACTOR = 2f
 
@@ -73,11 +76,50 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
                         arrowViewModel.isInitialUserSize.value = false
 
-                        // Обновляем масштаб в ViewModel
-                        arrowViewModel.height.value = (arrowViewModel.height.value * scaleChange)
-                            .coerceIn(arrowViewModel.minH.value, arrowViewModel.maxH.value)
-                        arrowViewModel.width.value = (arrowViewModel.width.value * scaleChange)
-                            .coerceIn(arrowViewModel.minW.value, arrowViewModel.maxW.value)
+                        // Текущие значения высоты и ширины
+                        val currentHeight = arrowViewModel.height.value
+                        val currentWidth = arrowViewModel.width.value
+
+                        // Вычисляем предполагаемые новые значения высоты и ширины
+                        val newHeight = currentHeight * scaleChange
+                        val newWidth = currentWidth * scaleChange
+
+                        // Флаги для проверки, достигнуты ли пределы высоты или ширины
+                        val isHeightMaxed = currentHeight >= arrowViewModel.maxH.value
+                        val isHeightMinimized = currentHeight <= arrowViewModel.minH.value
+                        val isWidthMaxed = currentWidth >= arrowViewModel.maxW.value
+                        val isWidthMinimized = currentWidth <= arrowViewModel.minW.value
+
+                        // Обновляем высоту, только если ширина не достигла предела
+                        var adjustedHeight = when {
+                            isWidthMaxed && scaleChange > 1f -> currentHeight // Если ширина на максимуме, не увеличиваем высоту
+                            isWidthMinimized && scaleChange < 1f -> currentHeight // Если ширина на минимуме, не уменьшаем высоту
+                            else -> newHeight.coerceIn(arrowViewModel.minH.value, arrowViewModel.maxH.value)
+                        }
+
+                        // Обновляем ширину, только если высота не достигла предела
+                        var adjustedWidth = when {
+                            isHeightMaxed && scaleChange > 1f -> currentWidth // Если высота на максимуме, не увеличиваем ширину
+                            isHeightMinimized && scaleChange < 1f -> currentWidth // Если высота на минимуме, не уменьшаем ширину
+                            // Если высота на минимуме, не уменьшаем ширину
+                            else -> newWidth.coerceIn(arrowViewModel.minW.value, arrowViewModel.maxW.value)
+                        }
+
+                        // Если высота и ширина равны, устанавливаем максимальные/минимальные значения
+                        if (newHeight == newWidth) {
+                            adjustedWidth = adjustedHeight.coerceIn(
+                                max(arrowViewModel.minW.value, arrowViewModel.minH.value),
+                                min(arrowViewModel.maxW.value, arrowViewModel.maxH.value)
+                            )
+                            adjustedHeight = adjustedHeight.coerceIn(
+                                max(arrowViewModel.minW.value, arrowViewModel.minH.value),
+                                min(arrowViewModel.maxW.value, arrowViewModel.maxH.value)
+                            )
+                        }
+
+                        // Обновляем значения в ViewModel
+                        arrowViewModel.height.value = adjustedHeight
+                        arrowViewModel.width.value = adjustedWidth
 
                         // Обновляем поворот
                         arrowViewModel.rotation.value += rotateChange

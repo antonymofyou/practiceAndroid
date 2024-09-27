@@ -33,6 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.coerceIn
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.practiceandroid.ext.valueOf
@@ -79,13 +82,53 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 .clickable { focusManager.clearFocus() }
                 .pointerInput(Unit) {
                     detectTransformGestures { _, offsetChange, scaleChange, rotateChange ->
+
                         circleViewModel.isInitialUserSize.value = false
 
-                        // Обновляем масштаб в ViewModel
-                        circleViewModel.height.value = (circleViewModel.height.value * scaleChange)
-                            .coerceIn(circleViewModel.minH.value, circleViewModel.maxH.value)
-                        circleViewModel.width.value = (circleViewModel.width.value * scaleChange)
-                            .coerceIn(circleViewModel.minW.value, circleViewModel.maxW.value)
+                        // Текущие значения высоты и ширины
+                        val currentHeight = circleViewModel.height.value
+                        val currentWidth = circleViewModel.width.value
+
+                        // Вычисляем предполагаемые новые значения высоты и ширины
+                        val newHeight = currentHeight * scaleChange
+                        val newWidth = currentWidth * scaleChange
+
+                        // Флаги для проверки, достигнуты ли пределы высоты или ширины
+                        val isHeightMaxed = currentHeight >= circleViewModel.maxH.value
+                        val isHeightMinimized = currentHeight <= circleViewModel.minH.value
+                        val isWidthMaxed = currentWidth >= circleViewModel.maxW.value
+                        val isWidthMinimized = currentWidth <= circleViewModel.minW.value
+
+                        // Обновляем высоту, только если ширина не достигла предела
+                        var adjustedHeight = when {
+                            isWidthMaxed && scaleChange > 1f -> currentHeight // Если ширина на максимуме, не увеличиваем высоту
+                            isWidthMinimized && scaleChange < 1f -> currentHeight // Если ширина на минимуме, не уменьшаем высоту
+                            else -> newHeight.coerceIn(circleViewModel.minH.value, circleViewModel.maxH.value)
+                        }
+
+                        // Обновляем ширину, только если высота не достигла предела
+                        var adjustedWidth = when {
+                            isHeightMaxed && scaleChange > 1f -> currentWidth // Если высота на максимуме, не увеличиваем ширину
+                            isHeightMinimized && scaleChange < 1f -> currentWidth // Если высота на минимуме, не уменьшаем ширину
+                            // Если высота на минимуме, не уменьшаем ширину
+                            else -> newWidth.coerceIn(circleViewModel.minW.value, circleViewModel.maxW.value)
+                        }
+
+                        // Если высота и ширина равны, устанавливаем максимальные/минимальные значения
+                        if (newHeight == newWidth) {
+                            adjustedWidth = adjustedHeight.coerceIn(
+                                max(circleViewModel.minW.value, circleViewModel.minH.value),
+                                min(circleViewModel.maxW.value, circleViewModel.maxH.value)
+                            )
+                            adjustedHeight = adjustedHeight.coerceIn(
+                                max(circleViewModel.minW.value, circleViewModel.minH.value),
+                                min(circleViewModel.maxW.value, circleViewModel.maxH.value)
+                            )
+                        }
+
+                        // Обновляем значения в ViewModel
+                        circleViewModel.height.value = adjustedHeight
+                        circleViewModel.width.value = adjustedWidth
 
                         // Обновляем поворот
                         circleViewModel.rotation.value += rotateChange
