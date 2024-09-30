@@ -59,6 +59,9 @@ class RectangleViewModel(shape: ResponseShapes.Shape): ViewModel() {
 
     var visibility = mutableStateOf(true)
 
+    // Отслеживание позиции нажатия
+    val touchOffset = mutableStateOf(Offset.Zero)
+
     init {
         width.value = shape.width.dp
         height.value = shape.height.dp

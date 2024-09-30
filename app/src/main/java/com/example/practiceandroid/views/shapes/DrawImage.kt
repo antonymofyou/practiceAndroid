@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
@@ -22,13 +20,13 @@ import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.zIndex
 import com.example.practiceandroid.viewModels.shapesmodel.ImageViewModel
 import com.example.practiceandroid.views.contextmenu.border.ChangeSettingBorderDialog
 import com.example.practiceandroid.views.contextmenu.color.ChangeColorDialog
 import com.example.practiceandroid.views.contextmenu.ContextMenu
 import com.example.practiceandroid.views.contextmenu.DeleteDialog
-import com.example.practiceandroid.views.contextmenu.ResizeDialog
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -41,15 +39,11 @@ fun DrawImage(
     imageViewModel: ImageViewModel,
     focusManager: FocusManager,
     maxWidth: Float,
-    maxHeight: Float
+    maxHeight: Float,
+    localDensity: Density
 ) {
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
-
-    // Отслеживание позиции нажатия
-    val touchOffset = remember { mutableStateOf(Offset.Zero) }
-
-    val localDensity = LocalDensity.current
 
     if (imageViewModel.visibility.value) {
         Image(
@@ -137,7 +131,7 @@ fun DrawImage(
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
-                            touchOffset.value = Offset(
+                            imageViewModel.touchOffset.value = Offset(
                                 (transformedOffsetX + imageViewModel.imageOffsetInWindow.value.x),
                                 (transformedOffsetY + imageViewModel.imageOffsetInWindow.value.y),
                             )
@@ -168,7 +162,7 @@ fun DrawImage(
                 imageViewModel.showContextMenu,
                 imageViewModel.showDeleteDialog,
                 imageViewModel.showChangeBorderSettingDialog,
-                touchOffset.value,
+                imageViewModel.touchOffset.value,
             )
         }
 

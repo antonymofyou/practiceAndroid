@@ -36,6 +36,7 @@ import com.example.practiceandroid.views.contextmenu.ResizeDialog
 import kotlin.math.cos
 import kotlin.math.sin
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
@@ -44,23 +45,15 @@ const val WIDTH_CORRECTION_FACTOR = 2f
 
 // Компонент для отрисовки стрелки на основе данных, переданных в объекте shape
 @Composable
-fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWidth: Float, maxHeight: Float) {
-    // Преобразуем ширину и высоту стрелки в тип Float для дальнейшего использования
-    var widthFloat  = arrowViewModel.width.value.value
-    var heightFloat = arrowViewModel.height.value.value
-
-    // Дополнительная высота наконечника стрелки, которая добавляется к общей высоте стрелки
-    val arrowHeadHeightExtra = 50
-    // Коэффициент, на который будет увеличена ширина стрелки для создания наконечника
-    val arrowHeadWidthExtra = 1.25f
-
+fun DrawArrow(
+    arrowViewModel: ArrowViewModel,
+    focusManager: FocusManager,
+    maxWidth: Float,
+    maxHeight: Float,
+    localDensity: Density
+) {
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
-
-    // Отслеживание позиции нажатия
-    val touchOffset = remember { mutableStateOf(Offset.Zero) }
-
-    val localDensity = LocalDensity.current
 
     if (arrowViewModel.visibility.value) {
         Canvas(
@@ -178,7 +171,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
-                            touchOffset.value = Offset(
+                            arrowViewModel.touchOffset.value = Offset(
                                 (transformedOffsetX +  arrowViewModel.arrowOffsetInWindow.value.x) ,
                                 (transformedOffsetY +  arrowViewModel.arrowOffsetInWindow.value.y),
                             )
@@ -235,47 +228,53 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
                 .requiredHeight(with(localDensity) {arrowViewModel.height.value.value.toDp()})
                 .requiredWidth(with(localDensity) {arrowViewModel.width.value.value.toDp()})
         ) {
-
             val cornerRadius = arrowViewModel.cornerRadius.value.value
 
             val arrowPath = Path().apply {
                 // Начинаем рисовать путь с верхнего левого угла с учетом дополнительной высоты для вершины стрелки
-                moveTo(0f + arrowHeadHeightExtra, 0f)
+                moveTo(0f + arrowViewModel.arrowHeadHeightExtra, 0f)
 
                 // Рисуем верхнюю горизонтальную линию от левого угла до правого с учетом радиуса скругления
-                lineTo(widthFloat - cornerRadius, 0f)
+                lineTo(arrowViewModel.widthFloat - cornerRadius, 0f)
 
                 // Скругление верхнего правого угла, используя квадратичную кривую Безье
-                quadraticBezierTo(widthFloat, 0f, widthFloat, 0f - cornerRadius)
+                quadraticBezierTo(arrowViewModel.widthFloat, 0f, arrowViewModel.widthFloat, 0f - cornerRadius)
 
                 // Линия к месту, где начинается вершина стрелки
-                lineTo(widthFloat, 0f - arrowHeadHeightExtra)
+                lineTo(arrowViewModel.widthFloat, 0f - arrowViewModel.arrowHeadHeightExtra)
 
                 // Линия от правого верхнего края к середине фигуры, создавая вершину стрелки
-                lineTo(widthFloat * arrowHeadWidthExtra - (cornerRadius / 1.25f / 2f), heightFloat / 2f - cornerRadius)
+                lineTo(
+                    arrowViewModel.widthFloat * arrowViewModel.arrowHeadWidthExtra - (cornerRadius / arrowViewModel.arrowHeadWidthExtra / 2f),
+                    arrowViewModel.heightFloat / 2f - cornerRadius
+                )
 
                 // Скругление верхней части стрелки, используя квадратичную кривую Безье
                 quadraticBezierTo(
-                    widthFloat * arrowHeadWidthExtra,  // Контрольная точка кривой
-                    heightFloat / 2f,                  // Контрольная точка по вертикали
-                    widthFloat * arrowHeadWidthExtra - (cornerRadius / 1.25f / 2f),  // Точка завершения
-                    heightFloat / 2f + cornerRadius    // Точка завершения по вертикали
+                    arrowViewModel.widthFloat * arrowViewModel.arrowHeadWidthExtra,  // Контрольная точка кривой
+                    arrowViewModel.heightFloat / 2f, // Контрольная точка по вертикали
+                    arrowViewModel.widthFloat * arrowViewModel.arrowHeadWidthExtra - (cornerRadius / arrowViewModel.arrowHeadWidthExtra / 2f),  // Точка завершения
+                    arrowViewModel.heightFloat / 2f + cornerRadius// Точка завершения по вертикали
                 )
 
                 // Рисуем линию вниз от середины к нижнему правому углу с учетом высоты стрелки
-                lineTo(widthFloat, heightFloat + arrowHeadHeightExtra)
+                lineTo(arrowViewModel.widthFloat, arrowViewModel.heightFloat + arrowViewModel.arrowHeadHeightExtra)
 
                 // Линия к нижнему краю
-                lineTo(widthFloat, heightFloat + cornerRadius)
+                lineTo(arrowViewModel.widthFloat, arrowViewModel.heightFloat + cornerRadius)
 
                 // Скругление нижнего правого угла
-                quadraticBezierTo(widthFloat, heightFloat, widthFloat - cornerRadius, heightFloat)
+                quadraticBezierTo(
+                    arrowViewModel.widthFloat,
+                    arrowViewModel.heightFloat,
+                    arrowViewModel.widthFloat - cornerRadius, arrowViewModel.heightFloat
+                )
 
                 // Рисуем линию влево к нижнему левому углу
-                lineTo(0f + cornerRadius, heightFloat)
+                lineTo(0f + cornerRadius, arrowViewModel.heightFloat)
 
                 // Скругление нижнего левого угла
-                quadraticBezierTo(0f, heightFloat, 0f, heightFloat - cornerRadius)
+                quadraticBezierTo(0f, arrowViewModel.heightFloat, 0f, arrowViewModel.heightFloat - cornerRadius)
 
                 // Линия вверх вдоль левого края
                 lineTo(0f, 0f + cornerRadius)
@@ -309,7 +308,7 @@ fun DrawArrow(arrowViewModel: ArrowViewModel, focusManager: FocusManager, maxWid
             arrowViewModel.showDeleteDialog,
             arrowViewModel.showChangeBackgroundColorDialog,
             arrowViewModel.showChangeBorderSettingDialog,
-            touchOffset.value,
+            arrowViewModel.touchOffset.value,
         )
     }
 

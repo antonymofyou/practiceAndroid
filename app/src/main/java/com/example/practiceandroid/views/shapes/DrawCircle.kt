@@ -11,11 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -33,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
@@ -50,15 +46,16 @@ import kotlin.math.sin
 
 // Компонент для отрисовки круга на основе данных, переданных в объекте shape
 @Composable
-fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, maxWidth: Float, maxHeight: Float) {
-
+fun DrawCircle(
+    circleViewModel: CircleViewModel,
+    focusManager: FocusManager,
+    maxWidth: Float,
+    maxHeight: Float,
+    localDensity: Density
+) {
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
 
-    // Отслеживание позиции нажатия
-    val touchOffset = remember { mutableStateOf(Offset.Zero) }
-
-    val localDensity = LocalDensity.current
     if (circleViewModel.visibility.value) {
         Row(
             modifier = Modifier
@@ -187,7 +184,7 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
-                            touchOffset.value = Offset(
+                            circleViewModel.touchOffset.value = Offset(
                                 (transformedOffsetX + circleViewModel.circleOffsetInWindow.value.x) ,
                                 (transformedOffsetY + circleViewModel.circleOffsetInWindow.value.y),
                             )
@@ -275,7 +272,7 @@ fun DrawCircle(circleViewModel: CircleViewModel, focusManager: FocusManager, max
                 circleViewModel.showDeleteDialog,
                 circleViewModel.showChangeBackgroundColorDialog,
                 circleViewModel.showChangeBorderSettingDialog,
-                touchOffset.value,
+                circleViewModel.touchOffset.value,
             )
         }
 

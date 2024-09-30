@@ -3,6 +3,7 @@ package com.example.practiceandroid.viewModels.shapesmodel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -15,6 +16,7 @@ import com.example.practiceandroid.views.contextmenu.color.getHexColorFromRGB
 import kotlin.math.roundToInt
 
 class ArrowViewModel(shape: ResponseShapes.Shape): ViewModel() {
+
     // Границы элемента
     var top = mutableFloatStateOf(0f)
     var left = mutableFloatStateOf(0f)
@@ -36,6 +38,21 @@ class ArrowViewModel(shape: ResponseShapes.Shape): ViewModel() {
     var width: MutableState<Dp> = mutableStateOf(0.dp)
     var height: MutableState<Dp> = mutableStateOf(0.dp)
 
+    // Преобразуем ширину и высоту стрелки в тип Float для дальнейшего использования
+    val widthFloat: Float
+        get() {
+            return width.value.value
+        }
+    val heightFloat: Float
+        get() {
+            return height.value.value
+        }
+
+    // Дополнительная высота наконечника стрелки, которая добавляется к общей высоте стрелки
+    val arrowHeadHeightExtra = 50
+    // Коэффициент, на который будет увеличена ширина стрелки для создания наконечника
+    val arrowHeadWidthExtra = 1.25f
+
     var maxW: MutableState<Dp> = mutableStateOf(0.dp)
     var maxH: MutableState<Dp> = mutableStateOf(0.dp)
     var minW: MutableState<Dp> = mutableStateOf(0.dp)
@@ -55,6 +72,9 @@ class ArrowViewModel(shape: ResponseShapes.Shape): ViewModel() {
     var text: List<ResponseShapes.Shape.Text>?
 
     var visibility = mutableStateOf(true)
+
+    // Отслеживание позиции нажатия
+    val touchOffset = mutableStateOf(Offset.Zero)
 
     init {
         width.value = shape.width.dp

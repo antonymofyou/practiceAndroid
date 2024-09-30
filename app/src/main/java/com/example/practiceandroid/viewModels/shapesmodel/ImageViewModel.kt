@@ -3,6 +3,7 @@ package com.example.practiceandroid.viewModels.shapesmodel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -51,6 +52,9 @@ class ImageViewModel(shape: ResponseShapes.Shape, image: String): ViewModel() {
     var imageId: String
     var imageBase64: String
     var imageBitmap: ImageBitmap
+
+    // Отслеживание позиции нажатия
+    val touchOffset = mutableStateOf(Offset.Zero)
 
     init {
         width.value = shape.width.dp

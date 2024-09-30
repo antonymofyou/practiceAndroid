@@ -1,17 +1,13 @@
 package com.example.practiceandroid.views.shapes
 
-import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
@@ -19,16 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,17 +27,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.coerceAtLeast
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
@@ -73,14 +60,10 @@ fun DrawRectangle(
     focusManager: FocusManager,
     maxWidth: Float,
     maxHeight: Float,
+    localDensity: Density,
 ) {
     // Вспомогательная переменная для рекомпозиции
     var recomposition = 0f
-
-    // Отслеживание позиции нажатия
-    val touchOffset = remember { mutableStateOf(Offset.Zero) }
-
-    val localDensity = LocalDensity.current
 
     // Контейнер Row для размещения текста внутри прямоугольника
     if (rectangleViewModel.visibility.value) {
@@ -217,7 +200,7 @@ fun DrawRectangle(
                             var transformedOffsetX = x * cosRotation - y * sinRotation
                             var transformedOffsetY = x * sinRotation + y * cosRotation
 
-                            touchOffset.value = Offset(
+                            rectangleViewModel.touchOffset.value = Offset(
                                 (transformedOffsetX + rectangleViewModel.rectangleOffsetInWindow.value.x),
                                 (transformedOffsetY + rectangleViewModel.rectangleOffsetInWindow.value.y),
                             )
@@ -315,7 +298,7 @@ fun DrawRectangle(
             rectangleViewModel.showDeleteDialog,
             rectangleViewModel.showChangeBackgroundColorDialog,
             rectangleViewModel.showChangeBorderSettingDialog,
-            touchOffset.value,
+            rectangleViewModel.touchOffset.value,
         )
     }
 

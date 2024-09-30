@@ -3,6 +3,7 @@ package com.example.practiceandroid.viewModels.shapesmodel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -56,6 +57,9 @@ class CircleViewModel(shape: ResponseShapes.Shape): ViewModel() {
     var text: List<ResponseShapes.Shape.Text>?
 
     var visibility = mutableStateOf(true)
+
+    // Отслеживание позиции нажатия
+    val touchOffset = mutableStateOf(Offset.Zero)
 
     init {
         width.value = shape.width.dp

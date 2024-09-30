@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.practiceandroid.theme.PracticeAndroidTheme
+import com.example.practiceandroid.viewModels.shapesmodel.ShapesViewModel
+import com.example.practiceandroid.viewModels.shapesmodel.ShapesViewModelFactory
 import com.example.practiceandroid.views.shapes.DrawShapes
 
 
@@ -20,10 +22,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             val mainViewModel: MainViewModel = viewModel()
 
             //Для сброса фокуса ввода
             val focusManager = LocalFocusManager.current
+
+            val shapesViewModel: ShapesViewModel = viewModel(
+                factory = ShapesViewModelFactory(mainViewModel.responseShapes.value)
+            )
 
             PracticeAndroidTheme(
             ) {
@@ -32,7 +39,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .clickable { focusManager.clearFocus() }
                 ){
-                    DrawShapes(mainViewModel.responseShapes.value, focusManager)
+                    DrawShapes(shapesViewModel, focusManager)
                 }
             }
         }

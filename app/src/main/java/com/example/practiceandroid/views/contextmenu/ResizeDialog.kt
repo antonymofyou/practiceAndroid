@@ -61,8 +61,8 @@ fun ResizeDialog(
     var widthError by rememberSaveable { mutableStateOf(false) }
     var heightError by rememberSaveable { mutableStateOf(false) }
     var zIndexError by rememberSaveable { mutableStateOf(false) }
-    // Проверка активации кнопки: кнопка активна, когда нет ошибок
 
+    // Проверка активации кнопки: кнопка активна, когда нет ошибок
     val isConfirmButtonEnabled = !widthError && !heightError && !zIndexError
 
     AlertDialog(
