@@ -1,7 +1,10 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +19,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -78,7 +83,7 @@ fun LessonsRoadCompose(viewType: Int) {
     val firstChapterHeight = 98 + 180 * lessonsRoadViewModel.groupedLessons[0].size + 98
 
     // Условие для отображения кнопки поднятия
-    val showButton by remember {
+    val showButton = remember {
         derivedStateOf {
             scrollState.value > lessonsViewModel.dpToPx(firstChapterHeight)
         }
@@ -151,9 +156,7 @@ fun LessonsRoadCompose(viewType: Int) {
             )
         }
 
-        if (showButton) {
-            GoToTop(coroutineScope, scrollState)
-        }
+        GoToTop(coroutineScope, showButton, scrollState)
     }
 
     // Прокручивание вниз при загрузке дорожки
@@ -165,11 +168,24 @@ fun LessonsRoadCompose(viewType: Int) {
 }
 
 @Composable
-fun GoToTop(coroutineScope: CoroutineScope,  scrollState: ScrollState) {
+fun GoToTop(coroutineScope: CoroutineScope, showButton: State<Boolean>, scrollState: ScrollState) {
+    // Создаем анимируемое значение для alpha
+    val alphaValue = remember { Animatable(0f) }
+
+    // LaunchedEffect для анимации альфа-значения
+    LaunchedEffect(showButton.value) {
+        if (showButton.value) {
+            alphaValue.animateTo(1f, animationSpec = tween(durationMillis = 300)) // Появление
+        } else {
+            alphaValue.animateTo(0f, animationSpec = tween(durationMillis = 300)) // Исчезновение
+        }
+    }
+
     Box(
         contentAlignment = Alignment.TopEnd,
         modifier = Modifier
             .fillMaxSize()
+            .alpha(alphaValue.value)
     ) {
         FloatingActionButton(
             modifier = Modifier
@@ -178,8 +194,10 @@ fun GoToTop(coroutineScope: CoroutineScope,  scrollState: ScrollState) {
                 .clip(CircleShape)
                 .background(Color.White),
             onClick = {
-                coroutineScope.launch {
-                    scrollState.animateScrollTo(0)
+                if (showButton.value) {
+                    coroutineScope.launch {
+                        scrollState.animateScrollTo(0)
+                    }
                 }
             },
         ) {
@@ -189,7 +207,6 @@ fun GoToTop(coroutineScope: CoroutineScope,  scrollState: ScrollState) {
             )
         }
     }
-
 }
 
 @Preview
