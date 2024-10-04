@@ -4,13 +4,13 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,6 +44,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.transform
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -49,6 +52,8 @@ import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 
 // Константы для определения типа view
@@ -117,34 +122,123 @@ fun LessonsRoadCompose(viewType: Int) {
         mutableStateOf(0.dp)
     }
 
+    // Создаем изменяемый список высот столбцов, заполняя его null
+    val columnsHeightList = remember { mutableStateListOf(
+        *Array(lessonsRoadViewModel.groupedLessons.size
+    ) { null as Dp? }) }
+
+    // Флаг для отслеживания, были ли все высоты измерены
+    var allHeightsMeasured by remember { mutableStateOf(false) }
+
+    // Отслеживание изменения высот с задержкой в 0.1 сек
+    LaunchedEffect(columnHeight) {
+        snapshotFlow { columnHeight }
+            .debounce(2)
+            .collect { updatedHeights ->
+                if (columnHeight != 0.dp) {
+                    allHeightsMeasured = true
+                }
+            }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
     ) {
+
+        if (allHeightsMeasured) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .graphicsLayer {
+                        translationY = .2f * scrollState.value
+                    }
+            ) {
+                var index = 0
+                for (chapter in lessonsRoadViewModel.groupedLessons) {
+                    val chapterName = chapter[0]["lesson_chapter"] ?: "Неизвестный раздел"
+
+                    // Цвет фона
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Color(
+                                    lessonsRoadViewModel.getBackgroundColorForChapter(
+                                        chapterName
+                                    )
+                                )
+                            )
+                            .height(columnsHeightList[index]!!) // Используем высоту только если она не null
+                    )
+                    index += 1
+                }
+
+                // Добавочная высота для прогрузки всей дорожки.
+                val chapterName = lessonsRoadViewModel.groupedLessons.last()[0]["lesson_chapter"] ?: "Неизвестный раздел"
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(columnHeight * .175f)
+                        .background(
+                            Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)).copy(
+                                alpha = 0.5f
+                            )
+                        )
+                )
+            }
+
+            // Фоновый параллакс
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        translationY = -.2f * scrollState.value
+                    }
+                    .background(imageBrush)
+                    .requiredHeight(columnHeight)
+            )
+        }
+
         // Столбец для отображения всех разделов
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .background(imageBrush)
                 .graphicsLayer {
                     translationY = .2f * scrollState.value
                 }
                 .onGloballyPositioned { coordinates ->
-                    columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
+                        columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
                 }
+                .alpha(if (allHeightsMeasured) 1f else 0f)
         ) {
             var index = 0   // общий порядковый номер уроков
-            val lastIndex = lessonsRoadViewModel.groupedLessons.map { it.size }.sum() - 1  // индекс последнего урока
+            var indexGroupedLessons = 0 // индекс как полная группа
+
+            val lastIndex = lessonsRoadViewModel.groupedLessons.map { it.size }
+                .sum() - 1  // индекс последнего урока
             for (chapter in lessonsRoadViewModel.groupedLessons) {
-                LessonsChapterCompose(lessonsRoadViewModel, chapter, viewType, index, lastIndex)
+                LessonsChapterCompose(
+                    lessonsRoadViewModel,
+                    chapter,
+                    viewType,
+                    index,
+                    lastIndex,
+                    columnsHeightList,
+                    indexGroupedLessons
+                )
                 index += chapter.size
+                indexGroupedLessons += 1
             }
 
             // Добавочная высота для прогрузки всей дорожки.
             // Без неё часть дорожки обрезается.
-            val chapterName = lessonsRoadViewModel.groupedLessons.last()[0]["lesson_chapter"] ?: "Неизвестный раздел"
-            Box (
+            val chapterName = lessonsRoadViewModel.groupedLessons.last()[0]["lesson_chapter"]
+                ?: "Неизвестный раздел"
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(columnHeight * .175f)
@@ -158,13 +252,12 @@ fun LessonsRoadCompose(viewType: Int) {
 
         GoToTop(coroutineScope, showButton, scrollState)
     }
-
-    // Прокручивание вниз при загрузке дорожки
-    LaunchedEffect(columnHeight) {
-        coroutineScope.launch {
-            scrollState.animateScrollTo(scrollState.maxValue)
-        }
-    }
+//    // Прокручивание вниз при загрузке дорожки
+//    LaunchedEffect(columnHeight) {
+//        coroutineScope.launch {
+//            scrollState.animateScrollTo(scrollState.maxValue)
+//        }
+//    }
 }
 
 @Composable

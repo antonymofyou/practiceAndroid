@@ -1,11 +1,9 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,28 +52,25 @@ fun LessonsChapterCompose(
     chapter: ArrayList<Map<String, String>>,
     viewType: Int,
     index: Int,
-    lastIndex: Int
+    lastIndex: Int,
+    columnsHeightList: SnapshotStateList<Dp?>,
+    indexGroupedLessons: Int
 ) {
+
+    // Высота столбца, содержащего кружки с уроками
+    var columnHeight by remember {
+        mutableStateOf(0.dp)
+    }
 
     // Задание цвета заднего фона раздела
     val chapterName = chapter[0]["lesson_chapter"] ?: "Неизвестный раздел"
     val lessonsViewModel = viewModel<LessonsViewModel>()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            // TODO Заливка цветом перекрывает фон
-            .background(
-                Color(lessonsRoadViewModel.getBackgroundColorForChapter(chapterName)).copy(
-                    alpha = 0.5f
-                )
-            )
     ) {
-
-        // Высота столбца, содержащего кружки с уроками
-        var columnHeight by remember {
-            mutableStateOf(0.dp)
-        }
 
         // Блок с кружками уроков
         Box (
@@ -82,6 +79,7 @@ fun LessonsChapterCompose(
                 .wrapContentHeight()
                 .onGloballyPositioned { coordinates ->
                     columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
+                    columnsHeightList[indexGroupedLessons] = columnHeight
                 }
         ) {
             val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
@@ -168,17 +166,17 @@ fun LessonsChapterCompose(
     }
 }
 
-@Preview
-@Composable
-fun LessonsChapterComposePreview() {
-    val lessonChapter = arrayListOf( mapOf(
-        Pair("lesson_number", "39"),
-        Pair("lesson_name", "Политические партии"),
-        Pair("lesson_short_name", "Политические партии"),
-        Pair("lesson_chapter", "Политика"),
-        Pair("lesson_img_adr", "/images/lessons/39.png"),
-        Pair("status", "3")
-    ) )
-
-    LessonsChapterCompose(viewModel(), lessonChapter, VIEW_TYPE_LEFT, 0, 0)
-}
+//@Preview
+//@Composable
+//fun LessonsChapterComposePreview() {
+//    val lessonChapter = arrayListOf( mapOf(
+//        Pair("lesson_number", "39"),
+//        Pair("lesson_name", "Политические партии"),
+//        Pair("lesson_short_name", "Политические партии"),
+//        Pair("lesson_chapter", "Политика"),
+//        Pair("lesson_img_adr", "/images/lessons/39.png"),
+//        Pair("status", "3")
+//    ) )
+//
+//    LessonsChapterCompose(viewModel(), lessonChapter, VIEW_TYPE_LEFT, 0, 0, imageBrush)
+//}
