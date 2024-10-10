@@ -1,5 +1,9 @@
 package com.example.practiceandroid.modules.webViewFix
 
+import android.content.Context
+import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -8,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,10 +66,17 @@ import androidx.wear.compose.material.MaterialTheme.colors
 import com.example.practiceandroid.R
 import com.example.practiceandroid.viewModels.MainViewModel
 import com.example.practiceandroid.viewModels.StandardsPopupStatus
+import java.lang.Math.toDegrees
+import kotlin.math.atan2
 
 @Composable
 fun PopupStandard(viewModel: MainViewModel) {
     val uriHandler = LocalUriHandler.current
+
+    val isScrollingEnabled = remember { mutableStateOf(true) }
+
+    var scrollState = rememberScrollState()
+
     NoPaddingAlertDialog(
         modifier = Modifier
             .padding(20.dp)
@@ -72,8 +88,7 @@ fun PopupStandard(viewModel: MainViewModel) {
                 shape = RoundedCornerShape(25.dp)
             )
             .clip(RoundedCornerShape(25.dp))
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth(),
+            .verticalScroll(scrollState, enabled = isScrollingEnabled.value),
         backgroundColor = Color.LightGray,
         onDismissRequest = {
             viewModel.isShowPopUp.value = false
@@ -106,114 +121,124 @@ fun PopupStandard(viewModel: MainViewModel) {
                             .size(18.dp)
                     )
                 }
-                    Column {
-                        viewModel.standard["name"]?.let { name ->
-                            Text(
-                                text = name,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 35.dp),
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        viewModel.standard["process"]?.let { process ->
-                            Text(
-                                text = "($process)",
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = colors.secondary,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                Column {
+                    viewModel.standard["name"]?.let { name ->
+                        Text(
+                            text = name,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 35.dp),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                    viewModel.standard["process"]?.let { process ->
+                        Text(
+                            text = "($process)",
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = colors.secondary,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         },
         text = {
-                Column {
-                    viewModel.standard["id"]?.let { id ->
+            Column {
+                viewModel.standard["id"]?.let { id ->
+                    Text(
+                        modifier = Modifier.padding(start = 24.dp),
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle()) {
+                                append("id: ")
+                            }
+                            withStyle(style = SpanStyle(color = colors.secondary)) {
+                                append(id)
+                            }
+                        }
+                    )
+                }
+                viewModel.standard["link"]?.let { link ->
+                    val annotatedString = buildAnnotatedString {
+                        pushStringAnnotation(tag = "URL", annotation = link)
+                        withStyle(
+                            style = SpanStyle()
+                        ) {
+                            append("Ссылка")
+                        }
+                    }
+                    ClickableText(
+                        modifier = Modifier.padding(start = 24.dp),
+                        text = annotatedString,
+                        onClick = {
+                            annotatedString.getStringAnnotations(
+                                tag = "URL",
+                                start = it,
+                                end = it
+                            )
+                                .firstOrNull()?.let { link ->
+                                    uriHandler.openUri(link.item)
+                                }
+                        }
+                    )
+                    WebViewScreen(link, isScrollingEnabled)
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                viewModel.standard["updatedAt"]?.let { updatedAt ->
+                    if (viewModel.standard["updatedAt"]?.isNotEmpty() == true) {
+                        Text(
+
+                            text = "Изменен: $updatedAt",
+                            modifier = Modifier
+                                .padding(start = 24.dp)
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                        )
+                    }
+                }
+                viewModel.standard["learnedAt"]?.let { learnedAt ->
+                    if (viewModel.standard["learnedAt"]?.isNotEmpty() == true) {
                         Text(
                             modifier = Modifier.padding(start = 24.dp),
                             text = buildAnnotatedString {
-                                withStyle(style = SpanStyle()) {
-                                    append("id: ")
+                                withStyle(style = SpanStyle(color = Color.Black)) {
+                                    append("Изучен: ")
                                 }
-                                withStyle(style = SpanStyle(color = colors.secondary)) {
-                                    append(id)
+                                withStyle(style = SpanStyle(color = Color.Green)) {
+                                    append(learnedAt)
                                 }
-                            }
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
                         )
-                    }
-                    viewModel.standard["link"]?.let { link ->
-                        val annotatedString = buildAnnotatedString {
-                            pushStringAnnotation(tag = "URL", annotation = link)
-                            withStyle(
-                                style = SpanStyle()
-                            ) {
-                                append("Ссылка")
-                            }
-                        }
-                        ClickableText(
-                            modifier = Modifier.padding(start = 24.dp),
-                            text = annotatedString,
-                            onClick = {
-                                annotatedString.getStringAnnotations(
-                                    tag = "URL",
-                                    start = it,
-                                    end = it
-                                )
-                                    .firstOrNull()?.let { link ->
-                                        uriHandler.openUri(link.item)
-                                    }
-                            }
-                        )
-                        WebViewScreen(link)
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    viewModel.standard["updatedAt"]?.let { updatedAt ->
-                        if (viewModel.standard["updatedAt"]?.isNotEmpty() == true) {
-                            Text(
-
-                                text = "Изменен: $updatedAt",
-                                modifier = Modifier
-                                    .padding(start = 24.dp)
-                                    .fillMaxWidth(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Black,
-                            )
-                        }
-                    }
-                    viewModel.standard["learnedAt"]?.let { learnedAt ->
-                        if (viewModel.standard["learnedAt"]?.isNotEmpty() == true) {
-                            Text(
-                                modifier = Modifier.padding(start = 24.dp),
-                                text = buildAnnotatedString {
-                                    withStyle(style = SpanStyle(color = Color.Black)) {
-                                        append("Изучен: ")
-                                    }
-                                    withStyle(style = SpanStyle(color = Color.Green)) {
-                                        append(learnedAt)
-                                    }
-                                },
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    }
-                    viewModel.standard["learnedComment"]?.let { learnedComment ->
-                        Spacer(modifier = Modifier.height(12.dp))
-                        if (viewModel.standard["learnedComment"]?.isNotEmpty() == true) {
-                            Text(
-                                text = "Как я понял изменения: $learnedComment",
-                                modifier = Modifier
-                                    .padding(start = 24.dp)
-                                    .fillMaxWidth(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Black,
-                            )
-                        }
                     }
                 }
+                viewModel.standard["learnedComment"]?.let { learnedComment ->
+                    Spacer(modifier = Modifier.height(12.dp))
+                    if (viewModel.standard["learnedComment"]?.isNotEmpty() == true) {
+                        Text(
+                            text = "Как я понял изменения: $learnedComment",
+                            modifier = Modifier
+                                .padding(start = 24.dp)
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Black,
+                        )
+                    }
+                }
+
+
+                // Генерация нескольких цифр
+                Spacer(modifier = Modifier.height(12.dp))
+                repeat(10) { index -> // Замените 10 на желаемое количество цифр
+                    Text(
+                        text = (index + 1).toString(), // Генерация цифр от 1 до 10
+                        modifier = Modifier.padding(start = 24.dp)
+                    )
+                }
+            }
         },
         confirmButton = {
             if (viewModel.popUpState.value == StandardsPopupStatus.LOADED) {
@@ -222,7 +247,7 @@ fun PopupStandard(viewModel: MainViewModel) {
                         if (isLearned == "0") {
                             ButtonRectangle(
                                 onClick = {
-                                   // standardsViewModel.isShowPopUpComment.value = true
+                                    // standardsViewModel.isShowPopUpComment.value = true
                                 },
                                 modifier = Modifier
                                     .padding(horizontal = 20.dp)
@@ -244,20 +269,25 @@ fun PopupStandard(viewModel: MainViewModel) {
     )
 }
 
-
 @Composable
-fun WebViewScreen(url: String) {
+fun WebViewScreen(url: String, isScrollingEnabled: MutableState<Boolean>) {
     val iframe = """
-    <html>
-    <body>
-        <iframe 
-        src="https://docs.google.com/presentation/d/1vZc3SKGWP_s8nocHDv_S_q5O33WoIknek879pUcFMwE/preview"
-         width="100%"
-         height="580px">
-        </iframe>
-    </body>
-    </html>
-    """
+<html>
+<head>
+    <style>
+        iframe {
+            width: 100%;
+            height: 580px; /* Высота фрейма */
+        }
+    </style>
+</head>
+<body>
+    <iframe 
+        src="https://docs.google.com/presentation/d/1vZc3SKGWP_s8nocHDv_S_q5O33WoIknek879pUcFMwE/preview">
+    </iframe>
+</body>
+</html>
+"""
 
     AndroidView(
         modifier = Modifier
@@ -281,10 +311,47 @@ fun WebViewScreen(url: String) {
                     }
                 }
                 loadData(iframe, "text/html", "UTF-8")
+
+                var lastTouchX: Float = 0f
+                var lastTouchY: Float = 0f
+
+                setOnTouchListener { _, event ->
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            // Сохраняем начальные координаты при нажатии
+                            lastTouchX = event.x
+                            lastTouchY = event.y
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+                            // Вычисляем смещение по осям X и Y
+                            val deltaX = event.x - lastTouchX
+                            val deltaY = event.y - lastTouchY
+
+                            if (Math.abs(deltaY) > Math.abs(deltaX)){
+                                isScrollingEnabled.value = true
+                            }
+                            else {
+                                isScrollingEnabled.value = false
+                            }
+
+                            // Обновляем последние координаты
+                            lastTouchX = event.x
+                            lastTouchY = event.y
+                        }
+                        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                            isScrollingEnabled.value = true
+                        }
+                    }
+                    false
+                }
+
+
+
             }
         }
     )
 }
+
 
 @Composable
 fun NoPaddingAlertDialog(
