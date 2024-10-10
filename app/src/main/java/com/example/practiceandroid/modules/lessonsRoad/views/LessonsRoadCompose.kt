@@ -1,6 +1,7 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -52,6 +53,7 @@ import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsRoadViewModel
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
@@ -250,10 +252,12 @@ fun LessonsRoadCompose(viewType: Int) {
             )
         }
 
-        GoToTop(coroutineScope, showButton, scrollState)
+        if (allHeightsMeasured) {
+            GoToTop(coroutineScope, showButton, scrollState)
+        }
     }
-    // Прокручивание вниз при загрузке дорожки
-    LaunchedEffect(columnHeight) {
+
+    LaunchedEffect(allHeightsMeasured) {
         coroutineScope.launch {
             scrollState.animateScrollTo(scrollState.maxValue)
         }
