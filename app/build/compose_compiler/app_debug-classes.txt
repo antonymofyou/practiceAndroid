@@ -1,44 +1,4 @@
-unstable class ConfigData {
-  stable val BASE_URL: String
-  stable val APP_USER_AGENT: String
-  stable val LANDING_LINK: String
-  stable val FIRST_TOKEN: String
-  stable val APP_SECRET_KEY_INT: Long
-  stable val APP_SECRET_KEY_STRING: String
-  unstable val TASK_BALLS: Array<Int>
-  stable val DIR_NAME: String
-  stable val dirToTaskP1Images: String
-  stable val dirToTaskP2Images: String
-  stable val pathToQuestions2: String
-  stable val pathToQuestions: String
-  stable val CSS_FILE_NAME: String
-  stable val ARROW_JS_NAME: String
-  stable val JQUERY_MIN_JS_NAME: String
-  stable val GAME_DECIDE_FIRST_TIMER_SYNC_INTERVAL: Long
-  stable val TRAIN_VERBAL_ZACHETS_CHAT_SYNC_INTERVAL: Long
+unstable class MainActivity {
+  unstable val mainViewModel$delegate: Lazy<MainViewModel>
   <runtime stability> = Unstable
-}
-stable class MainActivity {
-  <runtime stability> = Stable
-}
-unstable class API_root_class {
-  stable var signature: String
-  <runtime stability> = Unstable
-}
-unstable class MainRequestClass {
-  stable var device: String
-  <runtime stability> = Unstable
-}
-unstable class MainResponseClass {
-  stable var success: String
-  stable var message: String
-  <runtime stability> = Unstable
-}
-runtime class RetrofitDispatcher {
-  stable val first_token: String
-  runtime val iface: @[FlexibleNullability] interfaceAPI?
-  <runtime stability> = Uncertain(interfaceAPI)
-}
-stable class MainViewModel {
-  <runtime stability> = Stable
 }
