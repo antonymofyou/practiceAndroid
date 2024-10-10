@@ -293,7 +293,7 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
             )
         val canvas = Canvas(bitmap)
         val coordinates: Map<Double, Double> =
-            getCoordinates(Point(15, 15), Point(width - 15, height - 15))
+            getCoordinates(Point(21, 21), Point(width - 15, height - 15))
         var i = 0
         for ((key, value) in coordinates) {
             if (i % 2 == 0) {

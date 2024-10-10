@@ -252,12 +252,12 @@ fun LessonsRoadCompose(viewType: Int) {
 
         GoToTop(coroutineScope, showButton, scrollState)
     }
-//    // Прокручивание вниз при загрузке дорожки
-//    LaunchedEffect(columnHeight) {
-//        coroutineScope.launch {
-//            scrollState.animateScrollTo(scrollState.maxValue)
-//        }
-//    }
+    // Прокручивание вниз при загрузке дорожки
+    LaunchedEffect(columnHeight) {
+        coroutineScope.launch {
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
+    }
 }
 
 @Composable
