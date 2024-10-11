@@ -81,7 +81,7 @@ fun LessonsRoadCompose(
     // Отслеживание изменения высот с задержкой в 0.5 сек
     LaunchedEffect(lessonsRoadViewModel.columnHeight.value) {
         snapshotFlow { lessonsRoadViewModel.columnHeight.value }
-            .debounce(6)
+            .debounce(4)
             .collect { updatedHeights ->
                 if (lessonsRoadViewModel.columnHeight.value != 0.dp) {
                     lessonsRoadViewModel.allHeightsMeasured.value = true
