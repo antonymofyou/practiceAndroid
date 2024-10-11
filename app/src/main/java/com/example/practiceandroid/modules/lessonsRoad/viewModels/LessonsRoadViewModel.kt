@@ -2,19 +2,40 @@ package com.example.practiceandroid.modules.lessonsRoad.viewModels
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Point
+import androidx.compose.foundation.ScrollState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.transform
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.views.GroupedLessonsWithViewType
 import com.example.practiceandroid.modules.lessonsRoad.views.LessonsRoadAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -67,7 +88,7 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
 
     var lessonsRoadList: ArrayList<Map<String, String>>? = null
     var lessonsRoadListStatus =
-        MutableLiveData<LessonsRoadListStatus>(LessonsRoadListStatus.SUCCESS)
+        MutableLiveData(LessonsRoadListStatus.SUCCESS)
 
     var errMess = ""
 
@@ -99,9 +120,84 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
     // Переменная, которая указывет первое ли это открытие фрагмента
     var isFirstOpen = true
 
+    // Высота столбца всех разделов
+    var columnHeight = mutableStateOf(0.dp)
+
+    // Создаем изменяемый список высот столбцов, заполняя его null
+    var columnsHeightList = mutableStateListOf(*Array(0) { null as Dp? })
+
+    // Флаг для отслеживания, были ли все высоты измерены
+    var allHeightsMeasured = mutableStateOf(false)
+
+    var imageBitmap  = mutableStateOf<ImageBitmap?>(null)
+
+    var imageBrush = mutableStateOf<ShaderBrush?>(null)
+
     // Инициализация вьюмодели
     init {
-                setLessonsRoadList()
+        setLessonsRoadList()
+        setImageBitmap()
+        setGroupedLessons()
+        setColumnsHeightList(groupedLessons.size)
+    }
+
+    // Установка значений высоты для разделов
+    fun setColumnsHeightList(size: Int) {
+        // Создаем список и добавляем его в columnsHeightList
+        columnsHeightList.addAll(List(size) { null })
+    }
+
+    // Установка сгруппированных по разделам уроков
+    fun setGroupedLessons(){
+        val roadList = arrayListOf<Map<String, String>>()
+        if (lessonsRoadList != null) {
+            // Установка списка дорожки уроков
+            for (road in lessonsRoadList!!) {
+                roadList.add(road)
+            }
+            groupedLessons = getLessonsByChapter(roadList)
+        }
+    }
+
+    // Установка доржки уроков
+    private fun setLessonsRoadList() {
+        val dataArray: ArrayList<Map<String,String>> = Gson().fromJson(jsonStringData, object:
+            TypeToken<ArrayList<Map<String, String>>>(){}.type)
+        lessonsRoadList = dataArray
+        firstUnfulfilledLesson = findFirstUnfulfilledLessonPosition(dataArray)
+    }
+
+    // Уставнока параллакса
+    fun setImageBrush(
+        screenWidthPx: Float
+    ) {
+        val imageWidth = imageBitmap.value!!.width.toFloat()
+
+        val scaleX = screenWidthPx / imageWidth
+        val scaleY = scaleX
+
+        // Устанавливаем фон
+        val scaledShader = ImageShader(
+            imageBitmap.value!!,
+            tileModeY = TileMode.Repeated
+        ).apply {
+            transform {
+                setScale(scaleX, scaleY)
+            }
+        }
+
+        imageBrush.value = ShaderBrush(scaledShader)
+    }
+
+    fun setImageBitmap() {
+        // Получаем контекст приложения, чтобы загрузить ресурсы
+        val context = getApplication<Application>().applicationContext
+
+        // Загружаем изображение с использованием BitmapFactory
+        val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.lessons_road_bg)
+
+        // Преобразуем Bitmap в ImageBitmap и устанавливаем в переменную
+        imageBitmap.value = bitmap.asImageBitmap()
     }
 
     // Получение списка координат от стартовой точки до конечной
@@ -151,14 +247,6 @@ class LessonsRoadViewModel(private val app: Application) : AndroidViewModel(app)
         }
 
         return groupedLessons
-    }
-
-    // Установка доржки уроков
-    private fun setLessonsRoadList() {
-        val dataArray: ArrayList<Map<String,String>> = Gson().fromJson(jsonStringData, object:
-            TypeToken<ArrayList<Map<String, String>>>(){}.type)
-                lessonsRoadList = dataArray
-                firstUnfulfilledLesson = findFirstUnfulfilledLessonPosition(dataArray)
     }
 
     // Функция для получения первого невыполненного урокаfun

@@ -1,6 +1,5 @@
 package com.example.practiceandroid.modules.lessonsRoad.views
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -12,16 +11,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
@@ -29,7 +22,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,33 +30,29 @@ import com.example.practiceandroid.R
 import com.example.practiceandroid.modules.lessonsRoad.viewModels.LessonsViewModel
 
 /**
- * Функция, за отображение раздела
+ * Компонент для отображения раздела уроков.
  *
- * @param lessonsRoadViewModel: view model
- * @param chapter: список уроков по конкретному разделу
- * @param viewType: тип view
- * @param index: порядковый номер первого урока из раздела в общем списке занятий
- * @param lastIndex: номер самого последнего урока
+ * @param lessonsRoadViewModel ViewModel, управляющая состоянием экрана с разделами уроков.
+ * @param lessonsViewModel ViewModel, управляющая состоянием и логикой уроков.
+ * @param chapter Список уроков, относящихся к конкретному разделу.
+ * @param viewType Тип представления, используемый для отображения уроков.
+ * @param index Порядковый номер первого урока текущего раздела в общем списке уроков.
+ * @param lastIndex Порядковый номер последнего урока в общем списке уроков.
+ * @param indexGroupedLessons Индекс текущего раздела в сгруппированном списке разделов.
  */
 @Composable
 fun LessonsChapterCompose(
     lessonsRoadViewModel: LessonsRoadViewModel,
+    lessonsViewModel: LessonsViewModel,
     chapter: ArrayList<Map<String, String>>,
     viewType: Int,
     index: Int,
     lastIndex: Int,
-    columnsHeightList: SnapshotStateList<Dp?>,
-    indexGroupedLessons: Int
+    indexGroupedLessons: Int,
 ) {
-
-    // Высота столбца, содержащего кружки с уроками
-    var columnHeight by remember {
-        mutableStateOf(0.dp)
-    }
 
     // Задание цвета заднего фона раздела
     val chapterName = chapter[0]["lesson_chapter"] ?: "Неизвестный раздел"
-    val lessonsViewModel = viewModel<LessonsViewModel>()
 
     Box(
         modifier = Modifier
@@ -78,11 +66,11 @@ fun LessonsChapterCompose(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .onGloballyPositioned { coordinates ->
-                    columnHeight = lessonsViewModel.pxToDp(coordinates.size.height).dp
-                    columnsHeightList[indexGroupedLessons] = columnHeight
+                    lessonsRoadViewModel.columnsHeightList[indexGroupedLessons] = lessonsViewModel.pxToDp(coordinates.size.height).dp
                 }
         ) {
             val screenWidthDp = with(LocalConfiguration.current) { screenWidthDp }
+
             // Объект, отвечающий за представление кружков
             val lessonCardView = LessonCardView(lessonsRoadViewModel, lessonsViewModel, screenWidthDp)
 
@@ -111,7 +99,7 @@ fun LessonsChapterCompose(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(columnHeight)
+                .height(lessonsRoadViewModel.columnsHeightList[indexGroupedLessons] ?: 0.dp)
         ) {
             // Верхняя
             Row(
