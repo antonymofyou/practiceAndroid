@@ -1,66 +1,78 @@
 [
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/drawable_ic_launcher_background.xml.flat",
-        "source": "com.example.practiceandroid.app-main-62:/drawable/ic_launcher_background.xml"
+        "merged": "com.example.practiceandroid.app-debug-60:/drawable_transparent_image_3.png.flat",
+        "source": "com.example.practiceandroid.app-main-62:/drawable/transparent_image_3.png"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-mdpi/ic_launcher_round.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/xml_backup_rules.xml.flat",
-        "source": "com.example.practiceandroid.app-main-62:/xml/backup_rules.xml"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/xml_backup_rules.xml.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/xml/backup_rules.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-hdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/xml_data_extraction_rules.xml.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/xml/data_extraction_rules.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-hdpi/ic_launcher_round.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/drawable_ic_launcher_background.xml.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "com.example.practiceandroid.app-main-62:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/drawable-v24_ic_launcher_foreground.xml.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/drawable-v24/ic_launcher_foreground.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/drawable-v24_ic_launcher_foreground.xml.flat",
-        "source": "com.example.practiceandroid.app-main-62:/drawable-v24/ic_launcher_foreground.xml"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "com.example.practiceandroid.app-debug-60:/xml_data_extraction_rules.xml.flat",
-        "source": "com.example.practiceandroid.app-main-62:/xml/data_extraction_rules.xml"
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/drawable_transparent_image_2.jpeg.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/drawable/transparent_image_2.jpeg"
+    },
+    {
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/drawable_transparent_image.png.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/drawable/transparent_image.png"
+    },
+    {
+        "merged": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-debug-60:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "/home/xlzpm/.gradle/daemon/8.6/com.example.practiceandroid.app-main-62:/mipmap-hdpi/ic_launcher_round.webp"
     }
 ]

@@ -1,4 +1,0 @@
-unstable class MainActivity {
-  unstable val mainViewModel$delegate: Lazy<MainViewModel>
-  <runtime stability> = Unstable
-}

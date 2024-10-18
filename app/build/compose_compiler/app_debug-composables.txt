@@ -1,0 +1,4 @@
+restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun TransparentPicture()
+restartable skippable scheme("[androidx.compose.ui.UiComposable]") fun TestButton(
+  stable text: String
+)

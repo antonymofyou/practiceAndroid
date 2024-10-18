@@ -9,6 +9,9 @@ color teal_700
 color white
 drawable ic_launcher_background
 drawable ic_launcher_foreground
+drawable transparent_image
+drawable transparent_image_2
+drawable transparent_image_3
 mipmap ic_launcher
 mipmap ic_launcher_round
 string app_name

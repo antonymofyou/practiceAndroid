@@ -100,6 +100,9 @@ drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable rectangular_vignette_bottom
 drawable rectangular_vignette_top
+drawable transparent_image
+drawable transparent_image_2
+drawable transparent_image_3
 id accessibility_action_clickable_span
 id accessibility_custom_action_0
 id accessibility_custom_action_1
